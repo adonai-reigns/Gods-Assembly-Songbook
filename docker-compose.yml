@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  dev:
+    build: 
+      dockerfile: ./GasDevServer_Dockerfile
+    image: gas-dev-server-image
+    working_dir: /home/node/app
+    user: "node"
+    environment:
+      - NODE_ENV=dev
+    volumes:
+      - ./:/home/node/app
+      - ./dist/.pkg/PKG_CACHE_PATH:/home/node/.pkg-cache
+    ports:
+      - 80:3003
+      - 8080:3000
+
+  # mongo:
+  #   build: ./docker/mongoose/
+  #   ports:
+  #     - 27017:27017

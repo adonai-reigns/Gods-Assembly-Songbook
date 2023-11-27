@@ -1,0 +1,9 @@
+node_modules
+**/dist
+GodsAssemblySongbook/.pkg/PKG_CACHE_PATH/*
+GodsAssemblySongbook/.yarn
+# GodsAssemblySongbook/api/*
+# GodsAssemblySongbook/client/*
+# GodsAssemblySongbook/database/*
+GodsAssemblySongbook/node_modules
+GodsAssemblySongbook/gas*

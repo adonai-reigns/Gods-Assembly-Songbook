@@ -1,0 +1,32 @@
+FROM node:lts-bullseye
+
+# File Author / Maintainer
+LABEL org.opencontainers.image.authors="Adonai Reigns <www.adonai-reigns.life>"
+
+EXPOSE 3003
+EXPOSE 3000
+
+# Let it install without stopping for user input
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Update the repository sources list
+RUN apt-get update && apt-get install -y nano htop ncdu git curl
+
+WORKDIR /home/node/app
+
+# copy npm package config and optional yarn package lock file
+COPY package.json yarn.loc[k] ./
+
+RUN yarn set version stable
+RUN npm i -g @nestjs/cli
+RUN npm i -g @nestjs/common
+RUN npm i -g @nestjs/core
+RUN npm i -g pkg
+
+RUN yarn install
+
+COPY . .
+
+CMD ./GasDevServer_RunDev.sh
+
+

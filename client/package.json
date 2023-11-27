@@ -1,0 +1,20 @@
+{
+  "name": "client",
+  "descrption": "UI for God's Assembly Songbook",
+  "version": "0.0.1",
+  "author": "Adonai Reigns <www.adonai-reigns.life>",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.3.1",
+    "astro": "^3.6.0",
+    "typescript": "^5.3.2"
+  }
+}

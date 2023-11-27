@@ -1,0 +1,14 @@
+{
+  "name": "gas-dev",
+  "description": "God's Assembly Songbook",
+  "version": "0.0.1",
+  "author": "Adonai Reigns <www.adonai-reigns.life>",
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    
+  },
+  "scripts": {
+  
+  },
+  "packageManager": "yarn@4.0.2"
+}
