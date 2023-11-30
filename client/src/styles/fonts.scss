@@ -1,0 +1,15 @@
+/* roboto-regular - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''), url('../fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+
+/* roboto-700 - latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    src: local(''), url('../fonts/Roboto/Roboto-Bold.ttf') format('truetype');
+}

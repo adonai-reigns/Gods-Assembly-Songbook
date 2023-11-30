@@ -8,12 +8,13 @@ services:
     user: "node"
     environment:
       - NODE_ENV=dev
+      - NODE_OPTIONS=--max_old_space_size=4096
     volumes:
       - ./:/home/node/app
       - ./dist/.pkg/PKG_CACHE_PATH:/home/node/.pkg-cache
     ports:
       - 80:3003
-      - 8080:3000
+      - 3000:3000
 
   # mongo:
   #   build: ./docker/mongoose/

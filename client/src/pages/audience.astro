@@ -1,0 +1,59 @@
+---
+import PlainLayout from "../layouts/blank.astro";
+---
+
+<style>
+    .fullscreen-button {
+        position: fixed;
+        bottom: 1em;
+        left: 25%;
+        width: 50%;
+        height: 4em;
+        line-height: 4em;
+        background-color: gray;
+        color: black;
+        border-radius: 3em;
+        cursor: pointer;
+        text-align: center;
+    }
+</style>
+<PlainLayout>
+    <div class="slide-container"></div>
+
+    <div class="fullscreen-button">Click for Fullscreen mode</div>
+
+    <script>
+        (() => {
+            function openFullscreen() {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                }
+                fullscreenButton?.setAttribute("style", "display: none");
+            }
+
+            var elem = document.documentElement;
+            var fullscreenButton = document.querySelector(".fullscreen-button");
+
+            if (fullscreenButton) {
+                fullscreenButton.addEventListener("click", () =>
+                    openFullscreen(),
+                );
+            }
+
+            // the fullscreen button only shows for 3 seconds when the page loads
+            var buttonHideSeconds = 3;
+
+            var buttonHideInterval = setInterval(() => {
+                if (fullscreenButton) {
+                    fullscreenButton.textContent =
+                        "Click for fullscreen (" + buttonHideSeconds + ")";
+                    buttonHideSeconds--;
+                    if (buttonHideSeconds < 0) {
+                        clearInterval(buttonHideInterval);
+                        fullscreenButton.setAttribute("style", "display: none");
+                    }
+                }
+            }, 1000);
+        })();
+    </script>
+</PlainLayout>

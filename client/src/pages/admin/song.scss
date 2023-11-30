@@ -1,0 +1,11 @@
+.ql-container {
+    // Set the text size big, similar to the size on a projector 
+    font-size: 30px !important;
+}
+
+.tile-group {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}

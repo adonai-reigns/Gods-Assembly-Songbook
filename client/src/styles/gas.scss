@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+@import './fonts.scss';
+@import './variables.scss';
+
+body {
+    margin: $spacing-0;
+    background: hsl($colour-dark-hue, $colour-dark-saturation, $colour-dark-luminance) url('/images/FreeVector-Clouds-And-Birds/FreeVector-Clouds-And-Birds.jpg') no-repeat center center fixed;
+    color: hsl($colour-dark-text-hue, $colour-dark-text-saturation, $colour-dark-text-luminance);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font-family: Roboto;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: $spacing-12;
+    font-size: 3.815rem;
+}
+
+h2 a {
+    text-decoration: none;
+    color: inherit;
+}
