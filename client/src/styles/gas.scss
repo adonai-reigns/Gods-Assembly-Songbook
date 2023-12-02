@@ -23,6 +23,20 @@ body {
     text-align: center;
 }
 
+p a {
+    text-decoration: none;
+    color: #077eac;
+}
+p a:hover {
+    color: #00abcf;
+    text-decoration: underline;
+    -webkit-transition: color 250ms linear;
+    -moz-transition: color 250ms linear;
+    -o-transition: color 250ms linear;
+    -ms-transition: color 250ms linear;
+    transition: color 250ms linear;
+}
+
 h1 {
     margin-bottom: $spacing-12;
     font-size: 3.815rem;
