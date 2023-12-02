@@ -34,6 +34,17 @@ const AdminHeader = function (props: propsInterface) {
                 },
 
             ]
+        },
+        {
+            label: 'About',
+            icon: 'pi pi-info-circle',
+            items: [
+                {
+                    label: 'Attributions',
+                    icon: 'pi pi-link',
+                    url: '/attributions'
+                }
+            ]
         }
     ];
 

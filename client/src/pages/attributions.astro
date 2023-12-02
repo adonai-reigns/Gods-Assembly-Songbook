@@ -1,0 +1,189 @@
+---
+import GasLayout from "../layouts/gas.astro";
+
+import { Card } from "primereact/card";
+
+---
+
+<style is:inline>
+    .attributions {
+        grid-auto-rows: 1fr;
+    }
+    .attribution .p-card-title {
+        text-align: center;
+    }
+    .attribution .p-card-body {
+        height: 100%;
+    }
+    .attribution .p-card-content {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .attribution-image {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        height: 70%;
+        width: 100%;
+        text-align: center;
+    }
+    .attribution-image img {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: auto;
+        align-self: center;
+    }
+    .attribution-caption {
+        height: 30%;
+        width: 100%;
+        padding: 1em;
+        text-align: center;
+    }
+    .attribution-caption a {
+        font-weight: bold;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .attribution-caption a:hover {
+        text-decoration: underline;
+    }
+
+    @media screen and (min-width: 2000px) {
+        /* xl screen size */
+        p,
+        .attribution-caption {
+            font-size: 1.5rem;
+        }
+
+        .attribution .p-card-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+<GasLayout>
+    <p class="xl:text-2xl">This project has been made possible by the generosity of artists giving away their work for free!</p>
+    <p class="xl:text-2xl">The art is free for download at the following websites:</p>
+    <div class="attributions grid">
+        <div class="attribution col-12 md:col-6 lg:col-4 xl:col-3 my-3">
+            <Card title="Website Background" className="h-full lg:flex lg:justify-content-between" client:only>
+                <div class="attribution-image">
+                    <img alt="Website Background" width="120" height="120"
+                        src="/images/FreeVector-Clouds-And-Birds/FreeVector-Clouds-And-Birds.jpg"
+                    />
+                </div>
+                <div class="attribution-caption">
+                    <a href="https://www.freevector.com/clouds-and-birds/"
+                        >Clouds and Birds</a
+                    >
+                     by Akira at
+                    <a href="https://www.freevector.com/clouds-and-birds/"
+                        >FreeVector.com</a
+                    >
+                    under the <br />
+                    <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0</a> license.
+                </div>
+            </Card>
+        </div>
+        <div class="attribution col-12 md:col-6 lg:col-4 xl:col-3 my-3">
+            <Card title="404 Page" className="h-full lg:flex lg:justify-content-between" client:only>
+                <div class="attribution-image">
+                    <img alt="404 Page" width="120" height="120"
+                        src="/images/vecteezy_a-boy-with-three-cute-sheep-on-white-background-illustration_1424929/1o34_b837_200914.jpg"
+                    />
+                </div>
+                <div class="attribution-caption">
+                    <a
+                        href="https://www.vecteezy.com/vector-art/1424929-a-boy-with-three-cute-sheep-on-white-background"
+                        >A boy with three cute sheep on white background</a
+                    >
+                     Free Vector by
+                    <a href="https://www.vecteezy.com/members/graphicsrf"
+                        >Matt Cole</a
+                    >
+                     at
+                    <a href="https://www.vecteezy.com/free-vector/shepherd"
+                        >Vecteezy</a
+                    > 
+                    (<a href="/images/1424929-a-boy-with-three-cute-sheep-on-white-background/Vecteezy-License-Information.pdf">License</a>)
+                </div>
+            </Card>
+        </div>
+        <div class="attribution col-12 md:col-6 lg:col-4 xl:col-3 my-3">
+            <Card title="Editor's Button" className="h-full lg:flex lg:justify-content-between" client:only>
+                <div class="attribution-image">
+                    <img alt="Editor's Button" width="120" height="120"
+                        src="/images/vecteezy_wireless-device-connetion-flat-style-illustration-vector-design_8608300_677/vecteezy_wireless-device-connetion-flat-style-illustration-vector-design_8608300.jpg"
+                    />
+                </div>
+                <div class="attribution-caption">
+                    <a
+                        href="https://www.vecteezy.com/vector-art/8608300-wireless-device-connetion-flat-style-illustration-vector-design"
+                        >Wireless device connetion flat style illustration
+                        vector design</a
+                    >
+                     Free Vector by
+                    <a href="https://www.vecteezy.com/members/taufiqanwar"
+                        >Taufiq Anwar</a
+                    >
+                     at
+                    <a href="https://www.vecteezy.com/free-vector/editor"
+                        >Vecteezy</a
+                    > 
+                    (<a href="/images/vecteezy_wireless-device-connetion-flat-style-illustration-vector-design_8608300_677/Vecteezy-License-Information.pdf">License</a>)
+                </div>
+            </Card>
+        </div>
+        <div class="attribution col-12 md:col-6 lg:col-4 xl:col-3 my-3">
+            <Card title="Audience's Button" className="h-full lg:flex lg:justify-content-between" client:only>
+                <div class="attribution-image">
+                    <img alt="Audience's Button" width="120" height="120"
+                        src="/images/vecteezy_projector-vector-icon-sign-icon-vector-illustration-for-personal-and-commercial-use-clean-look-trendy-icon_349492/Electronic_Devices_(171).jpg"
+                    />
+                </div>
+                <div class="attribution-caption">
+                    <a
+                        href="https://www.vecteezy.com/vector-art/349492-projector-vector-icon"
+                        >Projector Vector Icon</a
+                    >
+                     Free Vector by
+                    <a href="https://www.vecteezy.com/members/iyikon"
+                        >Muhammad Khaleeq</a
+                    >
+                     at
+                    <a href="https://www.vecteezy.com/free-vector/projector"
+                        >Vecteezy</a
+                    > 
+                    (<a href="/images/vecteezy_projector-vector-icon-sign-icon-vector-illustration-for-personal-and-commercial-use-clean-look-trendy-icon_349492/Vecteezy-License-Information.pdf">License</a>)
+                </div>
+            </Card>
+        </div>
+        <div class="attribution col-12 md:col-6 lg:col-4 xl:col-3 my-3">
+            <Card title="Songleader's Button" className="h-full lg:flex lg:justify-content-between" client:only>
+                <div class="attribution-image">
+                    <img alt="Songleader's Button" width="120" height="120"
+                        src="/images/vecteezy_woman-singing-on-white-background-illustration_420208/zkzo_vw7h_171123.jpg"
+                    />
+                </div>
+                <div class="attribution-caption">
+                    <a
+                        href="https://www.vecteezy.com/vector-art/420208-woman-singing-on-white-background"
+                        >Projector Vector Icon</a
+                    >
+                     Free Vector by
+                    <a href="https://www.vecteezy.com/members/graphicsrf"
+                        >Matt Cole</a
+                    >
+                     at
+                    <a href="https://www.vecteezy.com/free-vector/singer"
+                        >Vecteezy</a
+                    > 
+                    (<a href="/images/vecteezy_woman-singing-on-white-background-illustration_420208/Vecteezy-License-Information.pdf">License</a>)
+                </div>
+            </Card>
+        </div>
+    </div>
+</GasLayout>

@@ -17,6 +17,10 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
             body {
                 padding-bottom: 3em;
             }
+            .promotional-header h1 a {
+                text-decoration: none;
+                color: inherit;
+            }
             .promotional-footer {
                 position: fixed;
                 bottom: 0;
@@ -40,7 +44,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
     <body>
         <div class="m-3 text-left">
             <div class="promotional-header text-center">
-                <h1>God's Assembly Songbook!</h1>
+                <h1><a href="/">God's Assembly Songbook!</a></h1>
             </div>
             <slot />
             <div class="promotional-footer">
