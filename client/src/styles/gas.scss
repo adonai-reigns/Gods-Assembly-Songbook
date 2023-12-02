@@ -3,6 +3,14 @@
 @import './fonts.scss';
 @import './variables.scss';
 
+/**
+    FYI: Breakpoint screen widths as defined by PrimeFlex
+
+    sm @media screen and (min-width: 576px) {
+    md @media screen and (min-width: 768px) {
+    lg @media screen and (min-width: 992px) {
+    xl @media screen and (min-width: 1200px) {
+*/
 body {
     margin: $spacing-0;
     background: hsl($colour-dark-hue, $colour-dark-saturation, $colour-dark-luminance) url('/images/FreeVector-Clouds-And-Birds/FreeVector-Clouds-And-Birds.jpg') no-repeat center center fixed;

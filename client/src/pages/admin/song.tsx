@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import "./song.scss";
 
+import Page404 from '../Page404';
+
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -31,6 +33,8 @@ const SongContent = function (props: propsInterface) {
 
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+
+    const [is404, setIs404] = useState(false);
 
     // song id
     const [id, setId] = useState<number>(0);
@@ -66,6 +70,10 @@ const SongContent = function (props: propsInterface) {
                         addSlide();
                     }
                 }
+            }).catch((e) => {
+                if (e.response.status) {
+                    setIs404(true);
+                };
             });
         }
     }
@@ -173,7 +181,7 @@ const SongContent = function (props: propsInterface) {
     }
 
     const getSlideById = (slideId: number): Slide | void => {
-        if(slideId > 0){
+        if (slideId > 0) {
             return slides.filter((slide: Slide) => slide.id === slideId)[0] ?? new Slide();
         }
     }
@@ -252,56 +260,60 @@ const SongContent = function (props: propsInterface) {
     }
 
     return <>
-        {editingSlideId > 0 && 
-            <Dialog draggable={false} closable={false} header={dialogHeader} visible={isEditingSlide}
-                style={{ width: '50em', height: '30em' }}
-                onHide={() => submitSlide()}>
-                <SlideEditor
-                    slide={getSlideById(editingSlideId)}
-                    onContentChange={(newContent: string) => setEditingSlideContent(newContent)}
-                    onSubmit={submitSlide}
-                    onCopy={copySlide}
-                    onDelete={deleteSlide}
-                />
-            </Dialog>
-        }
+        {(is404 ? <Page404 /> : <>
 
-        {id
-            ? <h2 className="text-center">Editing: "{song.name}"</h2>
-            : <h2 className="text-center">Create a new Song</h2>
-        }
+            {editingSlideId > 0 &&
+                <Dialog draggable={false} closable={false} header={dialogHeader} visible={isEditingSlide}
+                    style={{ width: '50em', height: '30em' }}
+                    onHide={() => submitSlide()}>
+                    <SlideEditor
+                        slide={getSlideById(editingSlideId)}
+                        onContentChange={(newContent: string) => setEditingSlideContent(newContent)}
+                        onSubmit={submitSlide}
+                        onCopy={copySlide}
+                        onDelete={deleteSlide}
+                    />
+                </Dialog>
+            }
 
-        <form className="formgrid gridw-auto p-3" onSubmit={(e) => { e.preventDefault(); submitSong() }}>
-            <div className="field m-3 p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <i className="pi pi-heart-fill"></i>
-                </span>
-                <span className="p-float-label">
-                    <InputText id="song-name" placeholder="Song Name" value={name} onChange={e => setName(e.target.value)} />
-                    <label htmlFor="song-name" className="">Song Name</label>
-                </span>
-                <Button type="button" label={id ? 'Update' : 'Create'}
-                    disabled={song.name === name}
-                    onClick={submitSong} />
-                {id > 0 &&
-                    <Button severity="danger" onClick={(e) => {
-                        e.preventDefault();
-                        if (confirm('Are you sure you want to delete this song? It cannot be undone...')) { deleteSong() }
+            {id
+                ? <h2 className="text-center">Editing: "{song.name}"</h2>
+                : <h2 className="text-center">Create a new Song</h2>
+            }
+
+            <form className="formgrid gridw-auto p-3" onSubmit={(e) => { e.preventDefault(); submitSong() }}>
+                <div className="field m-3 p-inputgroup flex-1">
+                    <span className="p-inputgroup-addon">
+                        <i className="pi pi-heart-fill"></i>
+                    </span>
+                    <span className="p-float-label">
+                        <InputText id="song-name" placeholder="Song Name" value={name} onChange={e => setName(e.target.value)} />
+                        <label htmlFor="song-name" className="">Song Name</label>
+                    </span>
+                    <Button type="button" label={id ? 'Update' : 'Create'}
+                        disabled={song.name === name}
+                        onClick={submitSong} />
+                    {id > 0 &&
+                        <Button severity="danger" onClick={(e) => {
+                            e.preventDefault();
+                            if (confirm('Are you sure you want to delete this song? It cannot be undone...')) { deleteSong() }
+                        }
+                        }>Delete this Song</Button>
                     }
-                    }>Delete this Song</Button>
-                }
-            </div>
-        </form>
-        {id > 0 &&
-            <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="tile-group grid">
-                {slides.map((slide: Slide, index: number) => <div className="col-6 md:col-4 lg:col-2" key={'tile-' + slide.id}>
-                    <Tile onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
-                </div>)}
-                <div key="add-btn" className="col-6 md:col-4 lg:col-2">
-                    <Tile noDragHandle={true} title="Add new Slide" className="add-button" onClick={addSlide}>+</Tile>
                 </div>
-            </ReactSortable>
-        }
+            </form>
+            {id > 0 &&
+                <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="tile-group grid">
+                    {slides.map((slide: Slide, index: number) => <div className="col-6 md:col-4 lg:col-2" key={'tile-' + slide.id}>
+                        <Tile onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
+                    </div>)}
+                    <div key="add-btn" className="col-6 md:col-4 lg:col-2">
+                        <Tile noDragHandle={true} title="Add new Slide" className="add-button" onClick={addSlide}>+</Tile>
+                    </div>
+                </ReactSortable>
+            }
+        </>
+        )}
     </>
 }
 
