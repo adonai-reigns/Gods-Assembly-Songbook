@@ -30,11 +30,10 @@ const Button = function (props: propsInterface) {
     }
 
     return <PrimereactButton severity={props.severity} className={props.className} onClick={onClick}>
-
         {props.url
             ? (
                 <a href={props.url} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <span className="p-button-label p-c" data-pc-section="label">
+                    <span data-pc-section="label">
                         {props.children}
                     </span>
                 </a>
@@ -42,20 +41,8 @@ const Button = function (props: propsInterface) {
                 <>{props.children}</>
             )
         }
-
     </PrimereactButton>
 
 }
 
 export default Button;
-
-
-// <style>
-//     button {
-//         cursor: pointer;
-//     }
-//     button a {
-//         text - decoration: none;
-//     color: inherit;
-//     }
-// </style>

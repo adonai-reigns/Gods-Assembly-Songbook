@@ -45,6 +45,17 @@ const AdminHeader = function (props: propsInterface) {
                     url: '/attributions'
                 }
             ]
+        },
+        {
+            label: 'Config',
+            icon: 'pi pi-cog',
+            items: [
+                {
+                    label: 'Audience Screen',
+                    icon: 'pi pi-link',
+                    url: '/admin/audience-screen-config'
+                }
+            ]
         }
     ];
 

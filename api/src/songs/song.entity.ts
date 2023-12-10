@@ -1,6 +1,7 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, ForeignKey, BelongsToMany } from 'sequelize-typescript';
 
 import { Slide } from '../slides/slide.entity';
+import { Playlist, PlaylistSong } from 'src/playlists/playlist.entity';
 
 @Table({ tableName: 'song' })
 export class Song extends Model {
@@ -12,6 +13,10 @@ export class Song extends Model {
 
     @HasMany(() => Slide, { onDelete: 'CASCADE' })
     slides: Slide[];
+
+    @BelongsToMany(() => Playlist, () => PlaylistSong)
+    playlists: Playlist[];
+
 }
 
 

@@ -1,4 +1,5 @@
 import { Length, IsString, IsNumber, IsOptional } from 'class-validator';
+import { Playlist } from 'src/playlists/playlist.entity';
 
 export class UpdateSongDto {
     @IsOptional()
@@ -9,4 +10,8 @@ export class UpdateSongDto {
     @IsOptional()
     @IsNumber()
     readonly sorting: number;
+
+    @IsOptional()
+    readonly playlists: Playlist[];
+
 }

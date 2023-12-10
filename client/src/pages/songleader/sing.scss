@@ -1,0 +1,428 @@
+.songleader-sing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+
+    div,
+    p {
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+        height: 20%;
+    }
+
+    .songs-section {
+        width: 30%;
+        overflow-y: scroll;
+        margin: 0;
+        padding: 0;
+
+        h2 {
+            position: absolute;
+            z-index: 3;
+            display: none;
+        }
+
+        .songs-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            padding: 0.5em;
+            min-height: 100%;
+            overflow: normal;
+            gap: 20px;
+
+            .song-tile-container {
+                width: 100%;
+                height: 20vh;
+                background: url('/images/vecteezy_music-notes-rainbow-colourful-on-white-background_7206554_442/vecteezy_music-notes-rainbow-colourful-on-white-background_7206554-transparent.svg') no-repeat center center;
+                background-size: cover;
+
+                .tile {
+                    border: solid 1px gray;
+                    flex: none;
+                    width: 100%;
+                    height: 100%;
+                    font-size: 1rem;
+                    text-align: center;
+                    align-items: center;
+
+                    .song-content {
+                        padding: 1rem;
+                        overflow: hidden;
+                        font-weight: bold;
+                        font-size: 1.5em;
+                    }
+                }
+            }
+
+            .song-id {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding-right: 25%;
+                height: 1.5em;
+                line-height: 1.5em;
+                text-align: left;
+                padding-left: 0.5em;
+                z-index: 2;
+                font-weight: bold;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .song-type {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                text-align: left;
+                z-index: 3;
+
+                .song-type-name {
+                    display: inline-block;
+                    border-top-right-radius: 1em;
+                    height: 1.5em;
+                    line-height: 1.5em;
+                    padding: 0 1em;
+                    min-width: 3.5em;
+                    color: white;
+                }
+            }
+
+            .status-icons {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 100%;
+                text-align: right;
+                z-index: 1;
+
+                .status-icon {
+                    display: none;
+                    height: 1.5em;
+                    line-height: 1.5em;
+                    padding: 0 1em;
+
+                }
+            }
+
+            .published-song .tile {
+
+                .status-icons {
+
+                    background-color: rgb(247, 184, 11);
+
+                    .status-icon.published {
+                        display: inline-block;
+                        font-weight: bold;
+                        color: black;
+
+                    }
+                }
+            }
+
+            .next-song .tile {
+                background: mintcream;
+
+                .status-icons {
+                    background-color: green;
+                    border-bottom: solid 1px green;
+                    animation: blink-background 1.2s linear infinite;
+                    color: white;
+
+                    .status-icon.next {
+                        animation: blink-status-visibility 1.2s linear infinite;
+                        display: inline-block;
+                    }
+                }
+
+                .slide-id {
+                    color: white;
+                }
+
+            }
+
+        }
+    }
+
+    // #published-slides-container
+    .slides-section {
+        width: 30%;
+        overflow-y: scroll;
+        margin: 0;
+        padding: 0;
+
+        h2 {
+            position: absolute;
+            z-index: 3;
+            display: none;
+        }
+
+        .slides-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            float: left;
+            min-width: 100%;
+            overflow: normal;
+            gap: 20px;
+
+            padding: 0.5em;
+
+            .slide-tile-container {
+                min-height: 28vh;
+
+                .tile {
+                    border: solid 1px gray;
+                    flex: none;
+                    width: 100%;
+                    height: 100%;
+                    font-size: 1rem;
+                    text-align: center;
+                    align-items: center;
+
+                    .slide-content {
+                        position: absolute;
+                        width: 100%;
+                        height: 90%;
+                        padding: 1rem;
+                        margin-top: 10%;
+                        overflow: scroll;
+                    }
+                }
+
+                .slide-id {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 1.5em;
+                    line-height: 1.5em;
+                    text-align: left;
+                    padding-left: 0.5em;
+                    z-index: 2;
+                    font-weight: bold;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+
+                &.published-slide .slide-id {
+                    padding-right: 30%;
+                }
+
+                &.next-slide .slide-id {
+                    padding-right: 30%;
+
+                }
+
+            }
+
+            .slide-type {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                text-align: left;
+                z-index: 3;
+
+                .slide-type-name {
+                    display: inline-block;
+                    border-top-right-radius: 1em;
+                    height: 1.5em;
+                    line-height: 1.5em;
+                    padding: 0 1em;
+                    min-width: 3.5em;
+                    background-color: red;
+                    color: white;
+                }
+            }
+
+            .status-icons {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 100%;
+                text-align: right;
+                z-index: 1;
+
+                .status-icon {
+                    display: none;
+                    height: 1.5em;
+                    line-height: 1.5em;
+                    padding: 0 1em;
+                }
+            }
+
+            .published-slide .tile {
+                .status-icons {
+                    .status-icon.published {
+                        background-color: rgb(247, 184, 11);
+                        display: inline-block;
+                        font-weight: bold;
+                        color: black;
+                    }
+                }
+            }
+
+            .next-slide .tile {
+                .status-icons {
+                    .status-icon.next {
+                        background-color: green;
+                        border-bottom: solid 1px green;
+                        color: white;
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+    }
+
+    .live-section {
+        width: 40%;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+
+        .published-slide {
+            h2 {
+                display: none;
+            }
+
+            text-align: center;
+            background: url('/images/vecteezy_empty-projection-screen-vector-design-illustration-isolated-on-white-background_1214033/projection_screen-edited-transparent.svg') no-repeat center;
+            background-size: 100% 100%;
+            width: 100%;
+            height: 50%;
+            font-size: 1.5rem;
+            line-height: 1.5;
+            position: relative;
+
+            .slide-content-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+                position: absolute;
+                left: 4%;
+                top: 14%;
+                width: 92%;
+                height: 78%;
+                overflow: scroll;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+
+            .slide-content-container::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .next-slide {
+            h2 {
+                display: none;
+            }
+
+            width: 100%;
+            height: 40%;
+            text-align: center;
+            background: url('/images/vecteezy_photo-negative-illustration-vector-elements_171597/Nov009-transparent.svg') no-repeat center;
+            background-size: 90% 90%;
+            position: relative;
+            cursor: pointer;
+
+            .slide-content-container {
+                position: absolute;
+                display: flex;
+                background-color: white;
+                color: black;
+                flex-direction: column;
+                justify-content: center;
+                top: 18%;
+                left: 13%;
+                width: 74%;
+                height: 64%;
+                font-size: 1rem;
+                line-height: 1.2;
+                overflow: scroll;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .slide-content-container::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 10%;
+
+            .action-buttons {
+                display: flex;
+                justify-content: space-evenly;
+            }
+
+            button {
+                text-align: center;
+                display: revert;
+            }
+
+            .pause-button {
+                background-color: darkblue;
+            }
+
+            .pause-button.paused {
+                background-color: purple;
+                border: solid 3px purple;
+                animation: pause-button-blink 1.2s linear infinite;
+            }
+
+            .config-button {
+                background-color: blue;
+                border: solid 1px darkblue;
+            }
+
+            .exit-button {
+                background-color: red;
+            }
+
+
+            @keyframes pause-button-blink {
+                0% {
+                    background-color: crimson;
+                }
+
+                40% {
+                    background-color: red;
+                }
+
+                90% {
+                    background-color: crimson;
+                }
+            }
+
+
+
+
+
+
+        }
+    }
+}

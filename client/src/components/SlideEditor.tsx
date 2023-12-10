@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type DOMElement } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Editor } from 'primereact/editor';
 import { Button } from "primereact/button";
@@ -18,6 +18,26 @@ export const propsDefaults = {
     className: ''
 }
 
+export const quillHeader = () => {
+    return (
+        <span className="ql-formats">
+            <button className="ql-bold" aria-label="Bold"></button>
+            <button className="ql-italic" aria-label="Italic"></button>
+            <button className="ql-underline" aria-label="Underline"></button>
+            <button className="ql-align" aria-label="Align Left" value=""></button>
+            <button className="ql-align" aria-label="Align Center" value="center" defaultChecked={true}></button>
+            <button className="ql-align" aria-label="Align Right" value="right"></button>
+            <select className="ql-size">
+                <option value="">Default</option>
+                <option value="small">Small</option>
+                <option value="large">Large</option>
+                <option value="huge">Huge</option>
+            </select>
+        </span>
+    );
+};
+
+
 const SlideEditor = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
@@ -30,12 +50,6 @@ const SlideEditor = function (props: propsInterface) {
 
     const [quillInitted, setQuillInitted] = useState(false);
 
-    const submitSlide = () => {
-        if (typeof props.onSubmit === 'function') {
-            props.onSubmit();
-        }
-    }
-
     const copySlide = () => {
         if (typeof props.onCopy === 'function') {
             props.onCopy();
@@ -47,25 +61,6 @@ const SlideEditor = function (props: propsInterface) {
             props.onDelete();
         }
     }
-
-    const quillHeader = () => {
-        return (
-            <span className="ql-formats">
-                <button className="ql-bold" aria-label="Bold"></button>
-                <button className="ql-italic" aria-label="Italic"></button>
-                <button className="ql-underline" aria-label="Underline"></button>
-                <button className="ql-align" aria-label="Align Left" value=""></button>
-                <button className="ql-align" aria-label="Align Center" value="center" defaultChecked={true}></button>
-                <button className="ql-align" aria-label="Align Right" value="right"></button>
-                <select className="ql-size">
-                    <option value="">Default</option>
-                    <option value="small">Small</option>
-                    <option value="large">Large</option>
-                    <option value="huge">Huge</option>
-                </select>
-            </span>
-        );
-    };
 
     const initQuill = () => {
 
@@ -102,11 +97,11 @@ const SlideEditor = function (props: propsInterface) {
             headerTemplate={quillHeader()} />
 
         <div className="field m-3 p-inputgroup flex justify-content-center">
-            
+
             <Button type="button" onClick={copySlide} severity="secondary">
                 Copy <i className="pi pi-copy ml-3"></i>
             </Button>
-            
+
             <Button type="button" title="Delete this Slide" onClick={(e) => {
                 e.preventDefault();
                 if (confirm('Are you sure you want to delete this slide? It cannot be undone...')) {
@@ -114,7 +109,7 @@ const SlideEditor = function (props: propsInterface) {
                 }
             }
             } severity="danger">
-                Delete <i className="pi pi-trash ml-3"></i> 
+                Delete <i className="pi pi-trash ml-3"></i>
             </Button>
 
         </div>

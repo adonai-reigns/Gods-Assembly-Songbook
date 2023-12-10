@@ -3,8 +3,22 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize
 
 import { Song } from 'src/songs/song.entity';
 
+export enum SlideType {
+    Intro = 'Intro',
+    Verse = 'Verse',
+    PreChorus = 'PreChorus',
+    Chorus = 'Chorus',
+    PostChorus = 'PostChorus',
+    Bridge = 'Bridge',
+    Outro = 'Outro',
+    Hook = 'Hook'
+}
+
+export const defaultSlideType = SlideType.Verse;
+
 interface slideAttributes {
     id: number;
+    type: SlideType;
     name: string;
     content: string;
 }
@@ -15,6 +29,9 @@ interface slideCreationAttributes extends Optional<slideAttributes, 'id'> { }
 export class Slide extends Model<slideAttributes, slideCreationAttributes> {
     @Column
     name: string;
+
+    @Column(DataType.STRING)
+    type: string;
 
     @Column(DataType.TEXT)
     content: string;

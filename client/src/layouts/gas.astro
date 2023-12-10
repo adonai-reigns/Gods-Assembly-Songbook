@@ -11,11 +11,28 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
         <meta charset="utf-8" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="initial-scale=1" />
         <meta name="generator" content={Astro.generator} />
-        <title>Astro</title>
+        <title>God's Assembly Songbook</title>
         <style>
             body {
                 padding-bottom: 3em;
+            }
+            .promotional-header {
+            }
+            .promotional-header h1 {
+                height: 100px;
+                cursor: pointer;
+                margin-top: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: end;
+                text-align: left;
+                padding-left: 130px;
+                background-image: url("/images/vecteezy_set-of-butterflies-of-different-shapes_7783387_243/vecteezy_set-of-butterflies-of-different-shapes_7783387-transparent.svg");
+                background-size: 100px;
+                background-repeat: no-repeat;
+                background-position: 15px center;
             }
             .promotional-header h1 a {
                 text-decoration: none;
@@ -39,20 +56,76 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
             .promotional-footer a:hover {
                 text-decoration: underline;
             }
+            @media screen and (max-width: 575px) {
+                .promotional-header h1 {
+                    justify-content: space-around;
+                    font-size: 1.7em;
+                    background-size: 80px;
+                    padding-left: 110px;
+                }
+                .promotional-header .breakpoint {
+                    display: block;
+                }
+            }
+            @media screen and (min-width: 576px) {
+                .promotional-header h1 {
+                    font-size: 2.5em;
+                    justify-content: space-around;
+                }
+            }
+            @media screen and (min-width: 768px) {
+                .promotional-header h1 {
+                    font-size: 3em;
+                }
+            }
+
+            @media screen and (min-width: 992px) {
+                .promotional-header h1 {
+                    font-size: 3em;
+                }
+            }
+            @media screen and (min-width: 1200px) {
+                .promotional-header h1 {
+                    font-size: 1.5em;
+                }
+                .promotional-header h1 .breakpoint {
+                    display: block;
+                }
+            }
         </style>
     </head>
     <body>
         <div class="m-3 text-left">
             <div class="promotional-header text-center">
-                <h1><a href="/">God's Assembly Songbook!</a></h1>
+                <h1>
+                    <a href="/"
+                        >God's Assembly <span class="breakpoint"
+                        ></span>Songbook!</a
+                    >
+                </h1>
             </div>
             <slot />
             <div class="promotional-footer">
                 <p>
-                    &copy; God's Assembly Songbook - free software for church worship
-                    - available at <a href="https://github.com/adonai-reigns/Gods-Assembly-Songbook/">www.github.com</a>
+                    &copy; God's Assembly Songbook - free software for church
+                    worship - available at <a
+                        href="https://github.com/adonai-reigns/Gods-Assembly-Songbook/"
+                        >www.github.com</a
+                    >
                 </p>
             </div>
         </div>
+        <script>
+            document
+                .querySelector(".promotional-header")
+                ?.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href =
+                        document
+                            .querySelector(".promotional-header a")
+                            ?.getAttribute("href") ?? "/";
+                });
+        </script>
     </body>
 </html>

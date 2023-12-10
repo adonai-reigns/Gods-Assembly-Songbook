@@ -15,7 +15,9 @@ import SlideEditor from '../../components/SlideEditor';
 import Tile from '../../components/Tile';
 
 import Song from "../../models/song";
-import Slide from '../../models/slide';
+import Slide, { SlideType, SlideTypeLabels, SlideTypeShortNames, SlideTypeClassNames, defaultSlideType } from '../../models/slide';
+import { Dropdown } from 'primereact/dropdown';
+import type { SelectItem } from 'primereact/selectitem';
 
 export interface propsInterface {
     className?: string,
@@ -46,8 +48,12 @@ const SongContent = function (props: propsInterface) {
     const [isEditingSlide, setIsEditingSlide] = useState<boolean>(false);
     const [editingSlideId, setEditingSlideId] = useState<number>(0);
     const [editingSlideName, setEditingSlideName] = useState<string>('');
+    const [editingSlideType, setEditingSlideType] = useState<SlideType>(defaultSlideType);
+
     const [editingSlideContent, setEditingSlideContent] = useState<string>('');
     const [autogenerateSlideName, setAutogenerateSlideName] = useState<boolean>(true);
+
+    const [slideTypesAsDropdownOptions, setSlideTypesAsDropdownOptions] = useState<SelectItem[]>([]);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(document.location.search)
@@ -55,6 +61,16 @@ const SongContent = function (props: propsInterface) {
         if (searchParamsId) {
             setId(parseInt(searchParamsId));
         }
+        setSlideTypesAsDropdownOptions((_slideTypesAsDropdownOptions: SelectItem[]): SelectItem[] => {
+            _slideTypesAsDropdownOptions = [];
+            Object.values(SlideType).map((slideType) => {
+                _slideTypesAsDropdownOptions[_slideTypesAsDropdownOptions.length] = {
+                    label: SlideTypeLabels[slideType],
+                    value: slideType
+                };
+            })
+            return _slideTypesAsDropdownOptions;
+        });
     }, []);
 
     const [name, setName] = useState('');
@@ -117,6 +133,7 @@ const SongContent = function (props: propsInterface) {
         }
         axios.patch(apiUrl + '/slides/' + editingSlideId, {
             name: editingSlideName,
+            type: editingSlideType,
             content: editingSlideContent
         }).then(() => {
             setEditingSlideId(0);
@@ -140,19 +157,23 @@ const SongContent = function (props: propsInterface) {
     const copySlide = () => {
         if (editingSlideId) {
             const editingSlide = getSlideById(editingSlideId);
-            const newSlide = new Slide();
-            newSlide.songId = editingSlide.songId;
-            newSlide.name = editingSlide.name;
-            newSlide.content = editingSlide.content;
-            newSlide.sorting = slides.length;
-            axios.post(apiUrl + '/slides', newSlide).then(async (response) => {
-                if (response.data) {
-                    setEditingSlideId(0);
-                    setEditingSlideName('');
-                    setEditingSlideContent('');
-                    await reloadSongData(id);
-                }
-            })
+            if (editingSlide) {
+                const newSlide = new Slide();
+                newSlide.songId = editingSlide.songId;
+                newSlide.name = editingSlide.name;
+                newSlide.type = editingSlide.type;
+                newSlide.content = editingSlide.content;
+                newSlide.sorting = slides.length;
+                axios.post(apiUrl + '/slides', newSlide).then(async (response) => {
+                    if (response.data) {
+                        setEditingSlideId(0);
+                        setEditingSlideName('');
+                        setEditingSlideType(defaultSlideType)
+                        setEditingSlideContent('');
+                        await reloadSongData(id);
+                    }
+                });
+            }
         }
     }
 
@@ -166,24 +187,28 @@ const SongContent = function (props: propsInterface) {
     const addSlide = () => {
         let newSlide = new Slide();
         newSlide.songId = id;
+        newSlide.type = defaultSlideType;
         newSlide.sorting = slides.length;
         axios.post(apiUrl + '/slides', newSlide).then(async (response) => {
             if (response.data) {
                 await reloadSongData(id);
                 const newSlideId = parseInt(response.data.id);
                 const newSlide = getSlideById(newSlideId);
-                setEditingSlideId(newSlideId);
-                setEditingSlideName(newSlide.name);
-                setEditingSlideContent(newSlide.content);
-                setAutogenerateSlideName(true);
+                if (newSlide) {
+                    setEditingSlideId(newSlideId);
+                    setEditingSlideName(newSlide.name);
+                    setEditingSlideType(newSlide.type);
+                    setEditingSlideContent(newSlide.content);
+                    setAutogenerateSlideName(true);
+                } else {
+                    // error while creating new slide at api
+                }
             }
         });
     }
 
-    const getSlideById = (slideId: number): Slide | void => {
-        if (slideId > 0) {
-            return slides.filter((slide: Slide) => slide.id === slideId)[0] ?? new Slide();
-        }
+    const getSlideById = (slideId: number): Slide => {
+        return slides.filter((slide: Slide) => slide.id === slideId)[0] ?? new Slide();
     }
 
     useEffect(() => {
@@ -193,6 +218,7 @@ const SongContent = function (props: propsInterface) {
         if (editingSlideId > 0) {
             const editingSlide = getSlideById(editingSlideId);
             setEditingSlideName(editingSlide.name);
+            setEditingSlideType(editingSlide.type);
             setEditingSlideContent(editingSlide.content);
             setAutogenerateSlideName(!(editingSlide.name.length > 0));
             setIsEditingSlide(true);
@@ -246,6 +272,10 @@ const SongContent = function (props: propsInterface) {
             }
         }
 
+        const handleOnTypeChange = (newSlideType: SlideType) => {
+            setEditingSlideType(newSlideType);
+        }
+
         return <div className="field p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
                 <label htmlFor="slide-name" className="font-normal">Slide Name</label>
@@ -253,10 +283,21 @@ const SongContent = function (props: propsInterface) {
             <InputText id="slide-name" placeholder="Slide Name" value={editingSlideName}
                 onChange={e => handleOnNameChange(e.target.value)} />
 
+            <Dropdown options={slideTypesAsDropdownOptions} value={editingSlideType}
+                optionValue='value'
+                onChange={e => handleOnTypeChange(e.target.value)} />
+
             <Button type="button" onClick={submitSlide} className="p-inputgroup-addon font-bold">
                 Done <i className="pi pi-check ml-3 font-bold"></i>
             </Button>
         </div>
+    }
+
+    const SlideTileHeaderIcon = function (props: any) {
+        
+        return <>
+            <span title={SlideTypeLabels[props.slide.type]} className={`w-2rem flex flex-direction-column justify-content-around align-items-center text-center font-bold ml-1 p-1 border-round ${SlideTypeClassNames[props.slide.type]}`}>{SlideTypeShortNames[props.slide.type]}</span>
+        </>
     }
 
     return <>
@@ -305,7 +346,7 @@ const SongContent = function (props: propsInterface) {
             {id > 0 &&
                 <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="tile-group grid">
                     {slides.map((slide: Slide, index: number) => <div className="col-6 md:col-4 lg:col-2" key={'tile-' + slide.id}>
-                        <Tile onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
+                        <Tile headerIcon={SlideTileHeaderIcon({ slide })} onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
                     </div>)}
                     <div key="add-btn" className="col-6 md:col-4 lg:col-2">
                         <Tile noDragHandle={true} title="Add new Slide" className="add-button" onClick={addSlide}>+</Tile>

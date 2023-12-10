@@ -26,6 +26,7 @@ export class SlidesService {
         const slide = new Slide();
         slide.songId = createSlideDto.songId;
         slide.name = createSlideDto.name;
+        slide.type = createSlideDto.type;
         slide.content = createSlideDto.content;
         slide.sorting = createSlideDto.sorting;
         return slide.save();
@@ -34,6 +35,7 @@ export class SlidesService {
     async update(id: number, updateSlideDto: UpdateSlideDto): Promise<Slide> {
         const slide = await this.findOne(id);
         slide.name = updateSlideDto.name || slide.name;
+        slide.type = updateSlideDto.type || slide.type;
         slide.content = updateSlideDto.content || slide.content;
         slide.sorting = updateSlideDto.sorting || slide.sorting;
         return slide.save();

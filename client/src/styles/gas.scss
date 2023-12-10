@@ -6,10 +6,10 @@
 /**
     FYI: Breakpoint screen widths as defined by PrimeFlex
 
-    sm @media screen and (min-width: 576px) {
-    md @media screen and (min-width: 768px) {
-    lg @media screen and (min-width: 992px) {
-    xl @media screen and (min-width: 1200px) {
+    sm @media screen and (min-width: 576px) {}
+    md @media screen and (min-width: 768px) {}
+    lg @media screen and (min-width: 992px) {}
+    xl @media screen and (min-width: 1200px) {}
 */
 body {
     margin: $spacing-0;
@@ -23,11 +23,12 @@ body {
     text-align: center;
 }
 
-p a {
+a {
     text-decoration: none;
     color: #077eac;
 }
-p a:hover {
+
+a:hover {
     color: #00abcf;
     text-decoration: underline;
     -webkit-transition: color 250ms linear;
@@ -37,7 +38,16 @@ p a:hover {
     transition: color 250ms linear;
 }
 
+.admin-header a:hover {
+    text-decoration: none;
+}
+
+.p-dropdown-items {
+    text-align: left;
+}
+
 h1 {
+    margin-top: 0;
     margin-bottom: $spacing-12;
     font-size: 3.815rem;
 }
@@ -45,4 +55,28 @@ h1 {
 h2 a {
     text-decoration: none;
     color: inherit;
+}
+
+.screens {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.screen {
+    box-sizing: border-box;
+    padding: 3%;
+    cursor: pointer;
+    background-color: hsla(50, 66%, 95%, 75%);
+    border-radius: 5%;
+    text-align: center;
+}
+
+.screen img {
+    width: 100%;
+}
+
+.subtitle {
+    font-size: 2em;
+    text-align: center;
 }

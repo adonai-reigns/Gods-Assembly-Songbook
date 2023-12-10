@@ -7,6 +7,7 @@ export interface propsInterface {
     children: any;
     onClick: CallableFunction;
     noDragHandle?: boolean;
+    headerIcon?: string;
 }
 
 export const propsDefaults = {
@@ -15,11 +16,16 @@ export const propsDefaults = {
     noDragHandle: false
 }
 
+const HeaderIcon = function(props: any) {
+    return <div className="z-2 tile-header-icon"><span>{props.children}</span></div>
+}
+
 const Tile = function (props: propsInterface) {
     props = { ...propsDefaults, ...props };
 
-    return <div title={props.title} className={`tile ${props.className}`} onClick={props.onClick ?? null}>
-        {!props.noDragHandle && <div className="drag-handle"></div>}
+    return <div title={props.title} className={`tile ${props.className} ${!props.noDragHandle && 'draggable'}`} onClick={props.onClick ?? null}>
+        {props.headerIcon && <HeaderIcon>{props.headerIcon}</HeaderIcon>}
+        {!props.noDragHandle && <div className="z-1 drag-handle"></div>}
         {(typeof props.index === 'number') && <div className="index">{(props.index + 1)}</div>}
         {props.children}
     </div>

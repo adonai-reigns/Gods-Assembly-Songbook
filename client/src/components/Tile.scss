@@ -13,6 +13,25 @@
     border-radius: 20px;
     border: solid 3px rgba(200, 200, 200, 0.5);
     background-color: rgba(210, 210, 210, 0.4);
+
+    &.draggable {
+        padding-top: 1.5em;
+    }
+
+    .tile-header-icon {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-content: space-around;
+        justify-content: space-around;
+        top: -0.125em;
+        left: -0.125em;
+        height: 1.5em;
+        span {
+            font-size: 0.95rem;
+        }
+    }
+
     .drag-handle {
         // display: none;
         position: absolute;
@@ -25,12 +44,14 @@
         cursor: move;
         border-top-left-radius: 0.5em;
         border-top-right-radius: 0.5em;
-        &:hover{
+
+        &:hover {
             background: rgba(120, 120, 120, 0.4);
-            border:  solid 1px rgba(140, 140, 140, 0.4);
+            border: solid 1px rgba(140, 140, 140, 0.4);
             border-bottom: solid 2px rgba(140, 140, 140, 0.6);
             text-align: center;
-            &:before{
+
+            &:before {
                 margin: 0;
                 padding: 0;
                 font-size: 0.5em;
@@ -39,10 +60,12 @@
             }
         }
     }
-    &.swapping{
+
+    &.swapping {
         border: solid 3px rgba(160, 200, 250, 0.8);
         background-color: rgba(210, 210, 220, 0.7);
     }
+
     .index {
         position: absolute;
         top: 0.5em;
@@ -54,7 +77,8 @@
         font-weight: bold;
     }
 }
-.tile.add-button{
+
+.tile.add-button {
     font-size: 3em;
     color: gray;
 }

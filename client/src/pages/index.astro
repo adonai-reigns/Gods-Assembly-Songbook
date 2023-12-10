@@ -2,38 +2,16 @@
 import GasLayout from "../layouts/gas.astro";
 import "../styles/variables.scss";
 
-const pageUrl = import.meta.url;
-
-const importMeta = JSON.stringify(import.meta.glob);
-
+// const pageUrl = import.meta.url;
+// const importMeta = JSON.stringify(import.meta.glob);
 ---
 
-<style>
-    .screen {
-        box-sizing: border-box;
-        padding: 3%;
-        cursor: pointer;
-        background-color: hsla(50, 66%, 95%, 75%);
-        border-radius: 5%;
-        text-align: center;
-    }
-    .screen img {
-        width: 100%;
-    }
-    .subtitle {
-        font-size: 2em;
-        text-align: center;
-    }
-</style>
-
 <GasLayout>
-
     <p class="subtitle">What is your role in the assembly today?</p>
-
     <div class="screens grid justify-content-evenly">
         <div
             class="screen songleader col-12 md:col-3 my-3 lg:flex lg:flex-column-reverse"
-        >
+        >                                                                           
             <h2 class="m-0 md:mb-3 p-0 lg:mt-5 lg:mb-0">
                 <a href="/songleader">Leader</a>
             </h2>
@@ -41,7 +19,7 @@ const importMeta = JSON.stringify(import.meta.glob);
                 <img
                     class="w-10 ls:w-12"
                     src="images/vecteezy_woman-singing-on-white-background-illustration_420208/zkzo_vw7h_171123-cropped-scaled.jpg"
-                    alt="Song Leader"
+                    alt="Picture of a lady singing"
                 />
             </div>
         </div>
@@ -53,9 +31,9 @@ const importMeta = JSON.stringify(import.meta.glob);
             </h2>
             <div class="text-center">
                 <img
-                    class="w-10 lg:w-12"
+                    class="w-10 ls:w-12"
                     src="images/vecteezy_projector-vector-icon-sign-icon-vector-illustration-for-personal-and-commercial-use-clean-look-trendy-icon_349492/Electronic_Devices_(171)-scaled.jpg"
-                    alt="Song Leader"
+                    alt="Picture of an image projector"
                 />
             </div>
         </div>
@@ -67,9 +45,9 @@ const importMeta = JSON.stringify(import.meta.glob);
             </h2>
             <div class="text-center">
                 <img
-                    class="w-10 lg:w-12"
+                    class="w-10 ls:w-12"
                     src="images/vecteezy_wireless-device-connetion-flat-style-illustration-vector-design_8608300_677/vecteezy_wireless-device-connetion-flat-style-illustration-vector-design_8608300-scaled.jpg"
-                    alt="Song Leader"
+                    alt="Picture of a person with electronic devices"
                 />
             </div>
         </div>

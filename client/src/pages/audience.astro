@@ -1,5 +1,6 @@
 ---
 import PlainLayout from "../layouts/blank.astro";
+import AudienceContent from "./Audience";
 ---
 
 <style>
@@ -18,7 +19,7 @@ import PlainLayout from "../layouts/blank.astro";
     }
 </style>
 <PlainLayout>
-    <div class="slide-container"></div>
+    <AudienceContent client:only />
 
     <div class="fullscreen-button">Click for Fullscreen mode</div>
 
