@@ -13,6 +13,8 @@ import Button from '../../components/Button';
 import Tile from "../../components/Tile";
 
 import Slide, { SlideTypeClassNames, SlideTypeLabels } from "../../models/slide";
+// import Slide from "../../models/slide";
+
 import type { Playlist } from "../../models/playlist";
 import Song from "../../models/song";
 
@@ -34,7 +36,7 @@ export interface slideTilePropsInterface {
     key: any;
     className?: string;
     slide: Slide;
-    publishedSlide: Slide;
+    publishedSlide: Slide | "start" | "pause" | "end";
     nextSlide: Slide;
     setNextSlide: CallableFunction;
 }
@@ -370,7 +372,7 @@ const Sing = function (props: propsInterface) {
 
         const classNames = ['slide-tile-container'];
 
-        if (publishedSlide.id === slide.id) {
+        if (typeof publishedSlide === 'object' && publishedSlide.id === slide.id) {
             classNames.push('published-slide');
         }
 
@@ -414,7 +416,7 @@ const Sing = function (props: propsInterface) {
                 </div>}
 
                 {isLandscape && <div className="songleader-sing">
-                
+
                     <div className="songs-section">
                         <div className="songs-container" id="songlist-songs-drawer">
                             {(currentPlaylist.songs.length < 1)
@@ -461,7 +463,7 @@ const Sing = function (props: propsInterface) {
                             {(openSong.slides.length < 1) && <div className="flex flex-column justify-content-center h-full w-full">
                                 <p className="text-center">Selected Song does not have any slides</p>
                             </div>}
-                            {openSong.slides.map((slide: Slide) => (typeof publishedSlide === 'object') &&
+                            {openSong.slides.map((slide: Slide) =>
                                 <SlideTile
                                     key={slide.id}
                                     slide={slide}

@@ -11,7 +11,8 @@ body {
     justify-content: end;
     text-align: left;
     padding-left: 130px;
-    background-image: url("/images/vecteezy_set-of-butterflies-of-different-shapes_7783387_243/vecteezy_set-of-butterflies-of-different-shapes_7783387-transparent.svg");
+    background: url("/images/vecteezy_set-of-butterflies-of-different-shapes_7783387_243/vecteezy_set-of-butterflies-of-different-shapes_7783387-transparent.png");
+    background-image: url("/images/vecteezy_set-of-butterflies-of-different-shapes_7783387_243/vecteezy_set-of-butterflies-of-different-shapes_7783387-transparent.svg"), none;
     background-size: 100px;
     background-repeat: no-repeat;
     background-position: 15px center;

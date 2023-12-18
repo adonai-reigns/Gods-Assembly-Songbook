@@ -16,7 +16,7 @@ const AdminLayout = (props: any) => {
 
         <Helmet>
             <meta charSet="utf-8" />
-            <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+            <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
             <meta name="viewport" content="width=device-width" />
             <meta name="viewport" content="initial-scale=1" />
             <meta name="generator" content={`Typed by a Real Person!`} />

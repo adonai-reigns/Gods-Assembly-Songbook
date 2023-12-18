@@ -5,7 +5,7 @@ import GasLayout from "../layouts/GasLayout";
 import { Card } from "primereact/card";
 
 import "./Attributions.scss";
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 
 export interface AttributionInterface {
     name: string;
@@ -139,7 +139,7 @@ const Attributions = () => {
         {
             name: "Vector Set Of Photo Negatives",
             role: "Film Slide",
-            previewUrl: "/images/vecteezy_photo-negative-illustration-vector-elements_171597/Nov009.svg",
+            previewUrl: "/images/vecteezy_photo-negative-illustration-vector-elements_171597/vector-set-of-photo-negatives.jpg",
             previewAlt: "Film Slide",
             downloadUrl: "https://www.vecteezy.com/vector-art/171597-vector-set-of-photo-negatives",
             authorName: "happymeluv",
@@ -284,21 +284,24 @@ const Attributions = () => {
                             <Card
                                 title={attribution.role}
                                 className="h-full lg:flex lg:justify-content-between align-items-between"
-
                             >
                                 <div className="attribution-image">
-                                    {typeof attribution.previewUrl === 'string'
-                                        ?
-                                        <img
-                                            alt={attribution.previewAlt}
-                                            width="120"
-                                            height="120"
-                                            src={attribution.previewUrl}
-                                        />
-                                        :
-                                        <>{attribution.previewUrl}</>
+                                    {React.isValidElement(attribution.previewUrl)
+                                        ? <>{attribution.previewUrl}</>
+                                        : <>
+                                            {`${attribution.previewUrl}`.match(/\.svg$/)
+                                                ? <object className="img" data={`${attribution.previewUrl}`} type="image/svg+xml">
+                                                    <img src="/favicon.ico" /></object>
+                                                : <img
+                                                    alt={attribution.previewAlt}
+                                                    width="120"
+                                                    height="120"
+                                                    src={`${attribution.previewUrl}`} />
+                                            }
+                                        </>
                                     }
                                 </div>
+
                                 <div className="attribution-caption">
                                     <a href={attribution.downloadUrl}>
                                         {attribution.name}
