@@ -86,7 +86,7 @@ yarn dev &
 if [[ -v LEGACY_DEV && $LEGACY_DEV == 1 ]]; then
     echo "  Run Legacy Client Server $LEGACY_DEV in watch Mode on port $LEGACY_DEV_PORT"
     cd $APP_DIR/client
-    nodemon -e js,ts,jsx,tsx,html,svg,css --watch src --watch public --exec "yarn run build && npx http-server ./dist/ -o --cors --mimetypes ../GodsAssemblySongbook/mime.types -a 0.0.0.0 -p $LEGACY_DEV_PORT"
+    nodemon -e js,ts,jsx,tsx,html,svg,css,scss --watch src --watch public --exec "yarn run build && npx http-server ./dist/ -o --cors --mimetypes ../GodsAssemblySongbook/mime.types -a 0.0.0.0 -p $LEGACY_DEV_PORT"
 fi
 
 cd $APP_DIR
