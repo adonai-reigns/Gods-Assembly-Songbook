@@ -1,4 +1,5 @@
 import { Button as PrimereactButton } from 'primereact/button';
+import { useNavigate } from 'react-router-dom';
 
 export interface propsInterface {
     className?: string;
@@ -18,13 +19,18 @@ const Button = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const onClick = (e) => {
+    const navigate = useNavigate();
+
+    const onClick = (e: any) => {
         if(props.onClick){
+            if(props.url){
+                e.preventDefault();
+            }
             props.onClick(e);
         }else{
             if(props.url){
                 e.preventDefault();
-                window.location.href = props.url;
+                navigate(props.url);
             }
         }
     }

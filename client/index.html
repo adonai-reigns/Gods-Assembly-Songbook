@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>God's Assembly Songbook</title>
+    <link id="legacy-styles" rel="stylesheet" href="/styles/legacy.css" />
+</head>
+
+<body class="loading">
+    <div id="root">
+        <span class="butterfly" style="display: none;">ƸӜƷ</span>
+        <div id="legacy-error-preload">
+            <div class="header">
+                <h1>God's Assembly Songbook</h1>
+            </div>
+
+            <div class="bible-quote">
+                <div class="bible-quote-title">Do not judge by appearance</div>
+                <div class="error-message">
+                    <h2>Legacy Browser Not Supported</h2>
+                    <p>Sorry, the device you are using is from a bygone era and it is not able to render this
+                        application.</p>
+                    <hr />
+                </div>
+                <div>
+                    <div class="bible-quote-image">
+                        <img src="/images/vecteezy_round-frame-with-children-coloring-the-world_7159860_956/vecteezy_round-frame-with-children-coloring-the-world_7159860-transparent.png"
+                            alt="Children painting a picture of the world" width="500" height="250" />
+                    </div>
+                    <div class="bible-quote-content">
+                        <p>If anyone is in Christ, he is a new creation. The old has passed away;<br />behold, the new
+                            has come.</p>
+                        <p>All this is from God, who reconciled us to himself through Christ<br />and gave us the
+                            ministry of reconciliation.</p>
+                        <div class="bible-quote-reference">
+                            - St. Paul, 2 Corinthians 5:17-18(ESV)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="upgrade-instructions">
+                * Please upgrade your browser to use this software
+            </p>
+
+            <div class="footer">
+                <p>
+                    &copy; God's Assembly Songbook - free software for church
+                    worship - available at <a
+                        href="https://github.com/adonai-reigns/Gods-Assembly-Songbook/">www.github.com</a>
+                </p>
+            </div>
+        </div>
+        <script type="module" src="/src/main.tsx" onload="() => scriptTagOnloadEvent()" id="app-script"></script>
+
+        <script type="text/javascript">
+            (function () {
+                var ShowLegacyError = function () {
+                    var preloadEl = document.getElementById('legacy-error-preload');
+                    if (preloadEl !== null) {
+                        preloadEl.setAttribute('id', 'legacy-error');
+                    }
+                    document.body.classList.remove('loading');
+                }
+                window.setTimeout(ShowLegacyError, 5000);
+            })();
+        </script>
+
+    </div>
+
+</body>
+
+</html>

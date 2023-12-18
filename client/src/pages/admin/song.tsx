@@ -18,6 +18,8 @@ import Song from "../../models/song";
 import Slide, { SlideType, SlideTypeLabels, SlideTypeShortNames, SlideTypeClassNames, defaultSlideType } from '../../models/slide';
 import { Dropdown } from 'primereact/dropdown';
 import type { SelectItem } from 'primereact/selectitem';
+import AdminLayout from '../../layouts/AdminLayout';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export interface propsInterface {
     className?: string,
@@ -29,19 +31,26 @@ export const propsDefaults = {
     className: '',
 }
 
+const url = new URL(window.location.href);
+const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+
 const SongContent = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const navigate = useNavigate();
+
+    const params = useParams() ?? {};
+    // const location = useLocation();
+    // const searchParams = new URLSearchParams(location.search);
 
     const [is404, setIs404] = useState(false);
 
     // song id
-    const [id, setId] = useState<number>(0);
+    const [songId, setSongId] = useState<number>(parseInt(params.id ?? '0'));
 
     const [song, setSong] = useState<Song>(new Song());
+    const [editingSongName, setEditingSongName] = useState('');
 
     const [slides, setSlides] = useState<Slide[]>([]);
 
@@ -55,12 +64,17 @@ const SongContent = function (props: propsInterface) {
 
     const [slideTypesAsDropdownOptions, setSlideTypesAsDropdownOptions] = useState<SelectItem[]>([]);
 
-    useEffect(() => {
-        const searchParams = new URLSearchParams(document.location.search)
-        const searchParamsId = searchParams.get('id');
-        if (searchParamsId) {
-            setId(parseInt(searchParamsId));
-        }
+    const resetComponentState = () => {
+        setSong(new Song());
+        setIsEditingSlide(false);
+        setEditingSongName('');
+        setEditingSlideId(0);
+        setEditingSlideName('');
+        setEditingSlideContent('');
+        setAutogenerateSlideName(true);
+        setEditingSlideType(defaultSlideType);
+        setSongId(parseInt(params.id ?? '0'));
+
         setSlideTypesAsDropdownOptions((_slideTypesAsDropdownOptions: SelectItem[]): SelectItem[] => {
             _slideTypesAsDropdownOptions = [];
             Object.values(SlideType).map((slideType) => {
@@ -71,15 +85,17 @@ const SongContent = function (props: propsInterface) {
             })
             return _slideTypesAsDropdownOptions;
         });
-    }, []);
+    }
 
-    const [name, setName] = useState('');
+    useEffect(() => {
+        resetComponentState();
+    }, [params]);
 
-    const reloadSongData = async (songId: number) => {
-        if (id !== songId) {
-            setId(id);
+    const reloadSongData = async (_songId: number) => {
+        if (_songId !== songId) {
+            setSongId(_songId);
         } else {
-            axios.get(apiUrl + '/songs/' + id).then((response: any) => {
+            axios.get(apiUrl + '/songs/' + songId).then((response: any) => {
                 if (response.data) {
                     setSongCacheFromApiData(response.data);
                     if (response.data.slides.length < 1) {
@@ -95,21 +111,21 @@ const SongContent = function (props: propsInterface) {
     }
 
     const submitSong = () => {
-        if (id === 0) {
+        if (songId === 0) {
             // POST for creating a new song
             axios.post(apiUrl + '/songs', {
-                name,
+                name: editingSongName,
                 sorting: 0
             }).then((response) => {
                 if (response.data.id) {
-                    window.location.href = '?id=' + response.data.id;
+                    navigate('/admin/song/' + response.data.id);
                     reloadSongData(response.data.id);
                 }
             })
         } else {
             // PATCH for updating an existing song
-            axios.patch(apiUrl + '/songs/' + id, {
-                name
+            axios.patch(apiUrl + '/songs/' + songId, {
+                name: editingSongName
             }).then((response) => {
                 if (response.data.id) {
                     reloadSongData(response.data.id);
@@ -119,8 +135,8 @@ const SongContent = function (props: propsInterface) {
     }
 
     const deleteSong = () => {
-        axios.delete(apiUrl + '/songs/' + id).then(() => {
-            window.location.href = '/admin/songs';
+        axios.delete(apiUrl + '/songs/' + songId).then(() => {
+            navigate('/admin/songs');
         });
     }
 
@@ -139,7 +155,7 @@ const SongContent = function (props: propsInterface) {
             setEditingSlideId(0);
             setEditingSlideName('');
             setEditingSlideContent('');
-            reloadSongData(id);
+            reloadSongData(songId);
         });
     }
 
@@ -149,7 +165,7 @@ const SongContent = function (props: propsInterface) {
                 setEditingSlideId(0);
                 setEditingSlideName('');
                 setEditingSlideContent('');
-                reloadSongData(id);
+                reloadSongData(songId);
             });
         }
     }
@@ -170,7 +186,7 @@ const SongContent = function (props: propsInterface) {
                         setEditingSlideName('');
                         setEditingSlideType(defaultSlideType)
                         setEditingSlideContent('');
-                        await reloadSongData(id);
+                        await reloadSongData(songId);
                     }
                 });
             }
@@ -179,19 +195,19 @@ const SongContent = function (props: propsInterface) {
 
     const setSongCacheFromApiData = (song: Song) => {
         setSong(song);
-        setId(song.id ?? 0);
-        setName(song.name);
+        setSongId(song.id ?? 0);
+        setEditingSongName(song.name);
         setSlides(song.slides);
     }
 
     const addSlide = () => {
         let newSlide = new Slide();
-        newSlide.songId = id;
+        newSlide.songId = songId;
         newSlide.type = defaultSlideType;
         newSlide.sorting = slides.length;
         axios.post(apiUrl + '/slides', newSlide).then(async (response) => {
             if (response.data) {
-                await reloadSongData(id);
+                await reloadSongData(songId);
                 const newSlideId = parseInt(response.data.id);
                 const newSlide = getSlideById(newSlideId);
                 if (newSlide) {
@@ -212,7 +228,7 @@ const SongContent = function (props: propsInterface) {
     }
 
     useEffect(() => {
-        if (id < 1) {
+        if (songId < 1) {
             return;
         }
         if (editingSlideId > 0) {
@@ -234,10 +250,10 @@ const SongContent = function (props: propsInterface) {
     }, [editingSlideContent]);
 
     useEffect(() => {
-        if (id) {
-            reloadSongData(id);
+        if (songId) {
+            reloadSongData(songId);
         }
-    }, [id]);
+    }, [songId]);
 
     useEffect(() => {
         if (slides.length > 0) {
@@ -294,15 +310,15 @@ const SongContent = function (props: propsInterface) {
     }
 
     const SlideTileHeaderIcon = function (props: any) {
-        
+
         return <>
             <span title={SlideTypeLabels[props.slide.type]} className={`w-2rem flex flex-direction-column justify-content-around align-items-center text-center font-bold ml-1 p-1 border-round ${SlideTypeClassNames[props.slide.type]}`}>{SlideTypeShortNames[props.slide.type]}</span>
         </>
     }
 
-    return <>
+    return <AdminLayout>
         {(is404 ? <Page404 /> : <>
-
+        
             {editingSlideId > 0 &&
                 <Dialog draggable={false} closable={false} header={dialogHeader} visible={isEditingSlide}
                     style={{ width: '50em', height: '30em' }}
@@ -317,7 +333,7 @@ const SongContent = function (props: propsInterface) {
                 </Dialog>
             }
 
-            {id
+            {songId
                 ? <h2 className="text-center">Editing: "{song.name}"</h2>
                 : <h2 className="text-center">Create a new Song</h2>
             }
@@ -328,13 +344,13 @@ const SongContent = function (props: propsInterface) {
                         <i className="pi pi-heart-fill"></i>
                     </span>
                     <span className="p-float-label">
-                        <InputText id="song-name" placeholder="Song Name" value={name} onChange={e => setName(e.target.value)} />
+                        <InputText id="song-name" placeholder="Song Name" value={editingSongName} onChange={e => setEditingSongName(e.target.value)} />
                         <label htmlFor="song-name" className="">Song Name</label>
                     </span>
-                    <Button type="button" label={id ? 'Update' : 'Create'}
-                        disabled={song.name === name}
+                    <Button type="button" label={songId ? 'Update' : 'Create'}
+                        disabled={song.name === editingSongName}
                         onClick={submitSong} />
-                    {id > 0 &&
+                    {songId > 0 &&
                         <Button severity="danger" onClick={(e) => {
                             e.preventDefault();
                             if (confirm('Are you sure you want to delete this song? It cannot be undone...')) { deleteSong() }
@@ -343,7 +359,7 @@ const SongContent = function (props: propsInterface) {
                     }
                 </div>
             </form>
-            {id > 0 &&
+            {songId > 0 &&
                 <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="tile-group grid">
                     {slides.map((slide: Slide, index: number) => <div className="col-6 md:col-4 lg:col-2" key={'tile-' + slide.id}>
                         <Tile headerIcon={SlideTileHeaderIcon({ slide })} onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
@@ -355,7 +371,7 @@ const SongContent = function (props: propsInterface) {
             }
         </>
         )}
-    </>
+    </AdminLayout>
 }
 
 export default SongContent;

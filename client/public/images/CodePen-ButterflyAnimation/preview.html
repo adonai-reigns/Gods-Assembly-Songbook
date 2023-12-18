@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+
+    <link rel="apple-touch-icon" type="image/png"
+        href="preview-assets/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+
+    <link rel="shortcut icon" type="image/x-icon"
+        href="preview-assets/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+
+    <link rel="mask-icon" type="image/x-icon"
+        href="preview-assets/logo-pin-b4b4269c16397ad2f0f7a01bcdf513a1994f4c94b8af2f191c09eb0d601762b1.svg"
+        color="#111" />
+
+
+
+
+
+
+    <title>CodePen - Butterfly Animation</title>
+
+    <link rel="canonical" href="https://codepen.io/v42/pen/nKJWKo">
+
+
+
+
+    <style>
+        body {
+            text-align: center;
+            background: #C8D9BF;
+        }
+
+        .butterfly {
+            font: 0/0 a;
+            position: relative;
+            display: inline-block;
+            height: 100px;
+            width: 15px;
+            border-radius: 7px;
+            background: #FA982F;
+            margin-top: 100px;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-perspective: 500px;
+            perspective: 500px;
+        }
+
+        .butterfly:before,
+        .butterfly:after {
+            content: '';
+            position: absolute;
+            background: #D6005E;
+            width: 85px;
+            height: 130px;
+            top: -20px;
+            border: 10px solid #F33353;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-transform: translateZ(-5px);
+            transform: translateZ(-5px);
+            -webkit-filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, .3));
+            filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, .3))
+        }
+
+        .butterfly:before {
+            left: -105px;
+            border-radius: 50px 190px 160px 190px;
+            -webkit-transform-origin: right center;
+            transform-origin: right center;
+            -webkit-animation: flap-left 5s infinite;
+            animation: flap-left 5s infinite;
+        }
+
+        .butterfly:after {
+            right: -105px;
+            border-radius: 190px 50px 190px 160px;
+            -webkit-transform-origin: left center;
+            transform-origin: left center;
+            -webkit-animation: flap-right 5s infinite;
+            animation: flap-right 5s infinite;
+        }
+
+        @-webkit-keyframes flap-left {
+            0% {
+                -webkit-transform: rotateY(2deg);
+            }
+
+            20% {
+                -webkit-transform: rotateY(70deg);
+            }
+
+            40% {
+                -webkit-transform: rotateY(2deg);
+            }
+
+            60% {
+                -webkit-transform: rotateY(2deg);
+            }
+
+            65% {
+                -webkit-transform: rotateY(65deg);
+            }
+
+            70% {
+                -webkit-transform: rotateY(2deg);
+            }
+
+            73% {
+                -webkit-transform: rotateY(65deg);
+            }
+
+            80% {
+                -webkit-transform: rotateY(2deg);
+            }
+
+            100% {
+                -webkit-transform: rotateY(2deg);
+            }
+        }
+
+        @-webkit-keyframes flap-right {
+            0% {
+                -webkit-transform: rotateY(-2deg);
+            }
+
+            20% {
+                -webkit-transform: rotateY(-70deg);
+            }
+
+            40% {
+                -webkit-transform: rotateY(-2deg);
+            }
+
+            60% {
+                -webkit-transform: rotateY(-2deg);
+            }
+
+            65% {
+                -webkit-transform: rotateY(-65deg);
+            }
+
+            70% {
+                -webkit-transform: rotateY(-2deg);
+            }
+
+            73% {
+                -webkit-transform: rotateY(-65deg);
+            }
+
+            80% {
+                -webkit-transform: rotateY(-2deg);
+            }
+
+            100% {
+                -webkit-transform: rotateY(-2deg);
+            }
+        }
+    </style>
+
+    <script>
+        window.console = window.console || function (t) {};
+    </script>
+
+
+
+</head>
+
+<body translate="no">
+    <span class="butterfly">ƸӜƷ</span>
+
+
+
+</body>
+
+</html>

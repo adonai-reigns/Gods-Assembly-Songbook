@@ -1,5 +1,6 @@
 import { Menubar } from "primereact/menubar";
 import type { MenuItem } from "primereact/menuitem";
+import { useNavigate } from "react-router-dom";
 
 export interface propsInterface {
     end?: any;
@@ -16,6 +17,7 @@ const Logo = function () {
 const AdminHeader = function (props: propsInterface) {
 
     props = { ...defaultProps, ...props };
+    const navigate = useNavigate();
 
     const menuItems: MenuItem[] = [
         {
@@ -25,12 +27,12 @@ const AdminHeader = function (props: propsInterface) {
                 {
                     label: 'New',
                     icon: 'pi pi-fw pi-plus',
-                    url: '/admin/song'
+                    command: () => navigate('/admin/song')
                 },
                 {
                     label: 'Manage',
                     icon: 'pi pi-fw pi-pencil',
-                    url: '/admin/songs'
+                    command: () => navigate('/admin/songs')
                 },
 
             ]
@@ -42,7 +44,7 @@ const AdminHeader = function (props: propsInterface) {
                 {
                     label: 'Attributions',
                     icon: 'pi pi-link',
-                    url: '/attributions'
+                    command: () => navigate('/attributions')
                 }
             ]
         },
@@ -53,7 +55,7 @@ const AdminHeader = function (props: propsInterface) {
                 {
                     label: 'Audience Screen',
                     icon: 'pi pi-link',
-                    url: '/admin/audience-screen-config'
+                    command: () => navigate('/admin/audience-screen-config')
                 }
             ]
         }

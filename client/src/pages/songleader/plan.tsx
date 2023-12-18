@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from 'axios';
 
-
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 
@@ -12,6 +11,7 @@ import Button from '../../components/Button';
 
 import type { Playlist } from "../../models/playlist";
 
+import GasLayout from "../../layouts/GasLayout";
 import "./sing.scss";
 
 export interface propsInterface {
@@ -62,9 +62,6 @@ const Plan = function (props: propsInterface) {
             return;
         }
         if (editingPlaylist) {
-
-
-
             axios.patch(apiUrl + '/playlists/' + editingPlaylist.id, {
                 name: editingPlaylistName,
                 startSlide: editingPlaylistStartSlide,
@@ -120,7 +117,7 @@ const Plan = function (props: propsInterface) {
         }
     }, []);
 
-    return <div className={``}>
+    return <GasLayout>
 
         <Dialog draggable={false} closable={true} visible={showNewPlaylistForm}
             style={{ width: '50em', height: '30em' }}
@@ -131,11 +128,11 @@ const Plan = function (props: propsInterface) {
                     <label htmlFor="slide-name" className="font-normal">Playlist Name</label>
                 </span>
                 <InputText id="slide-name" placeholder="Playlist Name" value={editingPlaylistName}
-                    onChange={e => setEditingPlaylistName(e.target.value)} />
+                    onChange={e => setEditingPlaylistName(e.target.value)} onKeyUp={(e) => { if (e.code === 'Enter') { submitPlaylist(); } }} />
             </div>
 
             <div className="m-3 flex justify-content-around">
-                <Button onClick={(e) => {
+                <Button onClick={(e: any) => {
                     e.preventDefault();
                     submitPlaylist();
                 }}>Create Playlist</Button>
@@ -156,7 +153,7 @@ const Plan = function (props: propsInterface) {
 
         <PlaylistPicker key={playlistsKey} onAdd={() => setShowNewPlaylistForm(true)} onEdit={(playlist: Playlist) => setEditingPlaylist(playlist)} />
 
-    </div>
+    </GasLayout>
 
 }
 

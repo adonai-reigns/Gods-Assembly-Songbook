@@ -78,16 +78,25 @@ cd $APP_DIR/api
 echo "    yarn run start --watch &"
 yarn run start --watch &
 
-echo "  Run Astro Server in dev watch Mode"
+echo "  Run Client Server in dev watch Mode"
 cd $APP_DIR/client
 echo "    yarn dev &"
 yarn dev &
+
+if [[ -v LEGACY_DEV && $LEGACY_DEV == 1 ]]; then
+    echo "  Run Legacy Client Server $LEGACY_DEV in watch Mode on port $LEGACY_DEV_PORT"
+    cd $APP_DIR/client
+    nodemon -e js,ts,jsx,tsx,html,svg,css --watch src --watch public --exec "yarn run build && npx http-server ./dist/ -o --cors --mimetypes ../GodsAssemblySongbook/mime.types -a 0.0.0.0 -p $LEGACY_DEV_PORT"
+fi
 
 cd $APP_DIR
 echo ""
 echo "#################   !! CONGRATULATIONS !!   ######################"
 echo "          Gas Development Server runs on your computer!           "
 echo "             Visit http://localhost in your browser               "
+echo "  Optional:                                                       "
+echo "    To run the dev stack in legacy mode, set the env variables:   "
+echo "      eg: LEGACY_DEV=1 LEGACY_DEV_PORT=8080 docker-compose up     "
 echo "##################################################################"
 echo ""
 echo "The following is output from the servers as they run:"

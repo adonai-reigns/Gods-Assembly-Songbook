@@ -63,6 +63,12 @@ const PlaylistEditor = function (props: propsInterface) {
         });
     }
 
+    const submitPlaylist = () => {
+        if (typeof props.onSubmit === 'function') {
+            props.onSubmit();
+        }
+    }
+
     const deletePlaylist = () => {
         if (typeof props.onDelete === 'function') {
             props.onDelete();
@@ -98,7 +104,7 @@ const PlaylistEditor = function (props: propsInterface) {
 
     const setSelectedSongIds = (selectedSongIds: number[]) => {
         setPlaylistSongs((_playlistSongs) => {
-            return songs.filter((song: Song) => (selectedSongIds.indexOf(parseInt(`${song.id}` ?? '0')) > -1));
+            return songs.filter((song: Song) => (selectedSongIds.indexOf(parseInt(`${song.id}` ? `${song.id}` : '0')) > -1));
         });
     }
 
@@ -115,7 +121,7 @@ const PlaylistEditor = function (props: propsInterface) {
                     if (confirm('Are you sure you want to remove this song from the playlist?')) {
                         removeSong(song)
                     }
-                }}>Delete <i className="pi pi-trash ml-2"></i></Button>
+                }}>Remove <i className="pi pi-trash ml-2"></i></Button>
         </div>
     }
 
@@ -156,7 +162,7 @@ const PlaylistEditor = function (props: propsInterface) {
                 </span>
                 <Editor id="start-slide-content" placeholder="Start Slide"
                     value={startSlide}
-                    onTextChange={e => setStartSlide(e.htmlValue ?? '')}
+                    onTextChange={e => setStartSlide(e.htmlValue ? e.htmlValue : '')}
                     headerTemplate={quillHeader()}
                     style={{ height: '180px' }}
                     className="flex-1"
@@ -171,7 +177,7 @@ const PlaylistEditor = function (props: propsInterface) {
                 </span>
                 <Editor id="end-slide-content" placeholder="End Slide"
                     value={endSlide}
-                    onTextChange={e => setEndSlide(e.htmlValue ?? '')}
+                    onTextChange={e => setEndSlide(e.htmlValue ? e.htmlValue : '')}
                     headerTemplate={quillHeader()}
                     style={{ height: '180px' }}
                     className="flex-1"
@@ -186,7 +192,7 @@ const PlaylistEditor = function (props: propsInterface) {
                 </span>
                 <Editor id="pause-slide-content" placeholder="Pause Slide"
                     value={pauseSlide}
-                    onTextChange={e => setPauseSlide(e.htmlValue ?? '')}
+                    onTextChange={e => setPauseSlide(e.htmlValue ? e.htmlValue : '')}
                     headerTemplate={quillHeader()}
                     style={{ height: '180px' }}
                     className="flex-1"
@@ -217,13 +223,20 @@ const PlaylistEditor = function (props: propsInterface) {
                 <Column columnKey="actions" body={actionsBodyTemplate} className="text-right" />
             </DataTable>
 
-            <div className="m-3 flex justify-content-around">
+            <div className="m-3 flex justify-content-between">
                 <Button type="button" title="Delete this Playlist" onClick={(e) => {
                     e.preventDefault();
                     if (confirm('Are you sure you want to delete this playlist? It cannot be undone...')) {
                         deletePlaylist();
                     }
                 }} severity="danger">Delete Playlist <i className="pi pi-trash ml-3"></i></Button>
+
+                <Button type="button" title="Save Changes" onClick={(e) => {
+                    e.preventDefault();
+                    submitPlaylist();
+
+                }}>Save Changes <i className="pi pi-check ml-3"></i></Button>
+
             </div>
         </div>
     </div>

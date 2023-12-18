@@ -22,6 +22,8 @@ RUN npm i -g @nestjs/cli
 RUN npm i -g @nestjs/common
 RUN npm i -g @nestjs/core
 RUN npm i -g pkg
+RUN npm i -g nodemon
+RUN npm i -g http-server
 
 RUN yarn install
 

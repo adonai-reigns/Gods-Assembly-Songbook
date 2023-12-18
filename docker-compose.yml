@@ -6,15 +6,20 @@ services:
     image: gas-dev-server-image
     working_dir: /home/node/app
     user: "node"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=dev
       - NODE_OPTIONS=--max_old_space_size=4096
+      - LEGACY_DEV=$LEGACY_DEV
+      - LEGACY_DEV_PORT=$LEGACY_DEV_PORT
     volumes:
       - ./:/home/node/app
       - ./dist/.pkg/PKG_CACHE_PATH:/home/node/.pkg-cache
     ports:
       - 80:3003
       - 3000:3000
+      - 8080:8080
 
   # mongo:
   #   build: ./docker/mongoose/

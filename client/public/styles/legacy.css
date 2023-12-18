@@ -1,0 +1,312 @@
+body.loading {
+    background: #51687e url('/images/FreeVector-Clouds-And-Birds/FreeVector-Clouds-And-Birds.jpg') no-repeat center center fixed;
+    color: black;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+body.loading .butterfly {
+    font: 0/0 a;
+    position: fixed;
+    left: 50%;
+    top: 120px;
+    display: inline-block !important;
+    height: 100px;
+    width: 15px;
+    border-radius: 7px;
+    background: #FA982F;
+    margin-top: 100px;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-perspective: 500px;
+    perspective: 500px;
+}
+
+body.loading .butterfly:before,
+body.loading .butterfly:after {
+    content: '';
+    position: absolute;
+    background: #D6005E;
+    width: 85px;
+    height: 130px;
+    top: -20px;
+    border: 10px solid #F33353;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transform: translateZ(-5px);
+    transform: translateZ(-5px);
+    -webkit-filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, .3));
+    filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, .3))
+}
+
+body.loading .butterfly:before {
+    left: -105px;
+    border-radius: 50px 190px 160px 190px;
+    -webkit-transform-origin: right center;
+    transform-origin: right center;
+    -webkit-animation: flap-left 5s infinite;
+    animation: flap-left 5s infinite;
+}
+
+body.loading .butterfly:after {
+    right: -105px;
+    border-radius: 190px 50px 190px 160px;
+    -webkit-transform-origin: left center;
+    transform-origin: left center;
+    -webkit-animation: flap-right 5s infinite;
+    animation: flap-right 5s infinite;
+}
+
+@-webkit-keyframes flap-left {
+    0% {
+        -webkit-transform: rotateY(2deg);
+    }
+
+    20% {
+        -webkit-transform: rotateY(70deg);
+    }
+
+    40% {
+        -webkit-transform: rotateY(2deg);
+    }
+
+    60% {
+        -webkit-transform: rotateY(2deg);
+    }
+
+    65% {
+        -webkit-transform: rotateY(65deg);
+    }
+
+    70% {
+        -webkit-transform: rotateY(2deg);
+    }
+
+    73% {
+        -webkit-transform: rotateY(65deg);
+    }
+
+    80% {
+        -webkit-transform: rotateY(2deg);
+    }
+
+    100% {
+        -webkit-transform: rotateY(2deg);
+    }
+}
+
+@-webkit-keyframes flap-right {
+    0% {
+        -webkit-transform: rotateY(-2deg);
+    }
+
+    20% {
+        -webkit-transform: rotateY(-70deg);
+    }
+
+    40% {
+        -webkit-transform: rotateY(-2deg);
+    }
+
+    60% {
+        -webkit-transform: rotateY(-2deg);
+    }
+
+    65% {
+        -webkit-transform: rotateY(-65deg);
+    }
+
+    70% {
+        -webkit-transform: rotateY(-2deg);
+    }
+
+    73% {
+        -webkit-transform: rotateY(-65deg);
+    }
+
+    80% {
+        -webkit-transform: rotateY(-2deg);
+    }
+
+    100% {
+        -webkit-transform: rotateY(-2deg);
+    }
+}
+
+#legacy-error-preload {
+    display: none;
+}
+
+#legacy-error {
+    text-align: center;
+    font-family: sans-serif;
+    padding-bottom: 3em;
+    margin: 0;
+}
+
+#legacy-error .error-message {
+    padding: 5%;
+}
+
+#legacy-error .error-message hr {
+    margin: auto;
+    margin-top: 2em;
+    max-width: 20%;
+    border-bottom: dashed 3px #51687e;
+    border-top: none;
+}
+
+#legacy-error .header h1 {
+    height: 100px;
+    line-height: 100px;
+    cursor: pointer;
+    margin-top: 0;
+    text-align: left;
+    padding-left: 130px;
+    background-image: url("/images/vecteezy_set-of-butterflies-of-different-shapes_7783387_243/vecteezy_set-of-butterflies-of-different-shapes_7783387-transparent.png");
+    background-size: 100px;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+}
+
+#legacy-error .header h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#legacy-error .bible-quote {
+    background: white;
+    margin: 5%;
+    border-radius: 2em;
+}
+
+#legacy-error .bible-quote-title {
+    font-size: 3em;
+    padding: 1em;
+}
+
+#legacy-error .bible-quote-image {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    text-align: center;
+}
+
+#legacy-error .bible-quote-image img {
+    margin: 0;
+    padding: 0;
+    height: auto;
+}
+
+#legacy-error .bible-quote-content {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 5%;
+}
+
+#legacy-error .bible-quote-reference {
+    text-align: right;
+    font-style: italic;
+    font-size: 1.2rem;
+}
+
+#legacy-error .upgrade-instructions {
+    background: #1f78ff;
+    color: white;
+    padding: 0.5em;
+    margin: 3em;
+}
+
+#legacy-error .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3em;
+    padding-left: 2em;
+    border-top: solid 0.1em hsla(200, 26%, 45%, 20%);
+    background-color: rgba(251, 248, 234, 0.4);
+    text-align: center;
+}
+
+#legacy-error .footer a {
+    color: inherit;
+    text-decoration: none;
+}
+
+#legacy-error .footer a:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 575px) {
+    #legacy-error .header h1 {
+        justify-content: space-around;
+        font-size: 1.7em;
+        background-size: 80px;
+        padding-left: 110px;
+        padding-top: 30px;
+        line-height: 1;
+    }
+
+    #legacy-error .header .breakpoint {
+        display: block;
+    }
+
+    #legacy-error .bible-quote-title {
+        width: 100%;
+        font-size: 2em;
+        padding: 0;
+    }
+
+    #legacy-error .bible-quote-content {
+        text-align: center;
+        margin-bottom: 3em;
+    }
+
+    #legacy-error .bible-quote-image img {
+        max-width: 100%;
+    }
+
+    #legacy-error .footer {
+        text-align: center;
+        box-sizing: border-box;
+        padding-right: 3em;
+        height: 6em;
+    }
+}
+
+@media screen and (min-width: 576px) {
+    #legacy-error .header h1 {
+        font-size: 2.5em;
+    }
+
+    #legacy-error .footer {
+        text-align: center;
+        box-sizing: border-box;
+        padding-right: 3em;
+        height: 4em;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    body {
+        padding: 0 8em;
+    }
+
+    #legacy-error .header h1 {
+        font-size: 3em;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    #legacy-error .header h1 {
+        font-size: 1.5em;
+    }
+
+    #legacy-error .header h1 .breakpoint {
+        display: block;
+    }
+}

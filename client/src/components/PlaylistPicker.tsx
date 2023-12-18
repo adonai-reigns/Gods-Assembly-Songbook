@@ -30,7 +30,7 @@ const PlaylistPicker = function (props: propsInterface) {
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
-    const [filters, setFilters] = useState({
+    const [filters] = useState({
         name: { value: null, matchMode: FilterMatchMode.CONTAINS }
     });
 
@@ -106,7 +106,8 @@ const PlaylistPicker = function (props: propsInterface) {
         });
     }
 
-    return <DataTable header={datatableHeader} value={playlists} className="playlists"
+    return <>
+    <DataTable header={datatableHeader} value={playlists} className="playlists"
         emptyMessage={<p>No playlists have been created yet. <Button url="/songleader/plan" onClick={onAdd}>Add a playlist &raquo;</Button></p>}
         filters={filters} globalFilterFields={['name']}>
         <Column field="name" header="Name" sortable filter filterPlaceholder="Search by Name" />
@@ -115,6 +116,7 @@ const PlaylistPicker = function (props: propsInterface) {
         <Column body={editBodyTemplate} />
         <Column body={playBodyTemplate} />
     </DataTable>
+    </>
 
 }
 

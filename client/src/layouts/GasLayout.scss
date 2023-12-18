@@ -1,0 +1,86 @@
+body {
+    padding-bottom: 3em;
+}
+
+.promotional-header h1 {
+    height: 100px;
+    cursor: pointer;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    text-align: left;
+    padding-left: 130px;
+    background-image: url("/images/vecteezy_set-of-butterflies-of-different-shapes_7783387_243/vecteezy_set-of-butterflies-of-different-shapes_7783387-transparent.svg");
+    background-size: 100px;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+}
+
+.promotional-header h1 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.promotional-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3em;
+    padding-left: 2em;
+    border-top: solid 0.1em hsla(200, 26%, 45%, 20%);
+    background-color: hsla(50, 66%, 95%, 100%);
+    text-align: center;
+}
+
+.promotional-footer a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.promotional-footer a:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 575px) {
+    .promotional-header h1 {
+        justify-content: space-around;
+        font-size: 1.7em;
+        background-size: 80px;
+        padding-left: 110px;
+    }
+
+    .promotional-header .breakpoint {
+        display: block;
+    }
+}
+
+@media screen and (min-width: 576px) {
+    .promotional-header h1 {
+        font-size: 2.5em;
+        justify-content: space-around;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .promotional-header h1 {
+        font-size: 3em;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .promotional-header h1 {
+        font-size: 3em;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .promotional-header h1 {
+        font-size: 1.5em;
+    }
+
+    .promotional-header h1 .breakpoint {
+        display: block;
+    }
+}

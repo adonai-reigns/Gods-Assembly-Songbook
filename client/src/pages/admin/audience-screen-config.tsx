@@ -7,6 +7,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 
 import { Screen, ScreenStyle, Size, TextAlign } from '../../models/screen';
+import AdminLayout from '../../layouts/AdminLayout';
 
 export interface propsInterface {
     className?: string,
@@ -15,6 +16,21 @@ export interface propsInterface {
 
 export const propsDefaults = {
     className: '',
+}
+
+export interface booleanOptionsInterface {
+    label: string,
+    value: boolean
+}
+
+export interface stringOptionsInterface {
+    label: string,
+    value: string
+}
+
+export interface numberOptionsInterface {
+    label: string,
+    value: number
 }
 
 const lang = {
@@ -38,7 +54,8 @@ const AudienceScreenConfig = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const [screenId, setScreenId] = useState<number>(1);
+    const [screenId] = useState<number>(1);
+    const [patchStatus, setPatchStatus] = useState<ScreenStyle | undefined>();
 
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
@@ -47,24 +64,25 @@ const AudienceScreenConfig = function (props: propsInterface) {
     const [screenName, setScreenName] = useState<string>('');
     const [screenStyle, setScreenStyle] = useState<ScreenStyle>(new ScreenStyle());
 
-    const handleOnValueChange = function (name: string, value: string) {
+    const handleOnValueChange = function (name: string, value: string | boolean) {
         setScreenStyle((_screenStyle) => {
-            let newStyleProp = {};
-            eval('newStyleProp.' + name + ' = value;');
-            return { ..._screenStyle, ...newStyleProp };
+            let newStyleProp = { ..._screenStyle };
+            Object.defineProperty(newStyleProp, name, { value });
+            return newStyleProp;
         });
     }
 
     const [sizesAsDropdownOptions, setSizesAsDropdownOptions] = useState<any[]>([]);
     const [textAlignsAsDropdownOptions, setTextAlignsAsDropdownOptions] = useState<any[]>([]);
-    const [booleanAsDropdownOptions, setBooleanAsDropdownOptions] = useState<any[]>([]);
+    const [booleanAsDropdownOptions, setBooleanAsDropdownOptions] = useState<booleanOptionsInterface[]>([]);
 
     const publishToScreen = function () {
         LiveSocket.emit('changeScreenStyle', { screen });
     }
 
     useEffect(() => {
-        setSizesAsDropdownOptions((_sizesAsDropdownOptions) => {
+        setSizesAsDropdownOptions((): stringOptionsInterface[] => {
+            let _sizesAsDropdownOptions: stringOptionsInterface[] = [];
             Object.values(Size).forEach((sizeValue: string) => {
                 _sizesAsDropdownOptions.push({
                     label: lang.sizes[(sizeValue as keyof typeof lang.sizes)],
@@ -73,7 +91,8 @@ const AudienceScreenConfig = function (props: propsInterface) {
             })
             return _sizesAsDropdownOptions;
         });
-        setTextAlignsAsDropdownOptions((_textAlignsAsDropdownOptions) => {
+        setTextAlignsAsDropdownOptions((): stringOptionsInterface[] => {
+            let _textAlignsAsDropdownOptions: stringOptionsInterface[] = [];
             Object.values(TextAlign).forEach((textAlignValue: string) => {
                 _textAlignsAsDropdownOptions.push({
                     label: lang.textAligns[(textAlignValue as keyof typeof lang.textAligns)],
@@ -82,15 +101,11 @@ const AudienceScreenConfig = function (props: propsInterface) {
             })
             return _textAlignsAsDropdownOptions;
         });
-        setBooleanAsDropdownOptions((_booleanAsDropdownOptions) => {
-            let booleanOptions: { [key: string]: boolean } = { true: true, false: false };
-            Object.keys(booleanOptions).forEach((key: string) => {
-                _booleanAsDropdownOptions.push({
-                    label: key,
-                    value: booleanOptions[key]
-                });
-            })
-            return _booleanAsDropdownOptions;
+        setBooleanAsDropdownOptions((): booleanOptionsInterface[] => {
+            return [
+                { label: 'True', value: true },
+                { label: 'False', value: false }
+            ];
         });
 
     }, []);
@@ -115,16 +130,24 @@ const AudienceScreenConfig = function (props: propsInterface) {
     }, [screenId]);
 
     useEffect(() => {
-        axios.patch(apiUrl + '/screens/' + screenId, {
-            name: screenName,
-            style: screenStyle
-        }).then((response) => {
-            setScreen(response.data);
-            setScreenName(response.data.name);
-        });
+        if (patchStatus) {
+            if (JSON.stringify(Object.fromEntries(Object.entries(patchStatus).sort())) !== JSON.stringify(Object.fromEntries(Object.entries(screenStyle).sort()))) {
+                axios.patch(apiUrl + '/screens/' + screenId, {
+                    name: screenName,
+                    style: screenStyle
+                }).then((response) => {
+                    setScreen(response.data);
+                    setPatchStatus(response.data.style);
+                });
+            }
+        } else {
+            setPatchStatus(screenStyle);
+            return;
+        }
+
     }, [screenStyle]);
 
-    return <>
+    return <AdminLayout>
 
         <div className="field p-inputgroup flex-1">
             <span className="p-inputgroup-addon">
@@ -163,13 +186,15 @@ const AudienceScreenConfig = function (props: propsInterface) {
             <Dropdown id="text-align" placeholder="Show Slide Type"
                 options={booleanAsDropdownOptions}
                 value={screenStyle.showSlideType}
-                onChange={e => handleOnValueChange('showSlideType', e.target.value)} />
+                optionLabel="label"
+                optionValue="value"
+                onChange={e => handleOnValueChange('showSlideType', e.value)} />
         </div>
         <div className="field m-3 p-inputgroup flex justify-content-center">
             <Button onClick={publishToScreen}>Publish to Screen</Button>
         </div>
 
-    </>
+    </AdminLayout>
 
 }
 

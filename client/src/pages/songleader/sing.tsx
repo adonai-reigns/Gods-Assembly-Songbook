@@ -17,6 +17,8 @@ import type { Playlist } from "../../models/playlist";
 import Song from "../../models/song";
 
 import "./sing.scss";
+import PlainLayout from "../../layouts/PlainLayout";
+import { useNavigate } from "react-router-dom";
 
 export interface propsInterface {
     className?: string;
@@ -58,6 +60,8 @@ const Sing = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
+    const navigate = useNavigate();
+
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
 
@@ -76,7 +80,7 @@ const Sing = function (props: propsInterface) {
 
     const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
 
-    const [publishedSlide, setPublishedSlide] = useState<Slide | "start" | "pause" | "end">("start");
+    const [publishedSlide, setPublishedSlide] = useState<Slide | "start" | "pause" | "end">(defaultSlide);
     const [nextSlide, setNextSlide] = useState<Slide>(defaultSlide);
 
     const [publishedSong, setPublishedSong] = useState<Song>(defaultSong);
@@ -86,7 +90,7 @@ const Sing = function (props: propsInterface) {
     const exitScreen = () => {
         if (confirm('Are you sure?')) {
             LiveSocket.emit('exitPlaylist', { playlist: currentPlaylist });
-            window.location.href = '/songleader';
+            navigate('/songleader');
         }
     }
 
@@ -176,7 +180,7 @@ const Sing = function (props: propsInterface) {
 
     useEffect(() => {
         if (openSong.id) {
-            if (publishedSlide.id < 1) {
+            if (typeof publishedSlide === 'object' && publishedSlide.id < 1) {
                 if (openSong.slides.length > 0) {
                     setPublishedSlide(openSong.slides[0]);
                 }
@@ -231,12 +235,11 @@ const Sing = function (props: propsInterface) {
                 setNextSong(defaultSong);
 
             } else if (publishedSlide === 'start') {
-
                 LiveSocket.emit('changeSlide', { slide: 'startSlide', slideContent: currentPlaylist.startSlide, slideType: '' });
                 setPublishedSong(defaultSong);
                 setNextSong(currentPlaylist.songs[0] ?? defaultSong);
 
-            } else {
+            } else if (typeof publishedSlide === 'object') {
 
                 LiveSocket.emit('changeSlide', { slide: publishedSlide });
 
@@ -311,18 +314,20 @@ const Sing = function (props: propsInterface) {
     });
 
     const emitCurrentSlide = () => {
-        switch (publishedSlide) {
-            case 'start':
-                LiveSocket.emit('changeSlide', { slide: 'startSlide', slideContent: currentPlaylist.startSlide, slideType: '' });
-                break;
-            case 'pause':
-                LiveSocket.emit('changeSlide', { slide: 'pauseSlide', slideContent: currentPlaylist.pauseSlide, slideType: '' });
-                break;
-            case 'end':
-                LiveSocket.emit('changeSlide', { slide: 'endSlide', slideContent: currentPlaylist.endSlide, slideType: '' });
-                break;
-            default:
-                LiveSocket.emit('changeSlide', { slide: publishedSlide });
+        if (currentPlaylist) {
+            switch (publishedSlide) {
+                case 'start':
+                    LiveSocket.emit('changeSlide', { slide: 'startSlide', slideContent: currentPlaylist.startSlide, slideType: '' });
+                    break;
+                case 'pause':
+                    LiveSocket.emit('changeSlide', { slide: 'pauseSlide', slideContent: currentPlaylist.pauseSlide, slideType: '' });
+                    break;
+                case 'end':
+                    LiveSocket.emit('changeSlide', { slide: 'endSlide', slideContent: currentPlaylist.endSlide, slideType: '' });
+                    break;
+                default:
+                    LiveSocket.emit('changeSlide', { slide: publishedSlide });
+            }
         }
     }
 
@@ -392,7 +397,7 @@ const Sing = function (props: propsInterface) {
         </>
     }
 
-    return <>
+    return <PlainLayout>
         <Dialog visible={showConfig} onHide={() => setShowConfig(false)}>
             <AudienceScreenConfig />
         </Dialog >
@@ -404,11 +409,12 @@ const Sing = function (props: propsInterface) {
                     <img className="" src="/images/vecteezy_full-screen-vector-icon-design_25964485_482/vecteezy_full-screen-vector-icon-design_25964485-scaled.jpg"
                         alt="Picture of a Movie in Fullscreen" width="300" height="280" />
                     <p className="text-xl">This app is only designed to work in landscape orientation,<br />
-                        could you turn your device to the side please? ...thanks!
+                        could you turn the screen on it's side please? ...thanks!
                     </p>
                 </div>}
 
                 {isLandscape && <div className="songleader-sing">
+                
                     <div className="songs-section">
                         <div className="songs-container" id="songlist-songs-drawer">
                             {(currentPlaylist.songs.length < 1)
@@ -455,7 +461,7 @@ const Sing = function (props: propsInterface) {
                             {(openSong.slides.length < 1) && <div className="flex flex-column justify-content-center h-full w-full">
                                 <p className="text-center">Selected Song does not have any slides</p>
                             </div>}
-                            {openSong.slides.map((slide: Slide) =>
+                            {openSong.slides.map((slide: Slide) => (typeof publishedSlide === 'object') &&
                                 <SlideTile
                                     key={slide.id}
                                     slide={slide}
@@ -471,7 +477,7 @@ const Sing = function (props: propsInterface) {
                             <h2>Current Slide</h2>
                             <div className="slide-content-container">
                                 <div className="slide-content"
-                                    dangerouslySetInnerHTML={{ __html: getPublishedSlideContent() }} />
+                                    dangerouslySetInnerHTML={{ __html: getPublishedSlideContent() ?? '' }} />
                             </div>
                         </div>
                         <div className="next-slide" onClick={playNextSlide}>
@@ -504,7 +510,7 @@ const Sing = function (props: propsInterface) {
             </>
 
         }
-    </>
+    </PlainLayout>
 }
 
 export default withOrientationChange(Sing);

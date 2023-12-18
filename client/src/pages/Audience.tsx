@@ -3,7 +3,9 @@ import axios from 'axios';
 import LiveSocket from '../components/live/LiveSocket';
 
 import Slide, { SlideTypeLabels } from '../models/slide';
-import { Screen, ScreenStyle, ScreenStyleComputed } from '../models/screen';
+import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
+
+import "./Audience.scss";
 
 export interface propsInterface {
     className?: string;
@@ -39,12 +41,11 @@ const Audience = function (props: propsInterface) {
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
 
-    const [screenId, setScreenId] = useState<number>(1);
+    const [screenId] = useState<number>(1);
 
     const [currentSlide, setCurrentSlide] = useState<Slide>(new Slide());
     const [slideContent, setSlideContent] = useState<string>('');
     const [slideType, setSlideType] = useState<string>('');
-    const [screen, setScreen] = useState<Screen>(new Screen());
     const [screenStyleComputed, setScreenStyleComputed] = useState<ScreenStyleComputed>(new ScreenStyleComputed());
 
     const computeScreenStyle = (screenStyle: ScreenStyle): ScreenStyleComputed => {
@@ -77,14 +78,13 @@ const Audience = function (props: propsInterface) {
 
         function onChangeScreenStyle(payload: any) {
             if (payload.screen.id === screenId) {
-                setScreen(payload.screen);
                 setScreenStyleComputed(computeScreenStyle(payload.screen.style));
             }
         }
 
-        function onExitPlaylist(){
+        function onExitPlaylist() {
             let container = document.getElementById('audience-slide-container');
-            if(container){
+            if (container) {
                 container.innerHTML = '';
             }
         }
@@ -104,7 +104,6 @@ const Audience = function (props: propsInterface) {
     useEffect(() => {
         axios.get(apiUrl + '/screens/' + screenId).then((response: any) => {
             if (response.data) {
-                setScreen(response.data);
                 setScreenStyleComputed(computeScreenStyle(response.data.style));
             }
         }).catch(() => { });
@@ -112,13 +111,52 @@ const Audience = function (props: propsInterface) {
 
     useEffect(() => {
         LiveSocket.emit('requestCurrentSlide', { requestor: 'audience' });
+
+        (() => {
+
+            var elem = document.documentElement;
+            var fullscreenButton = document.querySelector(".fullscreen-button");
+
+            function openFullscreen() {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                }
+                fullscreenButton?.setAttribute("style", "display: none");
+            }
+
+            if (fullscreenButton) {
+                fullscreenButton.addEventListener("click", () =>
+                    openFullscreen(),
+                );
+            }
+
+            // the fullscreen button only shows for 3 seconds when the page loads
+            var buttonHideSeconds = 3;
+
+            var buttonHideInterval = setInterval(() => {
+                if (fullscreenButton) {
+                    fullscreenButton.textContent =
+                        "Click for fullscreen (" + buttonHideSeconds + ")";
+                    buttonHideSeconds--;
+                    if (buttonHideSeconds < 0) {
+                        clearInterval(buttonHideInterval);
+                        fullscreenButton.setAttribute("style", "display: none");
+                    }
+                }
+            }, 1000);
+
+        })();
+
     }, [])
 
     return <>
+
+        <div className="fullscreen-button">Click for Fullscreen mode</div>
+
         <div className="audience-slide" id="audience-slide-container"
             style={screenStyleComputed.audienceSlide}>
             <div className={`audience-slide-type ${currentSlide.type} text-left `}
-                style={screenStyleComputed.slideType}>{slideType}:</div>
+                style={screenStyleComputed.slideType}>{slideType}</div>
             <div className="audience-slide-content"
                 dangerouslySetInnerHTML={{ __html: slideContent }} />
         </div>

@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Button from "../../components/Button";
 
 import Song from '../../models/song';
+import AdminLayout from '../../layouts/AdminLayout';
+import { useNavigate } from 'react-router-dom';
 
 export interface propsInterface {
     className?: string;
@@ -20,6 +22,8 @@ const SongsContent = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
+    const navigate = useNavigate();
+
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
 
@@ -32,14 +36,14 @@ const SongsContent = function (props: propsInterface) {
         })();
     }, []);
 
-    return <>
+    return <AdminLayout>
 
         {songs.length > 0
             ? (
                 <ul className="p-0 flex list-none">
                     {songs.map((song: Song) => (
                         <li key={`song_${song.id}`} className="m-3">
-                            <Button url={`/admin/song?id=${song.id}`}>{song.name}</Button>
+                            <Button onClick={() => navigate(`/admin/song/${song.id}`)}>{song.name}</Button>
                         </li>
                     ))}
                 </ul>
@@ -47,12 +51,12 @@ const SongsContent = function (props: propsInterface) {
                 <p style={{ margin: '3em 0', fontSize: '2em', textAlign: 'center' }}>
                     Welcome to God's Assembly Songbook!
                     <br /><br />
-                    <Button url="/admin/song">Create a song</Button>
+                    <Button onClick={() => navigate(`/admin/song`)}>Create a song</Button>
                 </p>
             )
         }
 
-    </>
+    </AdminLayout>
 
 }
 
