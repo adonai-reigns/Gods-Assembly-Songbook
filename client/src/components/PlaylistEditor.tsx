@@ -104,7 +104,7 @@ const PlaylistEditor = function (props: propsInterface) {
 
     const setSelectedSongIds = (selectedSongIds: number[]) => {
         setPlaylistSongs((_playlistSongs) => {
-            return songs.filter((song: Song) => (selectedSongIds.indexOf(parseInt(`${song.id}` ? `${song.id}` : '0')) > -1));
+            return songs.filter((song: Song) => (selectedSongIds.indexOf(parseInt(`${song.id}` ?? '0')) > -1));
         });
     }
 
@@ -162,7 +162,7 @@ const PlaylistEditor = function (props: propsInterface) {
                 </span>
                 <Editor id="start-slide-content" placeholder="Start Slide"
                     value={startSlide}
-                    onTextChange={e => setStartSlide(e.htmlValue ? e.htmlValue : '')}
+                    onTextChange={e => setStartSlide(e.htmlValue ?? '')}
                     headerTemplate={quillHeader()}
                     style={{ height: '180px' }}
                     className="flex-1"
@@ -177,7 +177,7 @@ const PlaylistEditor = function (props: propsInterface) {
                 </span>
                 <Editor id="end-slide-content" placeholder="End Slide"
                     value={endSlide}
-                    onTextChange={e => setEndSlide(e.htmlValue ? e.htmlValue : '')}
+                    onTextChange={e => setEndSlide(e.htmlValue ?? '')}
                     headerTemplate={quillHeader()}
                     style={{ height: '180px' }}
                     className="flex-1"
@@ -192,7 +192,7 @@ const PlaylistEditor = function (props: propsInterface) {
                 </span>
                 <Editor id="pause-slide-content" placeholder="Pause Slide"
                     value={pauseSlide}
-                    onTextChange={e => setPauseSlide(e.htmlValue ? e.htmlValue : '')}
+                    onTextChange={e => setPauseSlide(e.htmlValue ?? '')}
                     headerTemplate={quillHeader()}
                     style={{ height: '180px' }}
                     className="flex-1"

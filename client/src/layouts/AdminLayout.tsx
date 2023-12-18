@@ -1,12 +1,13 @@
 import { Helmet } from 'react-helmet-async';
-import "../styles/gas.scss";
+
+import AdminHeader from "../components/AdminHeader";
+
 import "primeicons/primeicons.css";
 import "/node_modules/primeflex/primeflex.css";
 import "/node_modules/primeflex/themes/primeone-dark.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
-import AdminHeader from "../components/AdminHeader";
-
+import "../styles/gas.scss";
 import './AdminLayout.scss';
 
 const AdminLayout = (props: any) => {

@@ -18,7 +18,7 @@ const CardTitleTemplate = () => {
 
 const Page404 = function (props: propsInterface) {
 
-    const title = (props.title ? props.title : 'Looking for a lost page?');
+    const title = (props.title ?? 'Looking for a lost page?');
 
     return <GasLayout>
         <div className={`page-404-main ${props.className}`}>

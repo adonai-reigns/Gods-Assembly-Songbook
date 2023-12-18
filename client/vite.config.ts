@@ -18,8 +18,5 @@ export default defineConfig({
     ],
     ssr: {
         noExternal: ["primereact", "primeicons"]
-    },
-    build: {
-        target: ['es2020', 'chrome61', 'safari11']
     }
 });

@@ -107,15 +107,15 @@ const PlaylistPicker = function (props: propsInterface) {
     }
 
     return <>
-    <DataTable header={datatableHeader} value={playlists} className="playlists"
-        emptyMessage={<p>No playlists have been created yet. <Button url="/songleader/plan" onClick={onAdd}>Add a playlist &raquo;</Button></p>}
-        filters={filters} globalFilterFields={['name']}>
-        <Column field="name" header="Name" sortable filter filterPlaceholder="Search by Name" />
-        <Column body={createdAtBodyTemplate} header="Created At" sortable sortField="createdAt" sortFunction={sortByDateFunction} />
-        <Column body={updatedAtBodyTemplate} header="Updated At" sortable sortField="updatedAt" sortFunction={sortByDateFunction} />
-        <Column body={editBodyTemplate} />
-        <Column body={playBodyTemplate} />
-    </DataTable>
+        <DataTable header={datatableHeader} value={playlists} className="playlists"
+            emptyMessage={<p>No playlists have been created yet. <Button url="/songleader/plan" onClick={onAdd}>Add a playlist &raquo;</Button></p>}
+            filters={filters} globalFilterFields={['name']}>
+            <Column field="name" header="Name" sortable filter filterPlaceholder="Search by Name" />
+            <Column body={createdAtBodyTemplate} header="Created At" sortable sortField="createdAt" sortFunction={sortByDateFunction} />
+            <Column body={updatedAtBodyTemplate} header="Updated At" sortable sortField="updatedAt" sortFunction={sortByDateFunction} />
+            <Column body={editBodyTemplate} />
+            <Column body={playBodyTemplate} />
+        </DataTable>
     </>
 
 }
