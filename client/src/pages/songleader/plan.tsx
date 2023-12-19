@@ -13,6 +13,7 @@ import type { Playlist } from "../../models/playlist";
 
 import GasLayout from "../../layouts/GasLayout";
 import "./sing.scss";
+import { useNavigate, useParams } from "react-router-dom";
 
 export interface propsInterface {
     className?: string;
@@ -26,6 +27,9 @@ export const propsDefaults = {
 const Plan = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
+
+    const params = useParams();
+    const navigate = useNavigate();
 
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
@@ -110,8 +114,7 @@ const Plan = function (props: propsInterface) {
     }, [showNewPlaylistForm]);
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(document.location.search)
-        const searchParamsId = searchParams.get('playlistId');
+        const searchParamsId = params.playlistId ?? null;
         if (searchParamsId) {
             loadPlaylistById(parseInt(searchParamsId));
         }
@@ -151,7 +154,7 @@ const Plan = function (props: propsInterface) {
             </>}
         </Dialog>
 
-        <PlaylistPicker key={playlistsKey} onAdd={() => setShowNewPlaylistForm(true)} onEdit={(playlist: Playlist) => setEditingPlaylist(playlist)} />
+        <PlaylistPicker key={playlistsKey} onAdd={() => setShowNewPlaylistForm(true)} onEdit={(playlist: Playlist) => setEditingPlaylist(playlist)} onPlay={(playlist: Playlist) => navigate('/songleader/sing/' + playlist.id)} />
 
     </GasLayout>
 

@@ -22,8 +22,8 @@ export default function App() {
             <Route path="attributions" element={<Attributions />} />
             <Route path="songleader">
                 <Route path="" element={<Songleader />} />
-                <Route path="plan" element={<Plan />} />
-                <Route path="sing" element={<Sing />} />
+                <Route path="plan/:playlistId?" element={<Plan />} />
+                <Route path="sing/:playlistId?" element={<Sing />} />
             </Route>
             <Route path="admin">
                 <Route path="audience-screen-config" element={<AudienceScreenConfig />} />

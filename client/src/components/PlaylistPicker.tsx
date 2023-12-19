@@ -75,13 +75,13 @@ const PlaylistPicker = function (props: propsInterface) {
 
     const editBodyTemplate = (playlist: Playlist) => {
         return <>
-            <Button url={`/songleader/plan?playlistId=${playlist.id}`} onClick={(e: Event) => onEdit(playlist, e)} className="p-button">Edit</Button>
+            <Button url={`/songleader/plan/${playlist.id}`} onClick={(e: Event) => onEdit(playlist, e)} className="p-button">Edit</Button>
         </>
     }
 
     const playBodyTemplate = (playlist: Playlist) => {
         return <>
-            <Button url={`/songleader/sing?playlistId=${playlist.id}`} onClick={(e: Event) => onPlay(playlist, e)}>Play</Button>
+            <Button url={`/songleader/sing/${playlist.id}`} onClick={(e: Event) => onPlay(playlist, e)}>Play</Button>
         </>
     }
 

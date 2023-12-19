@@ -20,7 +20,7 @@ import Song from "../../models/song";
 
 import "./sing.scss";
 import PlainLayout from "../../layouts/PlainLayout";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export interface propsInterface {
     className?: string;
@@ -62,6 +62,7 @@ const Sing = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
+    const params = useParams();
     const navigate = useNavigate();
 
     const url = new URL(window.location.href);
@@ -293,8 +294,7 @@ const Sing = function (props: propsInterface) {
     }, [isPaused]);
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(document.location.search)
-        const searchParamsId = searchParams.get('playlistId');
+        const searchParamsId = params.playlistId ?? null;
         if (searchParamsId) {
             loadPlaylistById(parseInt(searchParamsId));
         }
@@ -508,7 +508,7 @@ const Sing = function (props: propsInterface) {
             </div >
             :
             <>
-                <PlaylistPicker onPlay={(playlist: Playlist) => setCurrentPlaylist(playlist)} />
+                <PlaylistPicker onEdit={(playlist: Playlist) => navigate('/songleader/plan/' + playlist.id)} onPlay={(playlist: Playlist) => setCurrentPlaylist(playlist)} />
             </>
 
         }
