@@ -9,3 +9,22 @@
     justify-content: flex-start;
     flex-wrap: wrap;
 }
+
+// begin: solve legacy browser display bug  
+.p-dropdown {
+    display: inline-block;
+    display: inline-flex;
+    flex: auto;
+
+    .p-dropdown-label {
+        text-align: left;
+    }
+
+    .p-dropdown-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+}
+// end: solve legacy browser display bug  

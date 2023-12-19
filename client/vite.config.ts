@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import legacy from '@vitejs/plugin-legacy';
+import  postcssCascadeLayers from '@csstools/postcss-cascade-layers';
+
 
 export default defineConfig({
     base: "/",
@@ -18,5 +20,12 @@ export default defineConfig({
     ],
     ssr: {
         noExternal: ["primereact", "primeicons"]
+    },
+    css: {
+        postcss: {
+            plugins: [
+                postcssCascadeLayers()
+            ],
+        },
     }
 });
