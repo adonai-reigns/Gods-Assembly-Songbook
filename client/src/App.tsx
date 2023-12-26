@@ -7,8 +7,8 @@ import Index from './pages/Index';
 import Attributions from './pages/Attributions';
 import Songleader from './pages/songleader';
 import AudienceScreenConfig from './pages/admin/audience-screen-config';
-import Song from './pages/admin/song';
-import Songs from './pages/admin/songs';
+import SongleaderSong from './pages/songleader/song';
+import SongleaderSongs from './pages/songleader/songs';
 import Plan from './pages/songleader/plan';
 import Sing from './pages/songleader/sing';
 import Audience from './pages/Audience';
@@ -23,12 +23,12 @@ export default function App() {
             <Route path="songleader">
                 <Route path="" element={<Songleader />} />
                 <Route path="plan/:playlistId?" element={<Plan />} />
+                <Route path="song/:id?" element={<SongleaderSong />} />
+                <Route path="songs" element={<SongleaderSongs />} />
                 <Route path="sing/:playlistId?" element={<Sing />} />
             </Route>
             <Route path="admin">
                 <Route path="audience-screen-config" element={<AudienceScreenConfig />} />
-                <Route path="song/:id?" element={<Song />} />
-                <Route path="songs" element={<Songs />} />
             </Route>
             <Route path="audience" element={<Audience />} />
             <Route path="*" element={<NotFound />}></Route>

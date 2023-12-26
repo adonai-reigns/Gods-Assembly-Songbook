@@ -8,23 +8,31 @@ import type Song from "../models/song";
 import Button from "../components/Button";
 
 export interface propsInterface {
-    selectedSongIds: number[];
+    selectedSongIds?: number[];
     className?: string;
     onSubmit?: CallableFunction;
-    onSelectionChange: CallableFunction;
+    onSelectionChange?: CallableFunction;
+    onSongClick?: CallableFunction;
+    buttonLabelText?: string[];
+    buttonUrl?: CallableFunction[];
+    onButtonClick?: CallableFunction[];
+    newSongUrl?: string;
 }
 
 export const propsDefaults = {
-    className: ''
+    className: '',
+    newSongUrl: '/admin/song'
 }
 
 const SongPicker = function (props: propsInterface) {
+
+    props = { ...propsDefaults, ...props };
 
     const url = new URL(window.location.href);
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
 
     const [songs, setSongs] = useState<Song[]>([]);
-    const [selectedSongIds, setSelectedSongIds] = useState<number[]>(props.selectedSongIds);
+    const [selectedSongIds, setSelectedSongIds] = useState<number[] | undefined>(props.selectedSongIds);
 
     useEffect(() => {
         axios.get(apiUrl + '/songs').then((response: any) => {
@@ -33,21 +41,21 @@ const SongPicker = function (props: propsInterface) {
     }, []);
 
     useEffect(() => {
-        props.onSelectionChange(selectedSongIds);
+        props.onSelectionChange && props.onSelectionChange(selectedSongIds);
     }, [selectedSongIds]);
 
     const actionsBodyTemplate = (song: Song) => {
 
-        const [isSongSelected, setIsSongSelected] = useState<boolean>((selectedSongIds.indexOf(parseInt(`${song.id}` ?? '0')) > -1));
+        const [isSongSelected, setIsSongSelected] = useState<boolean>((selectedSongIds && selectedSongIds?.indexOf(parseInt(`${song.id}` ?? '0')) > -1) ?? false);
 
         useEffect(() => {
             if (isSongSelected) {
                 setSelectedSongIds((_selectedSongIds) => {
-                    return [..._selectedSongIds.filter((songId: number) => songId !== song.id), parseInt(`${song.id}`)];
+                    return (_selectedSongIds && [..._selectedSongIds.filter((songId: number) => songId !== song.id), parseInt(`${song.id}`)]) ?? undefined;
                 });
             } else {
                 setSelectedSongIds((_selectedSongIds) => {
-                    return [..._selectedSongIds.filter((songId: number) => songId !== song.id)];
+                    return (_selectedSongIds && [..._selectedSongIds.filter((songId: number) => songId !== song.id)]) ?? undefined;
                 });
             }
         }, [isSongSelected]);
@@ -58,13 +66,69 @@ const SongPicker = function (props: propsInterface) {
 
     }
 
+    const songNameBodyTemplate = (song: Song) => {
+
+        const [isSongSelected] = useState<boolean>((selectedSongIds && selectedSongIds?.indexOf(parseInt(`${song.id}` ?? '0')) > -1) ?? false);
+
+        useEffect(() => {
+            if (isSongSelected) {
+                setSelectedSongIds((_selectedSongIds) => {
+                    return (_selectedSongIds && [..._selectedSongIds.filter((songId: number) => songId !== song.id), parseInt(`${song.id}`)]) ?? undefined;
+                });
+            } else {
+                setSelectedSongIds((_selectedSongIds) => {
+                    return (_selectedSongIds && [..._selectedSongIds.filter((songId: number) => songId !== song.id)]) ?? undefined;
+                });
+            }
+        }, [isSongSelected]);
+
+        return <div>
+            {props.onSongClick
+                ? <a onClick={(e) => props.onSongClick && (e.preventDefault(), props.onSongClick(song))} href={`/songleader/songs/${song.id}`}>{song.name}</a>
+                : <>{song.name}</>
+            }
+        </div>
+
+    }
+
+    const buttonBodyTemplate = (song: Song) => {
+
+        const [isSongSelected] = useState<boolean>((selectedSongIds && selectedSongIds?.indexOf(parseInt(`${song.id}` ?? '0')) > -1) ?? false);
+
+        useEffect(() => {
+            if (isSongSelected) {
+                setSelectedSongIds((_selectedSongIds) => {
+                    return (_selectedSongIds && [..._selectedSongIds.filter((songId: number) => songId !== song.id), parseInt(`${song.id}`)]) ?? undefined;
+                });
+            } else {
+                setSelectedSongIds((_selectedSongIds) => {
+                    return (_selectedSongIds && [..._selectedSongIds.filter((songId: number) => songId !== song.id)]) ?? undefined;
+                });
+            }
+        }, [isSongSelected]);
+
+        return <>
+            {props.buttonLabelText && props.buttonLabelText?.map((buttonText: string, buttonIndex: number) => {
+                if (props.buttonUrl !== undefined && props.buttonUrl.length > buttonIndex - 1) {
+                    return <Button key={`btn_${buttonIndex}`} url={props.buttonUrl[buttonIndex](song)}>{buttonText}</Button>
+                } else if (props.onButtonClick !== undefined && props.onButtonClick.length > buttonIndex - 1) {
+                    return <Button key={`btn_${buttonIndex}`} onClick={() => props.onButtonClick && props.onButtonClick[buttonIndex](song)}>{buttonText}</Button>
+                } else {
+                    return <></>
+                }
+            })}
+        </>
+
+    }
+
     return <div>
-        <DataTable value={songs}>
-            <Column body={actionsBodyTemplate}></Column>
-            <Column field="name" header="name"></Column>
+        <DataTable value={songs} className={props.className}>
+            {selectedSongIds && <Column body={actionsBodyTemplate}></Column>}
+            <Column body={songNameBodyTemplate}></Column>
+            {props.buttonLabelText && <Column body={buttonBodyTemplate} className="text-right"></Column>}
         </DataTable>
         <p>Can't find the song you need?</p>
-        <Button url="/admin/song">Create a new Song</Button>
+        <Button url={props.newSongUrl}>Create a new Song</Button>
     </div>
 
 }

@@ -21,23 +21,6 @@ const AdminHeader = function (props: propsInterface) {
 
     const menuItems: MenuItem[] = [
         {
-            label: 'Songs',
-            icon: 'pi pi-fw pi-heart-fill',
-            items: [
-                {
-                    label: 'New',
-                    icon: 'pi pi-fw pi-plus',
-                    command: () => navigate('/admin/song')
-                },
-                {
-                    label: 'Manage',
-                    icon: 'pi pi-fw pi-pencil',
-                    command: () => navigate('/admin/songs')
-                },
-
-            ]
-        },
-        {
             label: 'About',
             icon: 'pi pi-info-circle',
             items: [

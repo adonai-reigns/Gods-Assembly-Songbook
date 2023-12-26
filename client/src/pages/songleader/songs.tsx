@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Button from "../../components/Button";
 
 import Song from '../../models/song';
-import AdminLayout from '../../layouts/AdminLayout';
-import { useNavigate } from 'react-router-dom';
+import GasLayout from '../../layouts/GasLayout';
+import SongPicker from '../../components/SongPicker';
 
 export interface propsInterface {
     className?: string;
@@ -36,27 +37,19 @@ const SongsContent = function (props: propsInterface) {
         })();
     }, []);
 
-    return <AdminLayout>
+    return <GasLayout>
 
         {songs.length > 0
-            ? (
-                <ul className="p-0 flex list-none">
-                    {songs.map((song: Song) => (
-                        <li key={`song_${song.id}`} className="m-3">
-                            <Button onClick={() => navigate(`/admin/song/${song.id}`)}>{song.name}</Button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p style={{ margin: '3em 0', fontSize: '2em', textAlign: 'center' }}>
-                    Welcome to God's Assembly Songbook!
-                    <br /><br />
-                    <Button onClick={() => navigate(`/admin/song`)}>Create a song</Button>
-                </p>
-            )
+            ? <SongPicker onSongClick={(song: Song) => navigate('/songleader/song/' + song.id)} buttonLabelText={[`Edit`]} buttonUrl={[(song: Song) => '/songleader/song/' + song.id]} newSongUrl='/songleader/song' />
+            : <p style={{ margin: '3em 0', fontSize: '2em', textAlign: 'center' }}>
+                Welcome to God's Assembly Songbook!
+                <br /><br />
+                <Button onClick={() => navigate(`/songleader/song`)}>Create a song</Button>
+            </p>
+
         }
 
-    </AdminLayout>
+    </GasLayout>
 
 }
 

@@ -28,7 +28,7 @@ const Songleader = () => {
             <div className="screen composer col-12 md:col-3 my-3 lg:flex lg:flex-column-reverse text-center"
                 onClick={(e) => redirectOnClick(getInnerLink(e), navigate, {})}>
                 <h2 className="m-0 md:mb-3 p-0 lg:mt-5 lg:mb-0">
-                    <a href="/admin/songs">Update Songs</a>
+                    <a href="/songleader/songs">Update Songs</a>
                 </h2>
                 <div className="text-center">
                     <img

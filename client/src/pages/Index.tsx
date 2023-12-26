@@ -42,7 +42,7 @@ const Index = () => {
             <div className="screen editor col-12 md:col-3 my-3 lg:flex lg:flex-column-reverse text-center"
                 onClick={(e) => redirectOnClick(getInnerLink(e), navigate, {})}>
                 <h2 className="m-0 md:mb-3 p-0 lg:mt-5 lg:mb-0">
-                    <a href="/admin/songs">Administration</a>
+                    <a href="/admin/audience-screen-config">Administration</a>
                 </h2>
                 <div className="text-center">
                     <img

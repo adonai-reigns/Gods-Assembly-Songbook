@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ReactSortable } from 'react-sortablejs';
 
 import axios from 'axios';
-
-import "./song.scss";
 
 import Page404 from '../Page404';
 
@@ -11,15 +10,24 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
+import { Dropdown } from 'primereact/dropdown';
+import type { SelectItem } from 'primereact/selectitem';
+
+import Song from "../../models/song";
+import Slide, {
+    SlideType,
+    SlideTypeLabels,
+    SlideTypeShortNames,
+    SlideTypeClassNames,
+    defaultSlideType
+} from '../../models/slide';
+
 import SlideEditor from '../../components/SlideEditor';
 import Tile from '../../components/Tile';
 
-import Song from "../../models/song";
-import Slide, { SlideType, SlideTypeLabels, SlideTypeShortNames, SlideTypeClassNames, defaultSlideType } from '../../models/slide';
-import { Dropdown } from 'primereact/dropdown';
-import type { SelectItem } from 'primereact/selectitem';
-import AdminLayout from '../../layouts/AdminLayout';
-import { useNavigate, useParams } from 'react-router-dom';
+import GasLayout from '../../layouts/GasLayout';
+
+import "./song.scss";
 
 export interface propsInterface {
     className?: string,
@@ -118,7 +126,7 @@ const SongContent = function (props: propsInterface) {
                 sorting: 0
             }).then((response) => {
                 if (response.data.id) {
-                    navigate('/admin/song/' + response.data.id);
+                    navigate('/songleader/song/' + response.data.id);
                     reloadSongData(response.data.id);
                 }
             })
@@ -136,7 +144,7 @@ const SongContent = function (props: propsInterface) {
 
     const deleteSong = () => {
         axios.delete(apiUrl + '/songs/' + songId).then(() => {
-            navigate('/admin/songs');
+            navigate('/songleader/songs');
         });
     }
 
@@ -316,9 +324,9 @@ const SongContent = function (props: propsInterface) {
         </>
     }
 
-    return <AdminLayout>
+    return <GasLayout>
         {(is404 ? <Page404 /> : <>
-        
+
             {editingSlideId > 0 &&
                 <Dialog draggable={false} closable={false} header={dialogHeader} visible={isEditingSlide}
                     style={{ width: '50em', height: '30em' }}
@@ -371,7 +379,7 @@ const SongContent = function (props: propsInterface) {
             }
         </>
         )}
-    </AdminLayout>
+    </GasLayout>
 }
 
 export default SongContent;
