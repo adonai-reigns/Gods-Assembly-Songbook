@@ -30,6 +30,10 @@
         span {
             font-size: 0.95rem;
         }
+        &.tile-header-icon-right {
+            left: auto;
+            right: 0.125em;
+        }
     }
 
     .drag-handle {

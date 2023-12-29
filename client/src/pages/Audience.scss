@@ -11,3 +11,59 @@
     cursor: pointer;
     text-align: center;
 }
+
+.wallpaper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-transition: background-image 2s ease-in-out;
+    transition: background-image 2s ease-in-out;
+}
+
+.wallpaper img {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.wallpaper.center {
+    background-position: 50% 50%;
+    img {
+        position: absolute;
+        width: auto;
+        height: auto;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+    }
+}
+
+.wallpaper.cover {
+    background-size: cover;
+}
+
+.wallpaper.contain {
+    background-size: contain;
+}
+
+.wallpaper.tile {
+    background-position: 0 0;
+    background-repeat: repeat;
+}
+
+.wallpaper.stretch {
+    background-position: 0 0;
+    background-size: 100% 100%;
+}
+
+.audience-slide {
+    position: relative;
+}

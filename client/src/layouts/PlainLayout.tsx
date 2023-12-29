@@ -5,7 +5,7 @@ import "/node_modules/primeflex/primeflex.css";
 import "/node_modules/primeflex/themes/primeone-dark.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 
-import "../styles/gas.scss";
+import "../styles/plain.scss";
 import './PlainLayout.scss';
 
 const PlainLayout = (props: any) => {

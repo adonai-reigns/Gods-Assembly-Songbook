@@ -25,4 +25,9 @@ export class LiveGateway {
         this.server.emit('exitPlaylist', payload);
     }
 
+    @SubscribeMessage('changeAssemblyWallpaper')
+    handleChangeAssemblyWallpaper(client: any, payload: any) {
+        this.server.emit('changeAssemblyWallpaper', payload);
+    }
+
 }

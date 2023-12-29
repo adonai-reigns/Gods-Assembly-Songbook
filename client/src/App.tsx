@@ -7,6 +7,7 @@ import Index from './pages/Index';
 import Attributions from './pages/Attributions';
 import Songleader from './pages/songleader';
 import AudienceScreenConfig from './pages/admin/audience-screen-config';
+import AdminSettings from './pages/admin/settings';
 import SongleaderSong from './pages/songleader/song';
 import SongleaderSongs from './pages/songleader/songs';
 import Plan from './pages/songleader/plan';
@@ -29,6 +30,7 @@ export default function App() {
             </Route>
             <Route path="admin">
                 <Route path="audience-screen-config" element={<AudienceScreenConfig />} />
+                <Route path="settings" element={<AdminSettings />} />
             </Route>
             <Route path="audience" element={<Audience />} />
             <Route path="*" element={<NotFound />}></Route>

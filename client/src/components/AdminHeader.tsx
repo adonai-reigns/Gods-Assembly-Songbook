@@ -21,26 +21,19 @@ const AdminHeader = function (props: propsInterface) {
 
     const menuItems: MenuItem[] = [
         {
-            label: 'About',
-            icon: 'pi pi-info-circle',
-            items: [
-                {
-                    label: 'Attributions',
-                    icon: 'pi pi-link',
-                    command: () => navigate('/attributions')
-                }
-            ]
+            label: 'Attributions',
+            icon: 'pi pi-link',
+            command: () => navigate('/attributions')
         },
         {
-            label: 'Config',
+            label: 'System Settings',
             icon: 'pi pi-cog',
-            items: [
-                {
-                    label: 'Audience Screen',
-                    icon: 'pi pi-link',
-                    command: () => navigate('/admin/audience-screen-config')
-                }
-            ]
+            command: () => navigate('/admin/settings')
+        },
+        {
+            label: 'Audience Screen',
+            icon: 'pi pi-link',
+            command: () => navigate('/admin/audience-screen-config')
         }
     ];
 

@@ -5,7 +5,6 @@
 
 body {
     margin: $spacing-0;
-    background: hsla($colour-brand-hue, $colour-brand-saturation, $colour-brand-luminance, 20%) no-repeat center center fixed;
     color: hsl($colour-dark-text-hue, $colour-dark-text-saturation, $colour-dark-text-luminance);
     -webkit-background-size: cover;
     -moz-background-size: cover;

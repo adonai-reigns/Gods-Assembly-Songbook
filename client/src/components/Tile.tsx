@@ -9,6 +9,7 @@ export interface propsInterface {
     onClick: MouseEventHandler<HTMLDivElement>;
     noDragHandle?: boolean;
     headerIcon?: string | ReactElement;
+    headerIconRight?: boolean;
 }
 
 export const propsDefaults = {
@@ -18,14 +19,14 @@ export const propsDefaults = {
 }
 
 const HeaderIcon = function (props: any) {
-    return <div className="z-2 tile-header-icon"><span>{props.children}</span></div>
+    return <div className={`z-2 tile-header-icon ${(props.headerIconRight ? 'tile-header-icon-right' : 'tile-header-icon-left')}`}><span>{props.children}</span></div>
 }
 
 const Tile = function (props: propsInterface) {
     props = { ...propsDefaults, ...props };
 
     return <div title={props.title} className={`tile ${props.className} ${!props.noDragHandle && 'draggable'}`} onClick={typeof props.onClick === 'function' ? (props.onClick as MouseEventHandler) : undefined}>
-        {props.headerIcon && <HeaderIcon>{props.headerIcon}</HeaderIcon>}
+        {props.headerIcon && <HeaderIcon {...props}>{props.headerIcon}</HeaderIcon>}
         {!props.noDragHandle && <div className="z-1 drag-handle"></div>}
         {(typeof props.index === 'number') && <div className="index">{(props.index + 1)}</div>}
         {props.children}

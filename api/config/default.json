@@ -1,0 +1,17 @@
+{
+    "version": "1.2.0",
+    "fileUploads": {
+        "directory": "./.database/uploads",
+        "wallpapers": {
+            "storageDirectory": "wallpapers",
+            "validTypes": [
+                "jpg",
+                "jpeg",
+                "png",
+                "gif"
+            ],
+            "maxFileSizeMB": 30,
+            "maxParallelUploadCount": 50
+        }
+    }
+}

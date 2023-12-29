@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+
 import LiveSocket from '../components/live/LiveSocket';
 
 import Slide, { SlideTypeLabels } from '../models/slide';
 import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
+import { Wallpaper, File } from '../models/wallpaper';
 
+import PlainLayout from '../layouts/PlainLayout';
 import "./Audience.scss";
 
 export interface propsInterface {
@@ -42,6 +45,13 @@ const Audience = function (props: propsInterface) {
     const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
 
     const [screenId] = useState<number>(1);
+    const [assemblyWallpaperId] = useState<number>(1);
+
+    const defaultWallpaper = new Wallpaper();
+
+    const [wallpaper, setWallpaper] = useState<Wallpaper>(defaultWallpaper);
+    const [wallpaperFile, setWallpaperFile] = useState<File | undefined>(undefined);
+    const wallpaperCycleInterval = useRef<any>(null);
 
     const [currentSlide, setCurrentSlide] = useState<Slide>(new Slide());
     const [slideContent, setSlideContent] = useState<string>('');
@@ -57,49 +67,82 @@ const Audience = function (props: propsInterface) {
         return newScreenStyleComputed;
     }
 
+    const loadAssemblyWallpaper = () => {
+        axios.get(apiUrl + '/wallpapers/' + assemblyWallpaperId).then((response: any) => {
+            if (response.data) {
+                setWallpaper(response.data);
+            }
+        }).catch(() => { });
+    }
+
+    function onChangeSlide(payload: any) {
+        switch (payload.slide) {
+            case 'pauseSlide':
+            case 'startSlide':
+            case 'endSlide':
+                setSlideContent(payload.slideContent);
+                setSlideType(payload.slideType);
+                break;
+            default:
+                if (payload.slide !== undefined) {
+                    setCurrentSlide(payload.slide);
+                    setSlideContent(payload.slide.content);
+                    setSlideType(SlideTypeLabels[payload.slide.type]);
+                }
+        }
+    }
+
+    function onChangeScreenStyle(payload: any) {
+        if (payload.screen.id === screenId) {
+            setScreenStyleComputed(computeScreenStyle(payload.screen.style));
+        }
+    }
+
+    function onChangeAssemblyWallpaper(payload: any) {
+        if (payload.wallpaper.id === assemblyWallpaperId) {
+            setWallpaper(payload.wallpaper);
+        }
+    }
+
+    function onExitPlaylist() {
+        let container = document.getElementById('audience-slide-container');
+        if (container) {
+            container.innerHTML = '';
+        }
+    }
+
+    const cycleWallpaper = () => {
+        setWallpaperFile((_wallpaperFile): File | undefined => {
+            if (wallpaper.files.length > 0) {
+                let currentFileIndex = -1;
+                if (_wallpaperFile !== undefined) {
+                    currentFileIndex = wallpaper.files.map((file: File) => file.filename).indexOf(_wallpaperFile.filename);
+                }
+                let nextFileIndex = currentFileIndex + 1;
+                if (nextFileIndex > wallpaper.files.length - 1) {
+                    nextFileIndex = 0;
+                }
+                let nextWallpaperFile = { ...wallpaper.files[nextFileIndex] } as File;
+                return nextWallpaperFile;
+            } else {
+                return undefined;
+            }
+        });
+    }
+
     useEffect(() => {
-
-        function onChangeSlide(payload: any) {
-            switch (payload.slide) {
-                case 'pauseSlide':
-                case 'startSlide':
-                case 'endSlide':
-                    setSlideContent(payload.slideContent);
-                    setSlideType(payload.slideType);
-                    break;
-                default:
-                    if (payload.slide !== undefined) {
-                        setCurrentSlide(payload.slide);
-                        setSlideContent(payload.slide.content);
-                        setSlideType(SlideTypeLabels[payload.slide.type]);
-                    }
-            }
+        if (wallpaper.id < 1) {
+            return;
         }
-
-        function onChangeScreenStyle(payload: any) {
-            if (payload.screen.id === screenId) {
-                setScreenStyleComputed(computeScreenStyle(payload.screen.style));
-            }
+        if (wallpaperCycleInterval !== null) {
+            clearInterval(wallpaperCycleInterval.current);
         }
-
-        function onExitPlaylist() {
-            let container = document.getElementById('audience-slide-container');
-            if (container) {
-                container.innerHTML = '';
-            }
+        if (wallpaper.style.slideshowSpeed > 0) {
+            wallpaperCycleInterval.current = setInterval(cycleWallpaper, wallpaper.style.slideshowSpeed * 1000);
+        } else {
+            setWallpaperFile(wallpaper.files[0] ?? undefined);
         }
-
-        LiveSocket.on('changeSlide', onChangeSlide);
-        LiveSocket.on('changeScreenStyle', onChangeScreenStyle);
-        LiveSocket.on('exitPlaylist', onExitPlaylist);
-
-        return () => {
-            LiveSocket.off('changeSlide', onChangeSlide);
-            LiveSocket.on('changeScreenStyle', onChangeScreenStyle);
-            LiveSocket.on('exitPlaylist', onExitPlaylist);
-        };
-
-    });
+    }, [wallpaper]);
 
     useEffect(() => {
         axios.get(apiUrl + '/screens/' + screenId).then((response: any) => {
@@ -110,6 +153,9 @@ const Audience = function (props: propsInterface) {
     }, [screenId]);
 
     useEffect(() => {
+
+        loadAssemblyWallpaper();
+
         LiveSocket.emit('requestCurrentSlide', { requestor: 'audience' });
 
         (() => {
@@ -147,9 +193,18 @@ const Audience = function (props: propsInterface) {
 
         })();
 
+        LiveSocket.on('changeSlide', onChangeSlide);
+        LiveSocket.on('changeScreenStyle', onChangeScreenStyle);
+        LiveSocket.on('exitPlaylist', onExitPlaylist);
+        LiveSocket.on('changeAssemblyWallpaper', onChangeAssemblyWallpaper);
+
     }, [])
 
-    return <>
+    return <PlainLayout>
+
+        {wallpaperFile && <div className={`wallpaper ${wallpaper.style.backgroundSize}`} style={{ backgroundImage: `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}")` }}>
+            <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} />
+        </div>}
 
         <div className="fullscreen-button">Click for Fullscreen mode</div>
 
@@ -160,7 +215,7 @@ const Audience = function (props: propsInterface) {
             <div className="audience-slide-content"
                 dangerouslySetInnerHTML={{ __html: slideContent }} />
         </div>
-    </>
+    </PlainLayout>
 
 }
 

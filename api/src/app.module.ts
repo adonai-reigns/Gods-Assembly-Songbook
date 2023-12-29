@@ -9,9 +9,10 @@ import { SongsModule } from './songs/songs.module';
 import { LiveModule } from './live/live.module';
 import { ScreensModule } from './screens/screens.module';
 import { PlaylistsModule } from './playlists/playlists.module';
+import { WallpapersModule } from './wallpapers/wallpapers.module';
 
 @Module({
-    imports: [SongsModule, DatabaseModule, SlidesModule, LiveModule, ScreensModule, PlaylistsModule],
+    imports: [SongsModule, DatabaseModule, SlidesModule, LiveModule, ScreensModule, PlaylistsModule, WallpapersModule],
     controllers: [AppController],
     providers: [AppService],
 })
