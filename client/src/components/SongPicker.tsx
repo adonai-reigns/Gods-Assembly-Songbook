@@ -6,6 +6,7 @@ import { Column } from "primereact/column";
 import { Checkbox } from "primereact/checkbox";
 import type Song from "../models/song";
 import Button from "../components/Button";
+import { FilterMatchMode } from "primereact/api";
 
 export interface propsInterface {
     selectedSongIds?: number[];
@@ -34,15 +35,9 @@ const SongPicker = function (props: propsInterface) {
     const [songs, setSongs] = useState<Song[]>([]);
     const [selectedSongIds, setSelectedSongIds] = useState<number[] | undefined>(props.selectedSongIds);
 
-    useEffect(() => {
-        axios.get(apiUrl + '/songs').then((response: any) => {
-            setSongs(response.data);
-        });
-    }, []);
-
-    useEffect(() => {
-        props.onSelectionChange && props.onSelectionChange(selectedSongIds);
-    }, [selectedSongIds]);
+    const [songNameFilter] = useState({
+        name: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    });
 
     const actionsBodyTemplate = (song: Song) => {
 
@@ -121,10 +116,20 @@ const SongPicker = function (props: propsInterface) {
 
     }
 
+    useEffect(() => {
+        axios.get(apiUrl + '/songs').then((response: any) => {
+            setSongs(response.data);
+        });
+    }, []);
+
+    useEffect(() => {
+        props.onSelectionChange && props.onSelectionChange(selectedSongIds);
+    }, [selectedSongIds]);
+
     return <div>
-        <DataTable value={songs} className={props.className}>
+        <DataTable value={songs} className={props.className} filters={songNameFilter} globalFilterFields={['name']}>
             {selectedSongIds && <Column body={actionsBodyTemplate}></Column>}
-            <Column body={songNameBodyTemplate}></Column>
+            <Column body={songNameBodyTemplate} field="name" sortable filter filterPlaceholder="Search by Name"></Column>
             {props.buttonLabelText && <Column body={buttonBodyTemplate} className="text-right"></Column>}
         </DataTable>
         <p>Can't find the song you need?</p>
