@@ -18,14 +18,14 @@
         padding-top: 1.5em;
     }
 
-    .tile-header-icon {
+    .tile-header {
         position: absolute;
         display: flex;
         flex-direction: column;
         align-content: space-around;
         justify-content: space-around;
         top: -0.125em;
-        left: -0.125em;
+        left: 0.125em;
         height: 1.5em;
         span {
             font-size: 0.95rem;
@@ -37,7 +37,6 @@
     }
 
     .drag-handle {
-        // display: none;
         position: absolute;
         margin: -1px;
         top: 0;

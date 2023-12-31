@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 import { FilterMatchMode } from "primereact/api";
 import { ObjectUtils } from "primereact/utils";
@@ -7,6 +8,7 @@ import { DataTable } from "primereact/datatable";
 import { Column, type ColumnSortEvent } from "primereact/column";
 
 import Button from './Button';
+import DeleteButton from "./DeleteButton";
 
 import type { Playlist } from "../models/playlist";
 
@@ -67,7 +69,13 @@ const PlaylistPicker = function (props: propsInterface) {
         reloadPlaylists();
     }, []);
 
-    const datatableHeader = () => {
+    const deletePlaylist = (playlist: Playlist) => {
+        axios.delete(apiUrl + '/playlists/' + playlist.id).then(() => {
+            reloadPlaylists();
+        });
+    }
+
+    const datatableFooter = () => {
         return <div className="text-right">
             <Button onClick={onAdd}><i className="pi pi-plus mr-2"></i>New Playlist</Button>
         </div>
@@ -83,6 +91,10 @@ const PlaylistPicker = function (props: propsInterface) {
         return <>
             <Button url={`/songleader/sing/${playlist.id}`} onClick={(e: Event) => onPlay(playlist, e)}>Play</Button>
         </>
+    }
+
+    const deleteBodyTemplate = (playlist: Playlist) => {
+        return <DeleteButton title="Delete Playlist" ask="Delete this playlist?" onClick={() => deletePlaylist(playlist)}></DeleteButton>
     }
 
     const updatedAtBodyTemplate = (playlist: Playlist) => {
@@ -107,7 +119,7 @@ const PlaylistPicker = function (props: propsInterface) {
     }
 
     return <>
-        <DataTable header={datatableHeader} value={playlists} className="playlists"
+        <DataTable footer={datatableFooter} value={playlists} className="playlists"
             emptyMessage={<p>No playlists have been created yet. <Button url="/songleader/plan" onClick={onAdd}>Add a playlist &raquo;</Button></p>}
             filters={filters} globalFilterFields={['name']}>
             <Column field="name" header="Name" sortable filter filterPlaceholder="Search by Name" />
@@ -115,6 +127,7 @@ const PlaylistPicker = function (props: propsInterface) {
             <Column body={updatedAtBodyTemplate} header="Updated At" sortable sortField="updatedAt" sortFunction={sortByDateFunction} />
             <Column body={editBodyTemplate} />
             <Column body={playBodyTemplate} />
+            <Column body={deleteBodyTemplate} />
         </DataTable>
     </>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
 
 import { Dialog } from "primereact/dialog";
@@ -13,7 +14,6 @@ import type { Playlist } from "../../models/playlist";
 
 import GasLayout from "../../layouts/GasLayout";
 import "./sing.scss";
-import { useNavigate, useParams } from "react-router-dom";
 
 export interface propsInterface {
     className?: string;
@@ -47,14 +47,6 @@ const Plan = function (props: propsInterface) {
     const reloadPlaylists = () => {
         setPlaylistsKey((_playlistsKey: number) => {
             return _playlistsKey + 1;
-        });
-    }
-
-    const deletePlaylist = (playlist: Playlist) => {
-        axios.delete(apiUrl + '/playlists/' + playlist.id).then(() => {
-            setShowNewPlaylistForm(false);
-            setEditingPlaylist(null);
-            reloadPlaylists();
         });
     }
 
@@ -149,7 +141,6 @@ const Plan = function (props: propsInterface) {
             {(editingPlaylist !== null) && <>
                 <PlaylistEditor playlist={editingPlaylist}
                     onSubmit={() => submitPlaylist()}
-                    onDelete={() => deletePlaylist(editingPlaylist)}
                     onContentChange={onPlaylistContentChange} />
             </>}
         </Dialog>

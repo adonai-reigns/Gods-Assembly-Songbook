@@ -1,6 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { Menubar } from "primereact/menubar";
 import type { MenuItem } from "primereact/menuitem";
-import { useNavigate } from "react-router-dom";
 
 export interface propsInterface {
     end?: any;

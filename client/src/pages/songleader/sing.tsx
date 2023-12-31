@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import LiveSocket from '../../components/live/LiveSocket';
-
+import { useNavigate, useParams } from "react-router-dom";
 import { withOrientationChange } from 'react-device-detect';
+import axios from "axios";
+
+import LiveSocket from '../../components/live/LiveSocket';
 
 import { Dialog } from "primereact/dialog";
 
-import AudienceScreenConfig from "../admin/audience-screen-config";
-
 import PlaylistPicker from "../../components/PlaylistPicker";
-import Button from '../../components/Button';
+import Button, { ButtonSeverity } from '../../components/Button';
 import Tile from "../../components/Tile";
 
 import Slide, { SlideTypeClassNames, SlideTypeLabels } from "../../models/slide";
-// import Slide from "../../models/slide";
 
 import type { Playlist } from "../../models/playlist";
 import Song from "../../models/song";
 
-import "./sing.scss";
+import AudienceScreenConfig from "../admin/audience-screen-config";
+
 import PlainLayout from "../../layouts/PlainLayout";
-import { useNavigate, useParams } from "react-router-dom";
+import GasLayout from "../../layouts/GasLayout";
+
+import "./sing.scss";
 
 export interface propsInterface {
     className?: string;
@@ -399,120 +400,121 @@ const Sing = function (props: propsInterface) {
         </>
     }
 
-    return <PlainLayout>
-        <Dialog visible={showConfig} onHide={() => setShowConfig(false)}>
-            <AudienceScreenConfig />
-        </Dialog >
+    return <>
         {currentPlaylist
             ?
-            <div>
-                {isPortrait && <div className="display-block text-center">
-                    <h2 className="">Ermmm, just need your help with this...</h2>
-                    <img className="" src="/images/vecteezy_full-screen-vector-icon-design_25964485_482/vecteezy_full-screen-vector-icon-design_25964485-scaled.jpg"
-                        alt="Picture of a Movie in Fullscreen" width="300" height="280" />
-                    <p className="text-xl">This app is only designed to work in landscape orientation,<br />
-                        could you turn the screen on it's side please? ...thanks!
-                    </p>
-                </div>}
+            <PlainLayout>
+                <Dialog visible={showConfig} onHide={() => setShowConfig(false)}>
+                    <AudienceScreenConfig />
+                </Dialog >
+                <div>
+                    {isPortrait && <div className="display-block text-center">
+                        <h2 className="">Ermmm, just need your help with this...</h2>
+                        <img className="" src="/images/vecteezy_full-screen-vector-icon-design_25964485_482/vecteezy_full-screen-vector-icon-design_25964485-scaled.jpg"
+                            alt="Picture of a Movie in Fullscreen" width="300" height="280" />
+                        <p className="text-xl">This app is only designed to work in landscape orientation,<br />
+                            could you turn the screen on it's side please? ...thanks!
+                        </p>
+                    </div>}
 
-                {isLandscape && <div className="songleader-sing">
+                    {isLandscape && <div className="songleader-sing">
 
-                    <div className="songs-section">
-                        <div className="songs-container" id="songlist-songs-drawer">
-                            {(currentPlaylist.songs.length < 1)
-                                ?
-                                <div className="flex flex-column justify-content-center h-full w-full">
-                                    <p className="text-center">Selected Playlist does not have any songs</p>
+                        <div className="songs-section">
+                            <div className="songs-container" id="songlist-songs-drawer">
+                                {(currentPlaylist.songs.length < 1)
+                                    ?
+                                    <div className="flex flex-column justify-content-center h-full w-full">
+                                        <p className="text-center">Selected Playlist does not have any songs</p>
+                                    </div>
+                                    :
+                                    <>
+                                        <div key={`startSlide`} className={`song-tile-container ${publishedSlide === 'start' && 'published-song'}`} id={`songlist-song-start-slide`}>
+                                            <Tile noDragHandle
+                                                onClick={() => setPublishedSlide('start')}>
+                                                <span className="status-icons">
+                                                    <span className="status-icon published"><i className="pi pi-sun"></i> Live!</span>
+                                                </span>
+                                                <div className="song-content">Start Slide</div>
+                                            </Tile>
+                                        </div>
+                                        {currentPlaylist.songs.map((song: Song) =>
+                                            <SongTile
+                                                key={song.id}
+                                                song={song}
+                                                publishedSong={publishedSong}
+                                                nextSong={nextSong}
+                                                setNextSong={() => setOpenSong(song)}
+                                            />
+                                        )}
+                                        <div key={`endSlide`} className={`song-tile-container ${publishedSlide === 'end' && 'published-song'}`} id={`songlist-song-end-slide`}>
+                                            <Tile noDragHandle
+                                                onClick={() => setPublishedSlide('end')}>
+                                                <span className="status-icons">
+                                                    <span className="status-icon published"><i className="pi pi-sun"></i> Live!</span>
+                                                </span>
+                                                <div className="song-content">End Slide</div>
+                                            </Tile>
+                                        </div>
+                                    </>
+                                }
+                            </div>
+                        </div>
+                        <div className="slides-section" id="published-slides-container">
+                            <h2>Slides from Current Song</h2>
+                            <div className="slides-container" id="published-slides-drawer">
+                                {(openSong.slides.length < 1) && <div className="flex flex-column justify-content-center h-full w-full">
+                                    <p className="text-center">Selected Song does not have any slides</p>
+                                </div>}
+                                {openSong.slides.map((slide: Slide) =>
+                                    <SlideTile
+                                        key={slide.id}
+                                        slide={slide}
+                                        publishedSlide={publishedSlide}
+                                        nextSlide={nextSlide}
+                                        setNextSlide={setNextSlide}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                        <div className="live-section">
+                            <div className="published-slide">
+                                <h2>Current Slide</h2>
+                                <div className="slide-content-container">
+                                    <div className="slide-content"
+                                        dangerouslySetInnerHTML={{ __html: getPublishedSlideContent() ?? '' }} />
                                 </div>
-                                :
-                                <>
-                                    <div key={`startSlide`} className={`song-tile-container ${publishedSlide === 'start' && 'published-song'}`} id={`songlist-song-start-slide`}>
-                                        <Tile noDragHandle
-                                            onClick={() => setPublishedSlide('start')}>
-                                            <span className="status-icons">
-                                                <span className="status-icon published"><i className="pi pi-sun"></i> Live!</span>
-                                            </span>
-                                            <div className="song-content">Start Slide</div>
-                                        </Tile>
-                                    </div>
-                                    {currentPlaylist.songs.map((song: Song) =>
-                                        <SongTile
-                                            key={song.id}
-                                            song={song}
-                                            publishedSong={publishedSong}
-                                            nextSong={nextSong}
-                                            setNextSong={() => setOpenSong(song)}
-                                        />
-                                    )}
-                                    <div key={`endSlide`} className={`song-tile-container ${publishedSlide === 'end' && 'published-song'}`} id={`songlist-song-end-slide`}>
-                                        <Tile noDragHandle
-                                            onClick={() => setPublishedSlide('end')}>
-                                            <span className="status-icons">
-                                                <span className="status-icon published"><i className="pi pi-sun"></i> Live!</span>
-                                            </span>
-                                            <div className="song-content">End Slide</div>
-                                        </Tile>
-                                    </div>
-                                </>
-                            }
-                        </div>
-                    </div>
-                    <div className="slides-section" id="published-slides-container">
-                        <h2>Slides from Current Song</h2>
-                        <div className="slides-container" id="published-slides-drawer">
-                            {(openSong.slides.length < 1) && <div className="flex flex-column justify-content-center h-full w-full">
-                                <p className="text-center">Selected Song does not have any slides</p>
-                            </div>}
-                            {openSong.slides.map((slide: Slide) =>
-                                <SlideTile
-                                    key={slide.id}
-                                    slide={slide}
-                                    publishedSlide={publishedSlide}
-                                    nextSlide={nextSlide}
-                                    setNextSlide={setNextSlide}
-                                />
-                            )}
-                        </div>
-                    </div>
-                    <div className="live-section">
-                        <div className="published-slide">
-                            <h2>Current Slide</h2>
-                            <div className="slide-content-container">
-                                <div className="slide-content"
-                                    dangerouslySetInnerHTML={{ __html: getPublishedSlideContent() ?? '' }} />
                             </div>
-                        </div>
-                        <div className="next-slide" onClick={playNextSlide}>
-                            <h2>Next Slide</h2>
-                            <div className="slide-content-container">
-                                <div className="slide-content"
-                                    dangerouslySetInnerHTML={{ __html: nextSlide.content }} />
+                            <div className="next-slide" onClick={playNextSlide}>
+                                <h2>Next Slide</h2>
+                                <div className="slide-content-container">
+                                    <div className="slide-content"
+                                        dangerouslySetInnerHTML={{ __html: nextSlide.content }} />
+                                </div>
                             </div>
-                        </div>
-                        <div className="actions">
-                            <div className="action-buttons">
-                                <Button className={`pause-button ${isPaused && 'paused'}`} onClick={() => setIsPaused(!isPaused)}>{isPaused ? 'Paused' : 'Pause'}</Button>
-                                {/* @TODO: Ability to load an impromptu song 
+                            <div className="actions">
+                                <div className="action-buttons">
+                                    <Button className={`pause-button ${isPaused && 'paused'}`} onClick={() => setIsPaused(!isPaused)}>{isPaused ? 'Paused' : 'Pause'}</Button>
+                                    {/* @TODO: Ability to load an impromptu song 
                                 <Button>Song</Button> */}
-                                {/* @TODO: Ability to load a bible verse
+                                    {/* @TODO: Ability to load a bible verse
                                 <Button>Verse</Button> */}
-                                {/* @TODO: Ability to type directly onto the screen
+                                    {/* @TODO: Ability to type directly onto the screen
                                 <Button>Type</Button> */}
-                                <Button className={`config-button`} onClick={() => setShowConfig(true)}>Config</Button>
-                                <Button className={`exit-button`} onClick={exitScreen} severity="danger">Exit</Button>
+                                    <Button className={`config-button`} onClick={() => setShowConfig(true)}>Config</Button>
+                                    <Button className={`exit-button`} onClick={exitScreen} severity={ButtonSeverity.danger}>Exit</Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>}
-            </div >
+                    </div>}
+                </div>
+            </PlainLayout>
             :
-            <>
+            <GasLayout>
                 <PlaylistPicker onEdit={(playlist: Playlist) => navigate('/songleader/plan/' + playlist.id)} onPlay={(playlist: Playlist) => setCurrentPlaylist(playlist)} />
-            </>
-
+            </GasLayout>
         }
-    </PlainLayout>
+    </>
 }
 
 export default withOrientationChange(Sing);

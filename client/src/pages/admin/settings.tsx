@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import { Panel } from 'primereact/panel';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
@@ -72,22 +73,22 @@ const Settings = function (props: propsInterface) {
 
     const onAdd = () => {
         reloadWallpaper();
-    } 
-    
+    }
+
     const onDelete = () => {
         reloadWallpaper();
     }
 
     const onSort = () => {
         reloadWallpaper();
-    } 
-    
+    }
+
     const reloadWallpaper = () => {
         axios.get(apiUrl + '/wallpapers/' + wallpaperId).then((response: any) => {
             if (response.data) {
                 setWallpaper(response.data);
             }
-        }).catch(() => {});
+        }).catch(() => { });
     }
 
     useEffect(() => {
@@ -129,30 +130,34 @@ const Settings = function (props: propsInterface) {
 
     return <AdminLayout>
 
-        <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="background-size">Background Position</label>
-            </span>
-            <Dropdown id="background-size" placeholder="Background Size"
-                options={backgroundSizesAsDropdownOptions}
-                value={wallpaperStyle.backgroundSize}
-                onChange={e => setWallpaperStyle({ ...wallpaperStyle, backgroundSize: e.target.value })} />
-        </div>
+        <Panel>
 
-        <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="slideshow-speed">Slideshow Speed (seconds)</label>
-            </span>
-            <InputNumber id="slideshow-speed" placeholder="Slideshow Speed"
-                value={wallpaperStyle.slideshowSpeed}
-                onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowSpeed: e.value ?? 0 })} />
-        </div>
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="background-size">Background Position</label>
+                </span>
+                <Dropdown id="background-size" placeholder="Background Size"
+                    options={backgroundSizesAsDropdownOptions}
+                    value={wallpaperStyle.backgroundSize}
+                    onChange={e => setWallpaperStyle({ ...wallpaperStyle, backgroundSize: e.target.value })} />
+            </div>
 
-        <WallpaperPicker wallpaperId={wallpaperId} multiple={true} onAdd={onAdd} onDelete={onDelete} onSort={onSort} />
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="slideshow-speed">Slideshow Speed (seconds)</label>
+                </span>
+                <InputNumber id="slideshow-speed" placeholder="Slideshow Speed"
+                    value={wallpaperStyle.slideshowSpeed}
+                    onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowSpeed: e.value ?? 0 })} />
+            </div>
 
-        <div className="field m-3 p-inputgroup flex justify-content-center">
-            <Button onClick={publishToScreen}>Publish</Button>
-        </div>
+            <WallpaperPicker className="m-3" wallpaperId={wallpaperId} multiple={true} onAdd={onAdd} onDelete={onDelete} onSort={onSort} />
+
+            <div className="field m-3 p-inputgroup flex justify-content-center">
+                <Button onClick={publishToScreen}>Publish</Button>
+            </div>
+
+        </Panel>
 
     </AdminLayout>
 

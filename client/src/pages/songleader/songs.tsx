@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import SongPicker from '../../components/SongPicker';
 import Button from "../../components/Button";
 
 import Song from '../../models/song';
+
 import GasLayout from '../../layouts/GasLayout';
-import SongPicker from '../../components/SongPicker';
 
 export interface propsInterface {
     className?: string;
@@ -40,7 +41,7 @@ const SongsContent = function (props: propsInterface) {
     return <GasLayout>
 
         {songs.length > 0
-            ? <SongPicker onSongClick={(song: Song) => navigate('/songleader/song/' + song.id)} buttonLabelText={[`Edit`]} buttonUrl={[(song: Song) => '/songleader/song/' + song.id]} newSongUrl='/songleader/song' />
+            ? <SongPicker canDelete={true} onSongClick={(song: Song) => navigate('/songleader/song/' + song.id)} buttonLabelText={[`Edit`]} buttonUrl={[(song: Song) => '/songleader/song/' + song.id]} newSongUrl='/songleader/song' />
             : <p style={{ margin: '3em 0', fontSize: '2em', textAlign: 'center' }}>
                 Welcome to God's Assembly Songbook!
                 <br /><br />

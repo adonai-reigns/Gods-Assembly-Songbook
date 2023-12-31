@@ -5,6 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Checkbox } from "primereact/checkbox";
 import type Song from "../models/song";
+import DeleteButton from "./DeleteButton";
 import Button from "../components/Button";
 import { FilterMatchMode } from "primereact/api";
 
@@ -18,11 +19,13 @@ export interface propsInterface {
     buttonUrl?: CallableFunction[];
     onButtonClick?: CallableFunction[];
     newSongUrl?: string;
+    canDelete?: boolean;
 }
 
 export const propsDefaults = {
     className: '',
-    newSongUrl: '/admin/song'
+    newSongUrl: '/songleader/song',
+    canDelet: false,
 }
 
 const SongPicker = function (props: propsInterface) {
@@ -38,6 +41,16 @@ const SongPicker = function (props: propsInterface) {
     const [songNameFilter] = useState({
         name: { value: null, matchMode: FilterMatchMode.CONTAINS }
     });
+
+    const onSubmit = () => {
+        if (props.onSubmit) {
+            props.onSubmit();
+        }
+    }
+
+    const deleteSong = (song: Song, callback: CallableFunction) => {
+        axios.delete(apiUrl + '/songs/' + song.id).then(() => callback());
+    }
 
     const actionsBodyTemplate = (song: Song) => {
 
@@ -116,10 +129,26 @@ const SongPicker = function (props: propsInterface) {
 
     }
 
-    useEffect(() => {
+    const footerBodyTemplate = () => {
+        return <div className="flex justify-content-end">
+            <p className="m-3">Can't find the song you need?</p>
+            <Button url={props.newSongUrl}>Create a new Song</Button>
+        </div>
+
+    }
+
+    const deleteButtonBodyTemplate = (song: Song) => {
+        return <DeleteButton onClick={() => deleteSong(song, reloadSongs)} ask="Delete this song from the database?"></DeleteButton>
+    }
+
+    const reloadSongs = () => {
         axios.get(apiUrl + '/songs').then((response: any) => {
             setSongs(response.data);
         });
+    }
+
+    useEffect(() => {
+        reloadSongs();
     }, []);
 
     useEffect(() => {
@@ -127,13 +156,16 @@ const SongPicker = function (props: propsInterface) {
     }, [selectedSongIds]);
 
     return <div>
-        <DataTable value={songs} className={props.className} filters={songNameFilter} globalFilterFields={['name']}>
+        <DataTable value={songs} className={props.className} filters={songNameFilter} globalFilterFields={['name']}
+            footer={footerBodyTemplate}>
             {selectedSongIds && <Column body={actionsBodyTemplate}></Column>}
             <Column body={songNameBodyTemplate} field="name" sortable filter filterPlaceholder="Search by Name"></Column>
             {props.buttonLabelText && <Column body={buttonBodyTemplate} className="text-right"></Column>}
+            {props.canDelete && <Column body={deleteButtonBodyTemplate} className="text-right"></Column>}
         </DataTable>
-        <p>Can't find the song you need?</p>
-        <Button url={props.newSongUrl}>Create a new Song</Button>
+        {props.onSubmit && <div className="m-3 flex justify-content-center w-full">
+            <Button className="m-auto" title="Save Changes" onClick={onSubmit}>Add Selected Songs <i className="pi pi-check ml-3"></i></Button>
+        </div>}
     </div>
 
 }

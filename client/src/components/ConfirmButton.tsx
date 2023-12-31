@@ -1,5 +1,6 @@
-import { Button as PrimereactButton } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import { Button as PrimereactButton } from 'primereact/button';
+import { ButtonSeverity } from './Button';
 
 export interface propsInterface {
     className?: string;
@@ -8,15 +9,7 @@ export interface propsInterface {
     onClick?: CallableFunction;
     severity?: ButtonSeverity;
     url?: string;
-}
-
-export enum ButtonSeverity {
-    secondary = 'secondary',
-    success = 'success',
-    info = 'info',
-    warning = 'warning',
-    danger = 'danger',
-    help = 'help'
+    ask: string
 }
 
 export const propsDefaults = {
@@ -24,22 +17,21 @@ export const propsDefaults = {
     title: undefined,
 }
 
-const Button = function (props: propsInterface) {
+const ConfirmButton = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
     const navigate = useNavigate();
 
     const onClick = (e: any) => {
-        if(props.onClick){
-            if(props.url){
-                e.preventDefault();
-            }
-            props.onClick(e);
-        }else{
-            if(props.url){
-                e.preventDefault();
-                navigate(props.url);
+        e.preventDefault();
+        if (confirm(props.ask)) {
+            if (props.onClick) {
+                props.onClick(e);
+            } else {
+                if (props.url) {
+                    navigate(props.url);
+                }
             }
         }
     }
@@ -60,4 +52,4 @@ const Button = function (props: propsInterface) {
 
 }
 
-export default Button;
+export default ConfirmButton;

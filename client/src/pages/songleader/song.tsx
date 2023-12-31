@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import Page404 from '../Page404';
 
+import { Panel } from 'primereact/panel';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -22,8 +23,10 @@ import Slide, {
     defaultSlideType
 } from '../../models/slide';
 
-import SlideEditor from '../../components/SlideEditor';
 import Tile from '../../components/Tile';
+import SlideEditor from '../../components/SlideEditor';
+import DeleteButton from '../../components/DeleteButton';
+import ConfirmButton from '../../components/ConfirmButton';
 
 import GasLayout from '../../layouts/GasLayout';
 
@@ -49,12 +52,9 @@ const SongContent = function (props: propsInterface) {
     const navigate = useNavigate();
 
     const params = useParams() ?? {};
-    // const location = useLocation();
-    // const searchParams = new URLSearchParams(location.search);
 
     const [is404, setIs404] = useState(false);
 
-    // song id
     const [songId, setSongId] = useState<number>(parseInt(params.id ?? '0'));
 
     const [song, setSong] = useState<Song>(new Song());
@@ -120,7 +120,6 @@ const SongContent = function (props: propsInterface) {
 
     const submitSong = () => {
         if (songId === 0) {
-            // POST for creating a new song
             axios.post(apiUrl + '/songs', {
                 name: editingSongName,
                 sorting: 0
@@ -129,23 +128,16 @@ const SongContent = function (props: propsInterface) {
                     navigate('/songleader/song/' + response.data.id);
                     reloadSongData(response.data.id);
                 }
-            })
+            });
         } else {
-            // PATCH for updating an existing song
             axios.patch(apiUrl + '/songs/' + songId, {
                 name: editingSongName
             }).then((response) => {
                 if (response.data.id) {
-                    reloadSongData(response.data.id);
+                    navigate('/songleader/songs');
                 }
-            })
+            });
         }
-    }
-
-    const deleteSong = () => {
-        axios.delete(apiUrl + '/songs/' + songId).then(() => {
-            navigate('/songleader/songs');
-        });
     }
 
     const submitSlide = () => {
@@ -300,25 +292,30 @@ const SongContent = function (props: propsInterface) {
             setEditingSlideType(newSlideType);
         }
 
-        return <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="slide-name" className="font-normal">Slide Name</label>
-            </span>
-            <InputText id="slide-name" placeholder="Slide Name" value={editingSlideName}
-                onChange={e => handleOnNameChange(e.target.value)} />
+        return <>
+            <h3>Editing Slide</h3>
+            <div className="field p-inputgroup flex-1">
 
-            <Dropdown options={slideTypesAsDropdownOptions} value={editingSlideType}
-                optionValue='value'
-                onChange={e => handleOnTypeChange(e.target.value)} />
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="slide-name" className="font-normal">Slide Name</label>
+                </span>
+                
+                <InputText id="slide-name" placeholder="Slide Name" value={editingSlideName}
+                    onChange={e => handleOnNameChange(e.target.value)} />
 
-            <Button type="button" onClick={submitSlide} className="p-inputgroup-addon font-bold">
-                Done <i className="pi pi-check ml-3 font-bold"></i>
-            </Button>
-        </div>
+                <Dropdown options={slideTypesAsDropdownOptions} value={editingSlideType}
+                    optionValue='value'
+                    onChange={e => handleOnTypeChange(e.target.value)} />
+
+                <ConfirmButton ask="Copy this slide?" onClick={() => copySlide()}><i className="pi pi-copy"></i></ConfirmButton>
+                <DeleteButton ask="Really delete this slide?" onClick={() => deleteSlide()}></DeleteButton>
+
+            </div>
+        </>
+        
     }
 
-    const SlideTileHeaderIcon = function (props: any) {
-
+    const SlideTileHeader = function (props: any) {
         return <>
             <span title={SlideTypeLabels[props.slide.type]} className={`w-2rem flex flex-direction-column justify-content-around align-items-center text-center font-bold ml-1 p-1 border-round ${SlideTypeClassNames[props.slide.type]}`}>{SlideTypeShortNames[props.slide.type]}</span>
         </>
@@ -326,57 +323,56 @@ const SongContent = function (props: propsInterface) {
 
     return <GasLayout>
         {(is404 ? <Page404 /> : <>
+            <Panel>
 
-            {editingSlideId > 0 &&
-                <Dialog draggable={false} closable={false} header={dialogHeader} visible={isEditingSlide}
-                    style={{ width: '50em', height: '30em' }}
-                    onHide={() => submitSlide()}>
-                    <SlideEditor
-                        slide={getSlideById(editingSlideId)}
-                        onContentChange={(newContent: string) => setEditingSlideContent(newContent)}
-                        onSubmit={submitSlide}
-                        onCopy={copySlide}
-                        onDelete={deleteSlide}
-                    />
-                </Dialog>
-            }
+                {editingSlideId > 0 &&
+                    <Dialog draggable={false} closable={true} header={dialogHeader} visible={isEditingSlide}
+                        style={{ width: '50em', height: '30em' }}
+                        onHide={() => submitSlide()}>
+                        <SlideEditor
+                            slide={getSlideById(editingSlideId)}
+                            onContentChange={(newContent: string) => setEditingSlideContent(newContent)}
+                            onSubmit={submitSlide}
+                            onCopy={copySlide}
+                            onDelete={deleteSlide}
+                        />
+                    </Dialog>
+                }
 
-            {songId
-                ? <h2 className="text-center">Editing: "{song.name}"</h2>
-                : <h2 className="text-center">Create a new Song</h2>
-            }
+                {songId
+                    ? <h2 className="text-center">Editing: "{song.name}"</h2>
+                    : <h2 className="text-center">Create a new Song</h2>
+                }
 
-            <form className="formgrid gridw-auto p-3" onSubmit={(e) => { e.preventDefault(); submitSong() }}>
-                <div className="field m-3 p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <i className="pi pi-heart-fill"></i>
-                    </span>
-                    <span className="p-float-label">
-                        <InputText id="song-name" placeholder="Song Name" value={editingSongName} onChange={e => setEditingSongName(e.target.value)} />
-                        <label htmlFor="song-name" className="">Song Name</label>
-                    </span>
-                    <Button type="button" label={songId ? 'Update' : 'Create'}
-                        disabled={song.name === editingSongName}
-                        onClick={submitSong} />
-                    {songId > 0 &&
-                        <Button severity="danger" onClick={(e) => {
-                            e.preventDefault();
-                            if (confirm('Are you sure you want to delete this song? It cannot be undone...')) { deleteSong() }
-                        }
-                        }>Delete this Song</Button>
-                    }
-                </div>
-            </form>
-            {songId > 0 &&
-                <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="tile-group grid">
-                    {slides.map((slide: Slide, index: number) => <div className="col-6 md:col-4 lg:col-2" key={'tile-' + slide.id}>
-                        <Tile headerIcon={SlideTileHeaderIcon({ slide })} onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
-                    </div>)}
-                    <div key="add-btn" className="col-6 md:col-4 lg:col-2">
-                        <Tile noDragHandle={true} title="Add new Slide" className="add-button" onClick={addSlide}>+</Tile>
+                <form className="formgrid gridw-auto p-3" onSubmit={(e) => { e.preventDefault(); submitSong() }}>
+                    <div className="field m-3 p-inputgroup flex-1">
+                        <span className="p-inputgroup-addon">
+                            <i className="pi pi-heart-fill"></i>
+                        </span>
+                        <span className="p-float-label">
+                            <InputText id="song-name" placeholder="Song Name" value={editingSongName} onChange={e => setEditingSongName(e.target.value)} />
+                            <label htmlFor="song-name" className="">Song Name</label>
+                        </span>
                     </div>
-                </ReactSortable>
-            }
+                </form>
+                {songId > 0 &&
+                    <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="m-3 tile-group grid">
+                        {slides.map((slide: Slide, index: number) =>
+                            <div className="col-6 md:col-4 lg:col-2" key={'tile-' + slide.id}>
+                                <Tile header={SlideTileHeader({ slide })} onClick={() => setEditingSlideId(slide.id)} index={index}>{slide.name}</Tile>
+                            </div>)}
+                        <div key="add-btn" className="col-6 md:col-4 lg:col-2">
+                            <Tile noDragHandle={true} title="Add new Slide" className="add-button" onClick={addSlide}>+</Tile>
+                        </div>
+                    </ReactSortable>
+                }
+
+                <div className="m-3 flex justify-content-center">
+                    <Button type="button"
+                        disabled={editingSongName.length < 1}
+                        onClick={submitSong}>{songId ? <>Save Changes <i className="pi pi-check ml-3"></i></> : 'Create'}</Button>
+                </div>
+            </Panel>
         </>
         )}
     </GasLayout>

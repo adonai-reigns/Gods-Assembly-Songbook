@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ReactSortable } from "react-sortablejs";
 import { Dialog } from "primereact/dialog";
 import { FileUpload } from "primereact/fileupload";
+import { Card } from "primereact/card";
 
 import Button from './Button';
 import Tile from "./Tile";
@@ -119,6 +120,14 @@ const WallpaperPicker = function (props: propsInterface) {
         }
     }
 
+    const cardFooter = () => {
+        return <>{(multiple || files.length < 1) &&
+            <div className="text-right">
+                <Button onClick={() => setShowFilePicker(true)}><i className="pi pi-plus mr-2"></i>New File</Button>
+            </div>}
+        </>
+    }
+
     useEffect(() => {
         axios.patch(apiUrl + '/wallpapers/setFilesSorting/' + wallpaperId, { files }).then(() => {
             if (props.onDelete) {
@@ -149,20 +158,22 @@ const WallpaperPicker = function (props: propsInterface) {
                 url={apiUrl + '/wallpapers/uploadWallpaper'}
             />
         </Dialog>
-        {(multiple || files.length < 1) &&
-            <div className="text-right">
-                <Button onClick={() => setShowFilePicker(true)}><i className="pi pi-plus mr-2"></i>New File</Button>
-            </div>}
-        <div className="grid wallpaper-picker">
-            <ReactSortable handle=".drag-handle" swapClass="swapping" list={files} setList={setFiles} className="tile-group grid">
-                {files.map((file: File) =>
-                    <Tile key={file.filename} className="col-12 sm:col-6 md:col-4 lg:col-3" headerIconRight={true}
-                        onClick={(e: any) => onPick(e, file)}
-                        headerIcon={<i className="pi pi-trash text-align-right font-red" onClick={() => deleteFile(file)}></i>}>
-                        <img src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} />
-                    </Tile>)}
-            </ReactSortable>
-        </div>
+
+        <Card header={<h3>Background Images</h3>} footer={cardFooter}>
+            <div className={`${props.className} grid wallpaper-picker`}>
+                <ReactSortable handle=".drag-handle" swapClass="swapping" list={files} setList={setFiles} className="tile-group grid">
+                    {files.map((file: File) => <div key={file.filename} className="col-12 sm:col-6 md:col-4 lg:col-3">
+                        <Tile headerIconRight={true}
+                            onClick={(e: any) => onPick(e, file)}
+                            header={<i className="pi pi-trash text-align-right font-red" onClick={() => deleteFile(file)}></i>}>
+                            <img src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} />
+                        </Tile>
+                    </div>)}
+                </ReactSortable>
+            </div>
+
+        </Card>
+        
     </>
 
 }

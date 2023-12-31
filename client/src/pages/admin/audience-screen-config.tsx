@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import LiveSocket from '../../components/live/LiveSocket';
 
+import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 
@@ -149,50 +150,54 @@ const AudienceScreenConfig = function (props: propsInterface) {
 
     return <AdminLayout>
 
-        <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="font-size">Font Size</label>
-            </span>
-            <Dropdown id="font-size" placeholder="Font Size"
-                options={sizesAsDropdownOptions}
-                value={screenStyle.fontSize}
-                onChange={e => handleOnValueChange('fontSize', e.target.value)} />
-        </div>
+        <Panel>
 
-        <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="padding">Padding</label>
-            </span>
-            <Dropdown id="padding" placeholder="Padding"
-                options={sizesAsDropdownOptions}
-                value={screenStyle.padding}
-                onChange={e => handleOnValueChange('padding', e.target.value)} />
-        </div>
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="font-size">Font Size</label>
+                </span>
+                <Dropdown id="font-size" placeholder="Font Size"
+                    options={sizesAsDropdownOptions}
+                    value={screenStyle.fontSize}
+                    onChange={e => handleOnValueChange('fontSize', e.target.value)} />
+            </div>
 
-        <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="text-align">Text Align</label>
-            </span>
-            <Dropdown id="text-align" placeholder="Text Align"
-                options={textAlignsAsDropdownOptions}
-                value={screenStyle.textAlign}
-                onChange={e => handleOnValueChange('textAlign', e.target.value)} />
-        </div>
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="padding">Padding</label>
+                </span>
+                <Dropdown id="padding" placeholder="Padding"
+                    options={sizesAsDropdownOptions}
+                    value={screenStyle.padding}
+                    onChange={e => handleOnValueChange('padding', e.target.value)} />
+            </div>
 
-        <div className="field p-inputgroup flex-1">
-            <span className="p-inputgroup-addon">
-                <label htmlFor="text-align">Show Slide Type</label>
-            </span>
-            <Dropdown id="text-align" placeholder="Show Slide Type"
-                options={booleanAsDropdownOptions}
-                value={screenStyle.showSlideType}
-                optionLabel="label"
-                optionValue="value"
-                onChange={e => handleOnValueChange('showSlideType', e.value)} />
-        </div>
-        <div className="field m-3 p-inputgroup flex justify-content-center">
-            <Button onClick={publishToScreen}>Publish to Screen</Button>
-        </div>
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="text-align">Text Align</label>
+                </span>
+                <Dropdown id="text-align" placeholder="Text Align"
+                    options={textAlignsAsDropdownOptions}
+                    value={screenStyle.textAlign}
+                    onChange={e => handleOnValueChange('textAlign', e.target.value)} />
+            </div>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="text-align">Show Slide Type</label>
+                </span>
+                <Dropdown id="text-align" placeholder="Show Slide Type"
+                    options={booleanAsDropdownOptions}
+                    value={screenStyle.showSlideType}
+                    optionLabel="label"
+                    optionValue="value"
+                    onChange={e => handleOnValueChange('showSlideType', e.value)} />
+            </div>
+            <div className="field m-3 p-inputgroup flex justify-content-center">
+                <Button onClick={publishToScreen}>Publish to Screen</Button>
+            </div>
+
+        </Panel>
 
     </AdminLayout>
 

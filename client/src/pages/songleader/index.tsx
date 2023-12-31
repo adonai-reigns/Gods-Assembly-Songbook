@@ -8,7 +8,7 @@ const Songleader = () => {
 
     const navigate = useNavigate();
 
-    return (<GasLayout>
+    return <GasLayout>
 
         <p className="subtitle">What is your service today?</p>
         <div className="screens grid justify-content-evenly">
@@ -53,7 +53,7 @@ const Songleader = () => {
             </div>
         </div>
 
-    </GasLayout>)
+    </GasLayout>
 
 }
 

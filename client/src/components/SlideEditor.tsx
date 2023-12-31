@@ -9,7 +9,7 @@ export interface propsInterface {
     className?: string;
     slide: Slide;
     onContentChange?: CallableFunction;
-    onSubmit?: CallableFunction;
+    onSubmit: CallableFunction;
     onDelete?: CallableFunction;
     onCopy?: CallableFunction;
 }
@@ -50,16 +50,8 @@ const SlideEditor = function (props: propsInterface) {
 
     const [quillInitted, setQuillInitted] = useState(false);
 
-    const copySlide = () => {
-        if (typeof props.onCopy === 'function') {
-            props.onCopy();
-        }
-    }
-
-    const deleteSlide = () => {
-        if (typeof props.onDelete === 'function') {
-            props.onDelete();
-        }
+    const doSubmit = () => {
+        props.onSubmit();
     }
 
     const initQuill = () => {
@@ -97,21 +89,9 @@ const SlideEditor = function (props: propsInterface) {
             headerTemplate={quillHeader()} />
 
         <div className="field m-3 p-inputgroup flex justify-content-center">
-
-            <Button type="button" onClick={copySlide} severity="secondary">
-                Copy <i className="pi pi-copy ml-3"></i>
+            <Button type="button" onClick={doSubmit}>
+                Save Changes <i className="pi pi-check ml-3"></i>
             </Button>
-
-            <Button type="button" title="Delete this Slide" onClick={(e) => {
-                e.preventDefault();
-                if (confirm('Are you sure you want to delete this slide? It cannot be undone...')) {
-                    deleteSlide();
-                }
-            }
-            } severity="danger">
-                Delete <i className="pi pi-trash ml-3"></i>
-            </Button>
-
         </div>
 
     </div>
