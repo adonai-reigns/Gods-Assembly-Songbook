@@ -78,6 +78,10 @@ const Settings = function (props: propsInterface) {
         reloadWallpaper();
     }
 
+    const onSort = () => {
+        reloadWallpaper();
+    } 
+    
     const reloadWallpaper = () => {
         axios.get(apiUrl + '/wallpapers/' + wallpaperId).then((response: any) => {
             if (response.data) {
@@ -144,7 +148,7 @@ const Settings = function (props: propsInterface) {
                 onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowSpeed: e.value ?? 0 })} />
         </div>
 
-        <WallpaperPicker wallpaperId={wallpaperId} multiple={true} onAdd={onAdd} onDelete={onDelete} />
+        <WallpaperPicker wallpaperId={wallpaperId} multiple={true} onAdd={onAdd} onDelete={onDelete} onSort={onSort} />
 
         <div className="field m-3 p-inputgroup flex justify-content-center">
             <Button onClick={publishToScreen}>Publish</Button>

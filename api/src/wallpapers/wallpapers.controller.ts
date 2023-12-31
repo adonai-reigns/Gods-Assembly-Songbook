@@ -82,7 +82,7 @@ export class WallpapersController {
         },
         limits: {
             fileSize: (1024 * 1024 * (Math.round(config.get('fileUploads.wallpapers.maxFileSizeMB'))))
-        } 
+        }
     }))
     async uploadWallpaper(
         @UploadedFiles(
@@ -163,12 +163,17 @@ export class WallpapersController {
         await this.wallpapersService.deleteFile(wallpaperId, filename);
     }
 
-    @Post('setSorting')
-    async setSorting(@Body('sortedIds') sortedIds: string) {
-        sortedIds.split(',').forEach(async (wallpaperId: string, sorting: number) => {
-            let wallpaper = await this.wallpapersService.findOne(parseInt(wallpaperId));
-            wallpaper.save();
+    @Patch('setFilesSorting/:wallpaperId')
+    async setSorting(@Param('wallpaperId') wallpaperId: number, @Body('files') files: FileDto[]) {
+        let sortedFileIds = files.map((file: FileDto) => file.filename);
+        let wallpaper = await this.wallpapersService.findOne(wallpaperId);
+        let wallpaperFiles = wallpaper.files.sort((fileA: FileDto, fileB: FileDto): number => {
+            let indexA = sortedFileIds.indexOf(fileA.filename);
+            let indexB = sortedFileIds.indexOf(fileB.filename);
+            return (indexA > indexB) ? 1 : -1;
         });
+        wallpaper.files = wallpaperFiles;
+        return this.wallpapersService.update(wallpaperId, wallpaper);
     }
 
     @Get('file/:wallpaperId/:filename')
