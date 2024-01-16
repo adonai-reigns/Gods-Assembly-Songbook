@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { getApiUrl, getLiveSocket } from '../stores/server';
 import axios from 'axios';
-
-import LiveSocket from '../components/live/LiveSocket';
 
 import Slide, { SlideTypeLabels } from '../models/slide';
 import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
@@ -41,8 +40,9 @@ const Audience = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const LiveSocket = getLiveSocket();
+
+    const apiUrl = getApiUrl();
 
     const [screenId] = useState<number>(1);
     const [assemblyWallpaperId] = useState<number>(1);

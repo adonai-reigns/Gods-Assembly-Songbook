@@ -6,6 +6,7 @@ import { Slide } from '../slides/slide.entity';
 import { Screen } from 'src/screens/screen.entity';
 import { Playlist, PlaylistSong } from 'src/playlists/playlist.entity';
 import { Wallpaper, SystemWallpapers } from 'src/wallpapers/wallpaper.entity';
+import { Setting, defaultSettings, settingsAttributes } from 'src/settings/settings.entity';
 
 export const SequelizeConfig = {
     database: 'GodsAssemblySongbook',
@@ -20,7 +21,7 @@ export const databaseProviders = [
         provide: 'SEQUELIZE',
         useFactory: async () => {
             const sequelize = new Sequelize(SequelizeConfig);
-            sequelize.addModels([Song, Slide, Screen, Playlist, PlaylistSong, Wallpaper]);
+            sequelize.addModels([Song, Slide, Screen, Playlist, PlaylistSong, Wallpaper, Setting]);
             await sequelize.sync({ force: false, alter: false });
 
             // make sure default wallpaper is created
@@ -35,6 +36,19 @@ export const databaseProviders = [
                     Wallpaper.create({ ...systemWallpaper as Wallpaper });
                 };
             }
+
+            defaultSettings.map(async (defaultSetting: settingsAttributes) => {
+                // make sure default setting is created
+                const defaultSettingCount = await Setting.count({
+                    where: {
+                        id: defaultSetting.id
+                    }
+                });
+                if (defaultSettingCount < 1) {
+                    // create the setting
+                    Setting.create({ ...defaultSetting as Setting });
+                }
+            });
 
             return sequelize;
         },

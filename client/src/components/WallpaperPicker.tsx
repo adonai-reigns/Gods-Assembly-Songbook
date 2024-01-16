@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { getApiUrl } from "../stores/server";
 import axios from 'axios';
 
 import { ReactSortable } from "react-sortablejs";
@@ -32,8 +33,7 @@ const WallpaperPicker = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const apiUrl = getApiUrl();
 
     const maxFileSizeMB = 30;
 

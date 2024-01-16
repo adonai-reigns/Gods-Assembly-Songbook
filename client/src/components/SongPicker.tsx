@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getApiUrl } from "../stores/server";
 import axios from "axios";
 
 import { DataTable } from "primereact/datatable";
@@ -32,8 +33,7 @@ const SongPicker = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const apiUrl = getApiUrl();
 
     const [songs, setSongs] = useState<Song[]>([]);
     const [selectedSongIds, setSelectedSongIds] = useState<number[] | undefined>(props.selectedSongIds);

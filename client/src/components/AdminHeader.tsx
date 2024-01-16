@@ -34,7 +34,13 @@ const AdminHeader = function (props: propsInterface) {
             label: 'Audience Screen',
             icon: 'pi pi-link',
             command: () => navigate('/admin/audience-screen-config')
+        },
+        {
+            label: 'Slide Clicker',
+            icon: 'pi pi-wifi',
+            command: () => navigate('/admin/clicker')
         }
+        
     ];
 
     return <div className="admin-header">

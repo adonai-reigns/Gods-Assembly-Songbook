@@ -1,5 +1,7 @@
 import { Route, NavigateFunction, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 
+import { loadSettings } from './stores/settings';
+
 import './App.scss'
 
 import NotFound from './pages/Page404';
@@ -8,6 +10,7 @@ import Attributions from './pages/Attributions';
 import Songleader from './pages/songleader';
 import AudienceScreenConfig from './pages/admin/audience-screen-config';
 import AdminSettings from './pages/admin/settings';
+import AdminClicker from './pages/admin/clicker';
 import SongleaderSong from './pages/songleader/song';
 import SongleaderSongs from './pages/songleader/songs';
 import Plan from './pages/songleader/plan';
@@ -15,6 +18,8 @@ import Sing from './pages/songleader/sing';
 import Audience from './pages/Audience';
 
 export default function App() {
+
+    loadSettings();
 
     const router = createBrowserRouter(
         createRoutesFromElements(<>
@@ -31,6 +36,7 @@ export default function App() {
             <Route path="admin">
                 <Route path="audience-screen-config" element={<AudienceScreenConfig />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="clicker" element={<AdminClicker />} />
             </Route>
             <Route path="audience" element={<Audience />} />
             <Route path="*" element={<NotFound />}></Route>

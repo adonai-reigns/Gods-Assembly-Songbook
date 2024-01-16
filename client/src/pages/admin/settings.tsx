@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getApiUrl, getLiveSocket } from '../../stores/server';
 import axios from 'axios';
 
 import { Panel } from 'primereact/panel';
@@ -7,7 +8,6 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 
 import WallpaperPicker from '../../components/WallpaperPicker';
-import LiveSocket from '../../components/live/LiveSocket';
 
 import { BackgroundSize, Wallpaper, WallpaperStyle } from '../../models/wallpaper';
 
@@ -56,8 +56,9 @@ const Settings = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const LiveSocket = getLiveSocket();
+
+    const apiUrl = getApiUrl();
 
     const [wallpaperId] = useState<number>(1);
     const [wallpaper, setWallpaper] = useState<Wallpaper>(new Wallpaper());

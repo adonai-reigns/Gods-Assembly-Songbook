@@ -44,11 +44,19 @@
             overflow: normal;
             gap: 20px;
 
+            &.clicker-focus {
+                border: solid 3px green;
+            }
+
             .song-tile-container {
                 width: 100%;
                 height: 20vh;
                 background: url('/images/vecteezy_music-notes-rainbow-colourful-on-white-background_7206554_442/vecteezy_music-notes-rainbow-colourful-on-white-background_7206554-transparent.png') no-repeat center center;
                 background-size: cover;
+
+                &.clicker-focus {
+                    border: solid 3px green;
+                }
 
                 .tile {
                     border: solid 1px gray;
@@ -165,6 +173,10 @@
         margin: 0;
         padding: 0;
 
+        &.clicker-focus {
+            border: solid 3px green;
+        }
+
         h2 {
             position: absolute;
             z-index: 3;
@@ -185,6 +197,9 @@
             .slide-tile-container {
                 height: 28vh;
                 
+                &.clicker-focus {
+                    border: solid 3px green;
+                }
 
                 .tile {
                     border: solid 1px gray;
@@ -297,6 +312,10 @@
         overflow: hidden;
         margin: 0;
         padding: 0;
+
+        &.clicker-focus {
+            border: solid 3px green;
+        }
 
         .published-slide {
             h2 {
@@ -417,6 +436,10 @@
                     background-color: crimson;
                 }
             }
+        }
+
+        .clicker-buttons {
+            display: none;
         }
     }
 }

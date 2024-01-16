@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getApiUrl } from "../../stores/server";
 import axios from 'axios';
 
 import { Dialog } from "primereact/dialog";
@@ -31,8 +32,7 @@ const Plan = function (props: propsInterface) {
     const params = useParams();
     const navigate = useNavigate();
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const apiUrl = getApiUrl();
 
     const [editingPlaylist, setEditingPlaylist] = useState<Playlist | null>(null);
     const [editingPlaylistName, setEditingPlaylistName] = useState<string>('');

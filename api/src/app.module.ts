@@ -10,9 +10,10 @@ import { LiveModule } from './live/live.module';
 import { ScreensModule } from './screens/screens.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { WallpapersModule } from './wallpapers/wallpapers.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
-    imports: [SongsModule, DatabaseModule, SlidesModule, LiveModule, ScreensModule, PlaylistsModule, WallpapersModule],
+    imports: [SongsModule, DatabaseModule, SlidesModule, LiveModule, ScreensModule, PlaylistsModule, WallpapersModule, SettingsModule],
     controllers: [AppController],
     providers: [AppService],
 })

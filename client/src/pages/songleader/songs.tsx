@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../../stores/server';
 
 import SongPicker from '../../components/SongPicker';
 import Button from "../../components/Button";
@@ -26,8 +27,7 @@ const SongsContent = function (props: propsInterface) {
 
     const navigate = useNavigate();
 
-    const url = new URL(window.location.href);
-    const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
+    const apiUrl = getApiUrl();
 
     const [songs, setSongs] = useState<Song[]>([]);
 

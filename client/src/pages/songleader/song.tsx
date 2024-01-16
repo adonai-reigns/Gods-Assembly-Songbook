@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactSortable } from 'react-sortablejs';
-
+import { getApiUrl } from '../../stores/server';
 import axios from 'axios';
 
 import Page404 from '../Page404';
@@ -42,12 +42,11 @@ export const propsDefaults = {
     className: '',
 }
 
-const url = new URL(window.location.href);
-const apiUrl = url.protocol + '//' + url.hostname + ':3000/api';
-
 const SongContent = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
+
+    const apiUrl = getApiUrl();
 
     const navigate = useNavigate();
 
@@ -299,7 +298,7 @@ const SongContent = function (props: propsInterface) {
                 <span className="p-inputgroup-addon">
                     <label htmlFor="slide-name" className="font-normal">Slide Name</label>
                 </span>
-                
+
                 <InputText id="slide-name" placeholder="Slide Name" value={editingSlideName}
                     onChange={e => handleOnNameChange(e.target.value)} />
 
@@ -312,7 +311,7 @@ const SongContent = function (props: propsInterface) {
 
             </div>
         </>
-        
+
     }
 
     const SlideTileHeader = function (props: any) {
