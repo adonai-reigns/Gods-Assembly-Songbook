@@ -22,7 +22,7 @@ import AudienceScreenConfig from "../admin/audience-screen-config";
 import PlainLayout from "../../layouts/PlainLayout";
 import GasLayout from "../../layouts/GasLayout";
 
-import { getSetting } from "../../stores/settings";
+import { getSettingValue } from "../../stores/settings";
 
 import "./sing.scss";
 
@@ -87,13 +87,13 @@ const Sing = function (props: propsInterface) {
     const defaultSong = new Song();
     defaultSong.name = '';
 
-    const clickerLeftButton = getSetting('clickerLeftButtonCharCode') ?? 'ArrowLeft';
-    const clickerRightButton = getSetting('clickerRightButtonCharCode') ?? 'ArrowRight';
-    const clickerUpButton = getSetting('clickerUpButtonCharCode') ?? 'ArrowUp';
-    const clickerDownButton = getSetting('clickerDownButtonCharCode') ?? 'ArrowDown';
-    const clickerLongpressTimeout = getSetting('clickerLongpressTimeout') ?? 1000;
-    const clickerIgnoreTypingDelay = getSetting('clickerIgnoreTypingDelay') ?? 1000;
-    const clickerSuppressKeyDefaults = getSetting('clickerSuppressKeyDefaults') ?? '';
+    const clickerLeftButton = getSettingValue('clickerLeftButtonCharCode') ?? 'ArrowLeft';
+    const clickerRightButton = getSettingValue('clickerRightButtonCharCode') ?? 'ArrowRight';
+    const clickerUpButton = getSettingValue('clickerUpButtonCharCode') ?? 'ArrowUp';
+    const clickerDownButton = getSettingValue('clickerDownButtonCharCode') ?? 'ArrowDown';
+    const clickerLongpressTimeout = getSettingValue('clickerLongpressTimeout') ?? 1000;
+    const clickerIgnoreTypingDelay = getSettingValue('clickerIgnoreTypingDelay') ?? 1000;
+    const clickerSuppressKeyDefaults = getSettingValue('clickerSuppressKeyDefaults') ?? '';
 
     const clickerLeftButtonRef = useRef<HTMLDivElement>(null);
     const clickerRightButtonRef = useRef<HTMLDivElement>(null);

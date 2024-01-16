@@ -8,10 +8,17 @@ const apiUrl = getApiUrl();
 
 export const settingsStore = atom<Setting[]>([]);
 
-export const getSetting = (name: string): any | undefined => {
+export const getSettingValue = (name: string): any | undefined => {
     let setting = settingsStore.get().filter((setting: Setting) => setting.name === name);
     if (setting && setting[0]) {
         return setting[0].value;
+    }
+}
+
+export const getSetting = (name: string): Setting | undefined => {
+    let setting = settingsStore.get().filter((setting: Setting) => setting.name === name);
+    if (setting && setting[0]) {
+        return setting[0];
     }
 }
 

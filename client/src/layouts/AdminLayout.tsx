@@ -9,6 +9,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 import "../styles/gas.scss";
 import './AdminLayout.scss';
+import { Tooltip } from 'primereact/tooltip';
 
 const AdminLayout = (props: any) => {
 
@@ -25,6 +26,7 @@ const AdminLayout = (props: any) => {
 
         <div className="m-3 text-left">
             <AdminHeader />
+            
             {props.children}
             <div className="promotional-footer">
                 <p>

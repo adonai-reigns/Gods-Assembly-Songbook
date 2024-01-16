@@ -27,10 +27,7 @@ export class Setting extends Model<settingsAttributes, settingsCreationAttribute
     @Column(DataType.TEXT)
     description: string;
 
-
 }
-
-
 
 export const defaultSettings: settingsAttributes[] = [
     {
@@ -97,25 +94,25 @@ export const defaultSettings: settingsAttributes[] = [
         id: 11,
         name: 'clickerLeftButtonCharCode',
         value: 'ArrowLeft',
-        description: '',
+        description: 'The button that is used for the left-button.',
     },
     {
         id: 12,
         name: 'clickerRightButtonCharCode',
         value: 'ArrowRight',
-        description: '',
+        description: 'The button that is used for the right-button.',
     },
     {
         id: 13,
         name: 'clickerUpButtonCharCode',
         value: 'ArrowUp',
-        description: '',
+        description: 'The button that is used for the up-button.',
     },
     {
         id: 14,
         name: 'clickerDownButtonCharCode',
         value: 'ArrowDown',
-        description: '',
+        description: 'The button that is used for the down-button.',
     },
     {
         id: 15,
@@ -133,22 +130,20 @@ export const defaultSettings: settingsAttributes[] = [
         id: 17,
         name: 'clickerLongpressTimeout',
         value: 400,
-        description: '',
+        description: 'The delay time in milliseconds before a longpress event is detected, after a button has been held down.',
     },
     {
         id: 18,
         name: 'clickerIgnoreTypingDelay',
         value: 350,
-        description: '',
+        description: 'The minimum time in milliseconds to wait between key press events. This can be used to ignore typing, or disabled by setting to zero.',
     },
     {
         id: 19,
         name: 'clickerSuppressKeyDefaults',
         value: ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"],
-        description: '',
+        description: 'List every button that should be suppressed while the songlist is playing. This will prevent the buttons from doing what they normally do when a songlist is playing.',
     },
 
 ];
-
-
 
