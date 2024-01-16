@@ -120,7 +120,7 @@ const PlaylistPicker = function (props: propsInterface) {
 
     return <>
         <DataTable footer={datatableFooter} value={playlists} className="playlists"
-            emptyMessage={<p>No playlists have been created yet. <Button url="/songleader/plan" onClick={onAdd}>Add a playlist &raquo;</Button></p>}
+            emptyMessage={<p>No playlists have been created yet.</p>}
             filters={filters} globalFilterFields={['name']}>
             <Column field="name" header="Name" sortable filter filterPlaceholder="Search by Name" />
             <Column body={createdAtBodyTemplate} header="Created At" sortable sortField="createdAt" sortFunction={sortByDateFunction} />
