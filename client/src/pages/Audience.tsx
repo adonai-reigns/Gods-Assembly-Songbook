@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { getApiUrl, getLiveSocket } from '../stores/server';
 import axios from 'axios';
 
+import * as _ from 'lodash';
+const { isEmpty } = _;
+
 import Slide, { SlideTypeLabels } from '../models/slide';
 import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
 import { Wallpaper, File, getMimeTypeFormat, MimeType } from '../models/wallpaper';
@@ -202,14 +205,25 @@ const Audience = function (props: propsInterface) {
 
     return <PlainLayout>
 
-        {wallpaperFile && <div className={`wallpaper ${wallpaper.style.backgroundSize}`} style={{ backgroundImage: `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}")` }}>
-            {['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} />}
-            {['mkv', 'mp4', 'webm', 'ogg', 'ogx'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <video width="320" height="240" autoPlay muted loop>
-                <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} type="video/mp4"></source>
-                <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} type="video/ogg"></source>
+        {wallpaper.files.map((_wallpaperFile: File) => <div key={_wallpaperFile.filename}
+            className={`wallpaper ${wallpaper.style.backgroundSize}`}
+            style={{
+                backgroundImage: (['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(_wallpaperFile.mimetype as MimeType) ?? '') > -1
+                    ? `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}")`
+                    : ''),
+                display: _wallpaperFile.filename === wallpaperFile?.filename ? 'block' : 'none'
+            }}
+        >
+            {/* image background */}
+            {['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(_wallpaperFile.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}`} />}
+
+            {/* video background */}
+            {['mkv', 'mp4', 'webm', 'ogg', 'ogx'].indexOf(getMimeTypeFormat(_wallpaperFile.mimetype as MimeType) ?? '') > -1 && <video width="320" height="240" autoPlay muted loop>
+                <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}`} type="video/mp4"></source>
+                <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}`} type="video/ogg"></source>
                 Your browser does not support the video tag.
             </video>}
-        </div>}
+        </div>)}
 
         <div className="fullscreen-button">Click for Fullscreen mode</div>
 
