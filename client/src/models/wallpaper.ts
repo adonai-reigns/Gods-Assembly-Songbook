@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 export enum Role {
     assembly = 'assembly',
     // playlist = 'playlist',
@@ -16,15 +18,36 @@ export enum BackgroundSize {
 export enum Format {
     png = 'png',
     jpg = 'jpg',
-    gif = 'gif'
+    jpeg = 'jpg',
+    gif = 'gif',
+    mkv = 'mkv',
+    mp4 = 'mp4',
+    mpeg = 'mp4',
+    ogg = 'ogg',
+    ogx = 'ogx',
+    webm = 'webm'
 }
 
-export enum AllowedMimeTypes {
+export enum MimeType {
     png = 'image/png',
     jpg = 'image/jpg',
     jpeg = 'image/jpeg',
     gif = 'image/gif',
+    mkv = 'video/x-matroska',
+    mp4 = 'video/mp4',
+    mpeg = 'video/mpeg',
+    ogg = 'video/ogg',
+    ogx = 'application/ogg',
+    webm = 'video/webm'
 }
+
+export const getMimeTypeFormat = (mimeType: MimeType): Format | void => {
+    for (let keyname of Object.keys(MimeType)) {
+        if (get(MimeType, keyname) === mimeType) {
+            return get(Format, keyname);
+        }
+    }
+};
 
 export class WallpaperStyle {
     backgroundSize: BackgroundSize = BackgroundSize.center;

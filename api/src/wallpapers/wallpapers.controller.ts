@@ -30,7 +30,7 @@ import * as config from 'config';
 import { CreateWallpaperDto, FileDto } from './dto/create-wallpaper.dto';
 import { UpdateWallpaperDto } from './dto/update-wallpaper.dto';
 
-import { Format, Wallpaper, MimeType } from './wallpaper.entity';
+import { Wallpaper, MimeType } from './wallpaper.entity';
 import { WallpapersService } from './wallpapers.service';
 import { getAbsoluteUploadPath } from '../app.service';
 
@@ -76,6 +76,7 @@ export class WallpapersController {
         fileFilter(req, file, callback) {
             let isValid = true;
             if ([...Object.values(MimeType).map((v: string) => v)].indexOf(file.mimetype) < 0) {
+                console.log('file upload is of invalid mime type: ' + file.mimetype);
                 isValid = false;
             }
             callback(null, isValid);
@@ -137,7 +138,6 @@ export class WallpapersController {
         });
 
         wallpaper.files = wallpaperFiles;
-        wallpaper.format = 'png';
 
         return this.wallpapersService.update(wallpaperId, wallpaper);
 
@@ -185,27 +185,39 @@ export class WallpapersController {
 
         let resolvedFilepath = resolve(filepath);
 
-        if (!existsSync(resolvedFilepath)) {
+        if (!file || !existsSync(resolvedFilepath)) {
             throw new NotFoundException('The file cannot be found');
         } else {
-            switch (wallpaper.format) {
-                case Format.png:
-                case Format.jpg:
-                case Format.gif:
-                    response.contentType('image/' + wallpaper.format);
+            switch (file.mimetype) {
+                case MimeType.gif:
+                case MimeType.jpeg:
+                case MimeType.jpg:
+                case MimeType.png:
+                case MimeType.mkv:
+                case MimeType.mp4:
+                case MimeType.ogg:
+                case MimeType.ogx:
+                case MimeType.webm:
+                    response.contentType(file.mimetype);
                     break;
                 default:
-                    throw new BadRequestException('Unsupported File Type: ' + wallpaper.format);
+                    throw new BadRequestException('Unsupported File Type: ' + file.mimetype);
             }
+
+            response.set({
+                'Content-Disposition': 'inline; filename="' + file.filename + '"',
+                'Cache-Control': 'no-cache',
+                'Mime-Type': file.mimetype
+            });
+
+            const fileStream = createReadStream(resolvedFilepath);
+
+            return new StreamableFile(fileStream).setErrorHandler((error: any) => {
+                error && console.log('there was an error from the StreamableFile ' + file.filename + ' (' + file.mimetype + '): ', error.message);
+            });
+
         }
 
-        const fileStream = createReadStream(resolvedFilepath);
-
-        response.set({
-            'Content-Disposition': 'inline; filename="' + file.filename + '"'
-        });
-
-        return new StreamableFile(fileStream);
     }
 
 }

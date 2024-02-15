@@ -18,16 +18,17 @@ export enum BackgroundSize {
     tile = 'tile',
 }
 
-export enum Format {
-    png = 'png',
-    jpg = 'jpg',
-    gif = 'gif'
-}
-
 export enum MimeType {
     png = 'image/png',
-    jpg = 'image/jpeg',
-    gif = 'image/gif'
+    jpg = 'image/jpg',
+    jpeg = 'image/jpeg',
+    gif = 'image/gif',
+    mkv = 'video/x-matroska',
+    mp4 = 'video/mp4',
+    mpeg = 'video/mpeg',
+    ogg = 'video/ogg',
+    ogx = 'application/ogg',
+    webm = 'video/webm'
 }
 
 export class WallpaperStyle {
@@ -38,7 +39,6 @@ export class WallpaperStyle {
 interface wallpaperAttributes {
     id: number;
     name: string;
-    format: string;
     role: string;
     files: string;
     style: string;
@@ -54,9 +54,6 @@ export class Wallpaper extends Model<wallpaperAttributes, wallpaperCreationAttri
 
     @Column
     name: string;
-
-    @Column
-    format: string;
 
     @Column
     role: string;

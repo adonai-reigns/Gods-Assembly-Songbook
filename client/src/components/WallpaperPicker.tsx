@@ -10,7 +10,7 @@ import { Card } from "primereact/card";
 import Button from './Button';
 import Tile from "./Tile";
 
-import { File, AllowedMimeTypes } from "../models/wallpaper";
+import { File, MimeType, getMimeTypeFormat } from "../models/wallpaper";
 
 import './WallpaperPicker.scss';
 
@@ -35,7 +35,7 @@ const WallpaperPicker = function (props: propsInterface) {
 
     const apiUrl = getApiUrl();
 
-    const maxFileSizeMB = 30;
+    const maxFileSizeMB = 80;
 
     const wallpaperId = props.wallpaperId;
     const multiple = props.multiple;
@@ -153,27 +153,32 @@ const WallpaperPicker = function (props: propsInterface) {
                 onUpload={e => { onFileUpload(e); fileUploadRef.current?.clear(); setShowFilePicker(false); onAdd(); }}
                 onError={onFileUploadError}
                 onBeforeSend={onFileUploadBeforeSend}
-                accept={Object.values(AllowedMimeTypes).join('|')}
+                accept={Object.values(MimeType).join('|')}
                 maxFileSize={maxFileSizeMB * 1024 * 1024}
                 url={apiUrl + '/wallpapers/uploadWallpaper'}
             />
         </Dialog>
 
         <Card header={<h3>Background Images</h3>} footer={cardFooter}>
-            <div className={`${props.className} grid wallpaper-picker`}>
-                <ReactSortable handle=".drag-handle" swapClass="swapping" list={files} setList={setFiles} className="tile-group grid">
+            <div className={`${props.className} wallpaper-picker`}>
+                <ReactSortable handle=".drag-handle" swapClass="swapping" list={files} setList={setFiles} className="w-full tile-group grid">
                     {files.map((file: File) => <div key={file.filename} className="col-12 sm:col-6 md:col-4 lg:col-3">
                         <Tile headerIconRight={true}
                             onClick={(e: any) => onPick(e, file)}
                             header={<i className="pi pi-trash text-align-right font-red" onClick={() => deleteFile(file)}></i>}>
-                            <img src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} />
+                            {['jpg', 'png', 'gif'].indexOf(getMimeTypeFormat(file.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} />}
+                            {['mkv', 'mp4', 'webm', 'ogg', 'ogx'].indexOf(getMimeTypeFormat(file.mimetype as MimeType) ?? '') > -1 && <video width="320" height="240" autoPlay muted loop>
+                                <source src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} type="video/mp4"></source>
+                                <source src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} type="video/ogg"></source>
+                                Your browser does not support the video tag.
+                            </video>}
                         </Tile>
                     </div>)}
                 </ReactSortable>
             </div>
 
         </Card>
-        
+
     </>
 
 }

@@ -15,10 +15,6 @@ export class UpdateWallpaperDto {
 
     @IsString()
     @IsOptional()
-    format: string;
-
-    @IsString()
-    @IsOptional()
     role: string;
 
     @IsOptional()

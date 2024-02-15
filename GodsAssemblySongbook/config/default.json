@@ -8,9 +8,15 @@
                 "jpg",
                 "jpeg",
                 "png",
-                "gif"
+                "gif",
+                "webp",
+                "mkv",
+                "mp4",
+                "webm",
+                "ogg",
+                "ogx"
             ],
-            "maxFileSizeMB": 30,
+            "maxFileSizeMB": 80,
             "maxParallelUploadCount": 50
         }
     }

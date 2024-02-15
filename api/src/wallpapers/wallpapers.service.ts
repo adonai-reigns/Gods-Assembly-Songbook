@@ -28,7 +28,6 @@ export class WallpapersService {
         const wallpaper = new Wallpaper();
         wallpaper.id = createWallpaperDto.id ?? null;
         wallpaper.name = createWallpaperDto.name;
-        wallpaper.format = createWallpaperDto.format;
         wallpaper.role = createWallpaperDto.role;
         wallpaper.style = createWallpaperDto.style;
         wallpaper.files = [];
@@ -38,7 +37,6 @@ export class WallpapersService {
     async update(id: number, updateWallpaperDto: UpdateWallpaperDto): Promise<Wallpaper> {
         const wallpaper = await this.findOne(id);
         wallpaper.name = updateWallpaperDto.name || wallpaper.name;
-        wallpaper.format = updateWallpaperDto.format || wallpaper.format;
         wallpaper.role = updateWallpaperDto.role || wallpaper.role;
         wallpaper.files = updateWallpaperDto.files || wallpaper.files;
         wallpaper.style = updateWallpaperDto.style || wallpaper.style;

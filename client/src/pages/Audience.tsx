@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import Slide, { SlideTypeLabels } from '../models/slide';
 import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
-import { Wallpaper, File } from '../models/wallpaper';
+import { Wallpaper, File, getMimeTypeFormat, MimeType } from '../models/wallpaper';
 
 import PlainLayout from '../layouts/PlainLayout';
 import "./Audience.scss";
@@ -203,7 +203,12 @@ const Audience = function (props: propsInterface) {
     return <PlainLayout>
 
         {wallpaperFile && <div className={`wallpaper ${wallpaper.style.backgroundSize}`} style={{ backgroundImage: `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}")` }}>
-            <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} />
+            {['jpg', 'png', 'gif'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} />}
+            {['mkv', 'mp4', 'webm', 'ogg', 'ogx'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <video width="320" height="240" autoPlay muted loop>
+                <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} type="video/mp4"></source>
+                <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} type="video/ogg"></source>
+                Your browser does not support the video tag.
+            </video>}
         </div>}
 
         <div className="fullscreen-button">Click for Fullscreen mode</div>

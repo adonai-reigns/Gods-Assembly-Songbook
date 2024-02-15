@@ -16,7 +16,6 @@ import { Setting } from '../../models/settings';
 import AdminLayout from '../../layouts/AdminLayout';
 import { config, getSetting, getSettingValue } from '../../stores/settings';
 import { Tooltip } from 'primereact/tooltip';
-import { Helmet } from 'react-helmet-async';
 
 export interface propsInterface {
     className?: string,
@@ -164,7 +163,7 @@ const Clicker = function (props: propsInterface) {
             <div className="relative border-1">
 
                 <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
+                    <span className="p-inputgroup-addon">
                         <label htmlFor="background-size">Button Longpress Timeout</label>
                     </span>
                     <div className="w-full flex flex-column justify-content-center p-inputtext border-noround">
