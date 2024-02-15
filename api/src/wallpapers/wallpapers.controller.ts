@@ -188,33 +188,25 @@ export class WallpapersController {
         if (!file || !existsSync(resolvedFilepath)) {
             throw new NotFoundException('The file cannot be found');
         } else {
-            switch (file.mimetype) {
-                case MimeType.gif:
-                case MimeType.jpeg:
-                case MimeType.jpg:
-                case MimeType.png:
-                case MimeType.mkv:
-                case MimeType.mp4:
-                case MimeType.ogg:
-                case MimeType.ogx:
-                case MimeType.webm:
-                    response.contentType(file.mimetype);
-                    break;
-                default:
-                    throw new BadRequestException('Unsupported File Type: ' + file.mimetype);
+
+            if ((Object.values(MimeType) as string[]).indexOf(file.mimetype) > -1) {
+                response.contentType(file.mimetype);
+
+                response.set({
+                    'Content-Disposition': 'inline; filename="' + file.filename + '"',
+                    'Cache-Control': 'no-cache',
+                    'Mime-Type': file.mimetype
+                });
+
+                const fileStream = createReadStream(resolvedFilepath);
+
+                return new StreamableFile(fileStream).setErrorHandler((error: any) => {
+                    error && console.log('there was an error from the StreamableFile ' + file.filename + ' (' + file.mimetype + '): ', error.message);
+                });
+
+            } else {
+                throw new BadRequestException('Unsupported File Type: ' + file.mimetype);
             }
-
-            response.set({
-                'Content-Disposition': 'inline; filename="' + file.filename + '"',
-                'Cache-Control': 'no-cache',
-                'Mime-Type': file.mimetype
-            });
-
-            const fileStream = createReadStream(resolvedFilepath);
-
-            return new StreamableFile(fileStream).setErrorHandler((error: any) => {
-                error && console.log('there was an error from the StreamableFile ' + file.filename + ' (' + file.mimetype + '): ', error.message);
-            });
 
         }
 

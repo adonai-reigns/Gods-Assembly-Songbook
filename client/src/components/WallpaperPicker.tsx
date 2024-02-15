@@ -166,7 +166,7 @@ const WallpaperPicker = function (props: propsInterface) {
                         <Tile headerIconRight={true}
                             onClick={(e: any) => onPick(e, file)}
                             header={<i className="pi pi-trash text-align-right font-red" onClick={() => deleteFile(file)}></i>}>
-                            {['jpg', 'png', 'gif'].indexOf(getMimeTypeFormat(file.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} />}
+                            {['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(file.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} />}
                             {['mkv', 'mp4', 'webm', 'ogg', 'ogx'].indexOf(getMimeTypeFormat(file.mimetype as MimeType) ?? '') > -1 && <video width="320" height="240" autoPlay muted loop>
                                 <source src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} type="video/mp4"></source>
                                 <source src={`${apiUrl}/wallpapers/file/${wallpaperId}/${file.filename}`} type="video/ogg"></source>

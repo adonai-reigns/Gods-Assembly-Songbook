@@ -203,7 +203,7 @@ const Audience = function (props: propsInterface) {
     return <PlainLayout>
 
         {wallpaperFile && <div className={`wallpaper ${wallpaper.style.backgroundSize}`} style={{ backgroundImage: `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}")` }}>
-            {['jpg', 'png', 'gif'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} />}
+            {['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} />}
             {['mkv', 'mp4', 'webm', 'ogg', 'ogx'].indexOf(getMimeTypeFormat(wallpaperFile.mimetype as MimeType) ?? '') > -1 && <video width="320" height="240" autoPlay muted loop>
                 <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} type="video/mp4"></source>
                 <source src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${wallpaperFile.filename}`} type="video/ogg"></source>

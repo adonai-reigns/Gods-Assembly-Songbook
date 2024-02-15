@@ -23,6 +23,7 @@ export enum MimeType {
     jpg = 'image/jpg',
     jpeg = 'image/jpeg',
     gif = 'image/gif',
+    webp = 'image/webp',
     mkv = 'video/x-matroska',
     mp4 = 'video/mp4',
     mpeg = 'video/mpeg',
