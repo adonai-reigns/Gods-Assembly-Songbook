@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { getApiUrl, getLiveSocket } from '../stores/server';
 import axios from 'axios';
 
-import * as _ from 'lodash';
-const { isEmpty } = _;
-
 import Slide, { SlideTypeLabels } from '../models/slide';
 import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
 import { Wallpaper, File, getMimeTypeFormat, MimeType } from '../models/wallpaper';
 
 import PlainLayout from '../layouts/PlainLayout';
+
 import "./Audience.scss";
+import 'animate.css';
+
 
 export interface propsInterface {
     className?: string;
@@ -206,12 +206,11 @@ const Audience = function (props: propsInterface) {
     return <PlainLayout>
 
         {wallpaper.files.map((_wallpaperFile: File) => <div key={_wallpaperFile.filename}
-            className={`wallpaper ${wallpaper.style.backgroundSize}`}
+            className={`wallpaper ${wallpaper.style.backgroundSize} animate__${wallpaper.style.slideshowAnimationSpeed} ${(_wallpaperFile.filename === wallpaperFile?.filename ? 'animate__animated animate__' + wallpaper.style.slideshowAnimationIn : 'animate__animated animate__' + wallpaper.style.slideshowAnimationOut)}`}
             style={{
                 backgroundImage: (['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(_wallpaperFile.mimetype as MimeType) ?? '') > -1
                     ? `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}")`
-                    : ''),
-                display: _wallpaperFile.filename === wallpaperFile?.filename ? 'block' : 'none'
+                    : '')
             }}
         >
             {/* image background */}
@@ -225,7 +224,7 @@ const Audience = function (props: propsInterface) {
             </video>}
         </div>)}
 
-        <div className="fullscreen-button">Click for Fullscreen mode</div>
+        <div className="fullscreen-button"> Click for Fullscreen mode</div>
 
         <div className="audience-slide" id="audience-slide-container"
             style={screenStyleComputed.audienceSlide}>
@@ -234,7 +233,7 @@ const Audience = function (props: propsInterface) {
             <div className="audience-slide-content"
                 dangerouslySetInnerHTML={{ __html: slideContent }} />
         </div>
-    </PlainLayout>
+    </PlainLayout >
 
 }
 

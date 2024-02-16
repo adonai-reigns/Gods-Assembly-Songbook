@@ -1,3 +1,6 @@
+body:not(.loading){
+    background-image: none;
+}
 .fullscreen-button {
     position: fixed;
     bottom: 1em;
@@ -13,6 +16,7 @@
 }
 
 .wallpaper {
+    opacity: 0;
     position: fixed;
     top: 0;
     left: 0;
@@ -22,8 +26,6 @@
     border-radius: 0;
     background-position: center;
     background-repeat: no-repeat;
-    -webkit-transition: background-image 2s ease-in-out;
-    transition: background-image 2s ease-in-out;
 }
 
 .wallpaper img {
@@ -102,3 +104,4 @@
 .audience-slide {
     position: relative;
 }
+

@@ -19,7 +19,7 @@ const PlainLayout = (props: any) => {
             <meta name="generator" content={`Typed by a Real Person!`} />
             <title>God's Assembly Songbook</title>
         </Helmet>
-        <div className="m-3 text-left">
+        <div className="m-3 text-left" style={props.style ?? {}}>
             {props.children}
         </div>
     </>)

@@ -9,7 +9,14 @@ import { Button } from 'primereact/button';
 
 import WallpaperPicker from '../../components/WallpaperPicker';
 
-import { BackgroundSize, Wallpaper, WallpaperStyle } from '../../models/wallpaper';
+import {
+    BackgroundSize,
+    Wallpaper,
+    WallpaperStyle,
+    slideshowAnimationIns,
+    slideshowAnimationOuts,
+    slideshowAnimationSpeeds
+} from '../../models/wallpaper';
 
 import AdminLayout from '../../layouts/AdminLayout';
 
@@ -63,6 +70,9 @@ const Settings = function (props: propsInterface) {
     const [wallpaperId] = useState<number>(1);
     const [wallpaper, setWallpaper] = useState<Wallpaper>(new Wallpaper());
     const [wallpaperStyle, setWallpaperStyle] = useState<WallpaperStyle>(new WallpaperStyle());
+    const [slideshowAnimationInOptions] = useState<any>(slideshowAnimationIns);
+    const [slideshowAnimationOutOptions] = useState<any>(slideshowAnimationOuts);
+    const [slideshowAnimationSpeedOptions] = useState<any>(slideshowAnimationSpeeds);
 
     const [patchStatus, setPatchStatus] = useState<WallpaperStyle | undefined>();
 
@@ -150,6 +160,42 @@ const Settings = function (props: propsInterface) {
                 <InputNumber id="slideshow-speed" placeholder="Slideshow Speed"
                     value={wallpaperStyle.slideshowSpeed}
                     onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowSpeed: e.value ?? 0 })} />
+            </div>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="slideshow-speed">Slideshow Animation In</label>
+                </span>
+                <Dropdown id="background-size" placeholder="Slideshow Animation In"
+                    options={slideshowAnimationInOptions}
+                    optionLabel="title"
+                    optionValue="code"
+                    value={wallpaperStyle.slideshowAnimationIn}
+                    onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationIn: e.target.value })} />
+            </div>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="slideshow-speed">Slideshow Animation Out</label>
+                </span>
+                <Dropdown id="background-size" placeholder="Slideshow Animation Out"
+                    options={slideshowAnimationOutOptions}
+                    optionLabel="title"
+                    optionValue="code"
+                    value={wallpaperStyle.slideshowAnimationOut}
+                    onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationOut: e.target.value })} />
+            </div>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="slideshow-speed">Slideshow Animation Speed</label>
+                </span>
+                <Dropdown id="background-size" placeholder="Slideshow Animation Speed"
+                    options={slideshowAnimationSpeedOptions}
+                    optionLabel="title"
+                    optionValue="code"
+                    value={wallpaperStyle.slideshowAnimationSpeed}
+                    onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationSpeed: e.target.value })} />
             </div>
 
             <WallpaperPicker className="m-3" wallpaperId={wallpaperId} multiple={true} onAdd={onAdd} onDelete={onDelete} onSort={onSort} />

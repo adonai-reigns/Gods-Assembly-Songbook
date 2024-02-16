@@ -43,6 +43,59 @@ export enum MimeType {
     webm = 'video/webm'
 }
 
+export const slideshowAnimationIns = [
+    {
+        code: 'fadeIn',
+        title: 'Fade In'
+    },
+    {
+        code: 'bounceIn',
+        title: 'Bounce In'
+    },
+    {
+        code: 'zoomIn',
+        title: 'Zoom In'
+    }
+];
+
+export const slideshowAnimationOuts = [
+    {
+        code: 'fadeOut',
+        title: 'Fade Out'
+    },
+    {
+        code: 'bounceOut',
+        title: 'Bounce Out'
+    },
+    {
+        code: 'zoomOut',
+        title: 'Zoom Out'
+    }
+];
+
+export const slideshowAnimationSpeeds = [
+    {
+        code: 'slower',
+        title: 'Slower'
+    },
+    {
+        code: 'slow',
+        title: 'Slow'
+    },
+    {
+        code: 'normal',
+        title: 'Normal'
+    },
+    {
+        code: 'fast',
+        title: 'Fast'
+    },
+    {
+        code: 'faster',
+        title: 'Faster'
+    }
+];
+
 export const getMimeTypeFormat = (mimeType: MimeType): Format | void => {
     for (let keyname of Object.keys(MimeType)) {
         if (get(MimeType, keyname) === mimeType) {
@@ -54,6 +107,9 @@ export const getMimeTypeFormat = (mimeType: MimeType): Format | void => {
 export class WallpaperStyle {
     backgroundSize: BackgroundSize = BackgroundSize.center;
     slideshowSpeed: number = 5;
+    slideshowAnimationIn: string = 'fadeIn';
+    slideshowAnimationOut: string = 'fadeOut';
+    slideshowAnimationSpeed: string = 'normal';
 }
 
 export class File {
