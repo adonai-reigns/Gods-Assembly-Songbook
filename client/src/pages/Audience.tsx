@@ -137,6 +137,11 @@ const Audience = function (props: propsInterface) {
         if (wallpaper.id < 1) {
             return;
         }
+        if (wallpaper.files.length > 0) {
+            document.body.classList.add('has-wallpaper');
+        } else {
+            document.body.classList.remove('has-wallpaper');
+        }
         if (wallpaperCycleInterval !== null) {
             clearInterval(wallpaperCycleInterval.current);
         }
@@ -154,6 +159,13 @@ const Audience = function (props: propsInterface) {
             }
         }).catch(() => { });
     }, [screenId]);
+
+    useEffect(() => {
+        document.body.classList.add('audience');
+        return () => {
+            document.body.classList.remove('audience');
+        }
+    }, [])
 
     useEffect(() => {
 

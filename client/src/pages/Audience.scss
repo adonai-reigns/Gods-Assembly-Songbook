@@ -1,4 +1,4 @@
-body:not(.loading){
+body.audience.has-wallpaper:not(.loading){
     background-image: none;
 }
 .fullscreen-button {
