@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { getApiUrl, getLiveSocket } from '../stores/server';
 import axios from 'axios';
 
+import { PlaylistPlayerSocketEvent } from '../utilities/playlistPlayerSocket';
+
 import Slide, { SlideTypeLabels } from '../models/slide';
 import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
 import { Wallpaper, File, getMimeTypeFormat, MimeType } from '../models/wallpaper';
@@ -10,7 +12,6 @@ import PlainLayout from '../layouts/PlainLayout';
 
 import "./Audience.scss";
 import 'animate.css';
-
 
 export interface propsInterface {
     className?: string;
@@ -56,7 +57,6 @@ const Audience = function (props: propsInterface) {
     const [wallpaperFile, setWallpaperFile] = useState<File | undefined>(undefined);
     const wallpaperCycleInterval = useRef<any>(null);
 
-    const [currentSlide, setCurrentSlide] = useState<Slide>(new Slide());
     const [slideContent, setSlideContent] = useState<string>('');
     const [slideType, setSlideType] = useState<string>('');
     const [screenStyleComputed, setScreenStyleComputed] = useState<ScreenStyleComputed>(new ScreenStyleComputed());
@@ -76,23 +76,6 @@ const Audience = function (props: propsInterface) {
                 setWallpaper(response.data);
             }
         }).catch(() => { });
-    }
-
-    function onChangeSlide(payload: any) {
-        switch (payload.slide) {
-            case 'pauseSlide':
-            case 'startSlide':
-            case 'endSlide':
-                setSlideContent(payload.slideContent);
-                setSlideType(payload.slideType);
-                break;
-            default:
-                if (payload.slide !== undefined) {
-                    setCurrentSlide(payload.slide);
-                    setSlideContent(payload.slide.content);
-                    setSlideType(SlideTypeLabels[payload.slide.type]);
-                }
-        }
     }
 
     function onChangeScreenStyle(payload: any) {
@@ -171,7 +154,7 @@ const Audience = function (props: propsInterface) {
 
         loadAssemblyWallpaper();
 
-        LiveSocket.emit('requestCurrentSlide', { requestor: 'audience' });
+        LiveSocket.emit(PlaylistPlayerSocketEvent.requestCurrentState, { requestor: 'audience' });
 
         (() => {
 
@@ -208,7 +191,12 @@ const Audience = function (props: propsInterface) {
 
         })();
 
-        LiveSocket.on('changeSlide', onChangeSlide);
+        LiveSocket.on(PlaylistPlayerSocketEvent.setIsStarting, (args: Slide) => (setSlideContent(args.content), setSlideType('')));
+        LiveSocket.on(PlaylistPlayerSocketEvent.setIsEnded, (args: Slide) => (setSlideContent(args.content), setSlideType('')));
+        LiveSocket.on(PlaylistPlayerSocketEvent.setIsPaused, (args: Slide) => (setSlideContent(args.content), setSlideType('')));
+        LiveSocket.on(PlaylistPlayerSocketEvent.setIsUnpaused, (args: Slide) => (setSlideContent(args.content), setSlideType('')));
+        LiveSocket.on(PlaylistPlayerSocketEvent.setCurrentSlide, (args: Slide) => (setSlideContent(args.content), setSlideType(args.type)));
+
         LiveSocket.on('changeScreenStyle', onChangeScreenStyle);
         LiveSocket.on('exitPlaylist', onExitPlaylist);
         LiveSocket.on('changeAssemblyWallpaper', onChangeAssemblyWallpaper);
@@ -240,8 +228,8 @@ const Audience = function (props: propsInterface) {
 
         <div className="audience-slide" id="audience-slide-container"
             style={screenStyleComputed.audienceSlide}>
-            <div className={`audience-slide-type ${currentSlide.type} text-left `}
-                style={screenStyleComputed.slideType}>{slideType}</div>
+            <div className={`audience-slide-type ${slideType} text-left `}
+                style={screenStyleComputed.slideType}>{SlideTypeLabels[slideType]}</div>
             <div className="audience-slide-content"
                 dangerouslySetInnerHTML={{ __html: slideContent }} />
         </div>

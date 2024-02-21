@@ -5,9 +5,29 @@ import { WebSocketServer } from '@nestjs/websockets';
 export class LiveGateway {
     @WebSocketServer() server;
 
-    @SubscribeMessage('changeSlide')
-    handleChangeSlide(client: any, payload: any) {
-        this.server.emit('changeSlide', payload);
+    @SubscribeMessage('setCurrentSlide')
+    handleSetCurrentSlide(client: any, payload: any) {
+        this.server.emit('setCurrentSlide', payload);
+    }
+
+    @SubscribeMessage('setIsStarting')
+    handleSetIsStarting(client: any, payload: any) {
+        this.server.emit('setIsStarting', payload);
+    }
+
+    @SubscribeMessage('setIsPaused')
+    handleSetIsPaused(client: any, payload: any) {
+        this.server.emit('setIsPaused', payload);
+    }
+
+    @SubscribeMessage('setIsUnpaused')
+    handleSetIsUnpaused(client: any, payload: any) {
+        this.server.emit('setIsUnpaused', payload);
+    }
+
+    @SubscribeMessage('setIsEnded')
+    handleSetIsEnded(client: any, payload: any) {
+        this.server.emit('setIsEnded', payload);
     }
 
     @SubscribeMessage('changeScreenStyle')
@@ -15,9 +35,9 @@ export class LiveGateway {
         this.server.emit('changeScreenStyle', { screen: payload.screen });
     }
 
-    @SubscribeMessage('requestCurrentSlide')
-    handleRequestCurrentSlide(client: any, payload: any) {
-        this.server.emit('requestCurrentSlide', { requestor: payload.requestor });
+    @SubscribeMessage('requestCurrentState')
+    handleRequestCurrentState(client: any, payload: any) {
+        this.server.emit('requestCurrentState', { requestor: payload.requestor });
     }
 
     @SubscribeMessage('exitPlaylist')

@@ -17,7 +17,13 @@ export class Setting extends Model<settingsAttributes, settingsCreationAttribute
 
     @Column(DataType.TEXT)
     get value(): any {
-        return JSON.parse(this.getDataValue('value') ?? '');
+        let returnValue;
+        try {
+            returnValue = JSON.parse(this.getDataValue('value') ?? '');
+        } catch (e) {
+            console.error('Could not decode value from tableName settings', this.getDataValue('name'), e, this.getDataValue('value'));
+        }
+        return returnValue;
     }
 
     set value(value: any) {

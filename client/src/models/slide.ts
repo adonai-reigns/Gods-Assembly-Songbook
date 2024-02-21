@@ -1,3 +1,4 @@
+import { get, set } from 'lodash';
 
 export enum SlideType {
     Intro = 'Intro',
@@ -43,6 +44,16 @@ export const SlideTypeLabels: { [key: string]: string } = {
     Hook: 'Hook'
 }
 
+interface ISlide {
+    id?: number;
+    type?: SlideType;
+    name?: string;
+    content?: string;
+    songId?: number;
+    sorting?: number;
+    duration?: number;
+}
+
 export default class Slide {
     id: number = 0;
     type: SlideType = SlideType.Verse;
@@ -50,4 +61,9 @@ export default class Slide {
     content: string = '';
     songId: number = 0;
     sorting: number = 0;
+    duration: number = 0;
+    constructor(args: ISlide) {
+        Object.keys(this).map((keyname: string) => set(this, keyname, get(args, keyname)));
+    }
 }
+

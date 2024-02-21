@@ -13,9 +13,11 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@nanostores/react": "^0.7.1",
         "@vitejs/plugin-legacy": "^5.2.0",
         "animate.css": "^4.1.1",
         "axios": "^1.6.2",
+        "date-fns": "^3.3.1",
         "lodash": "^4.17.21",
         "nanostores": "^0.9.5",
         "primeflex": "^3.3.1",

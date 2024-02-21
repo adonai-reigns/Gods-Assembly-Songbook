@@ -56,7 +56,7 @@ const SongContent = function (props: propsInterface) {
 
     const [songId, setSongId] = useState<number>(parseInt(params.id ?? '0'));
 
-    const [song, setSong] = useState<Song>(new Song());
+    const [song, setSong] = useState<Song>(new Song({}));
     const [editingSongName, setEditingSongName] = useState('');
 
     const [slides, setSlides] = useState<Slide[]>([]);
@@ -72,7 +72,7 @@ const SongContent = function (props: propsInterface) {
     const [slideTypesAsDropdownOptions, setSlideTypesAsDropdownOptions] = useState<SelectItem[]>([]);
 
     const resetComponentState = () => {
-        setSong(new Song());
+        setSong(new Song({}));
         setIsEditingSlide(false);
         setEditingSongName('');
         setEditingSlideId(0);
@@ -173,7 +173,7 @@ const SongContent = function (props: propsInterface) {
         if (editingSlideId) {
             const editingSlide = getSlideById(editingSlideId);
             if (editingSlide) {
-                const newSlide = new Slide();
+                const newSlide = new Slide({});
                 newSlide.songId = editingSlide.songId;
                 newSlide.name = editingSlide.name;
                 newSlide.type = editingSlide.type;
@@ -200,7 +200,7 @@ const SongContent = function (props: propsInterface) {
     }
 
     const addSlide = () => {
-        let newSlide = new Slide();
+        let newSlide = new Slide({});
         newSlide.songId = songId;
         newSlide.type = defaultSlideType;
         newSlide.sorting = slides.length;
@@ -223,7 +223,7 @@ const SongContent = function (props: propsInterface) {
     }
 
     const getSlideById = (slideId: number): Slide => {
-        return slides.filter((slide: Slide) => slide.id === slideId)[0] ?? new Slide();
+        return slides.filter((slide: Slide) => slide.id === slideId)[0] ?? new Slide({});
     }
 
     useEffect(() => {
