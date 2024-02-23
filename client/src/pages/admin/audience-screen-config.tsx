@@ -6,8 +6,9 @@ import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 
-import { Screen, ScreenStyle, Size, TextAlign } from '../../models/screen';
+import { LineMargin, LinePadding, Screen, ScreenStyle, Size, TextAlign } from '../../models/screen';
 import AdminLayout from '../../layouts/AdminLayout';
+import { isEqual } from 'lodash';
 
 export interface propsInterface {
     className?: string,
@@ -47,7 +48,23 @@ const lang = {
         center: 'Center',
         right: 'Right',
         justify: 'Justify'
-    }
+    },
+    paddings: {
+        extraSmall: 'None',
+        small: 'Small',
+        normal: 'Normal',
+        big: 'Big',
+        huge: 'Huge',
+        jumbo: 'Jumbo'
+    },
+    margins: {
+        extraSmall: 'None',
+        small: 'Small',
+        normal: 'Normal',
+        big: 'Big',
+        huge: 'Huge',
+        jumbo: 'Jumbo'
+    },
 }
 
 const AudienceScreenConfig = function (props: propsInterface) {
@@ -63,22 +80,25 @@ const AudienceScreenConfig = function (props: propsInterface) {
 
     const [screen, setScreen] = useState<Screen>(new Screen);
     const [screenName, setScreenName] = useState<string>('');
-    const [screenStyle, setScreenStyle] = useState<ScreenStyle>(new ScreenStyle());
+    const [screenStyle, setScreenStyle] = useState<ScreenStyle>(new ScreenStyle({}));
 
     const handleOnValueChange = function (name: string, value: string | boolean) {
         setScreenStyle((_screenStyle) => {
             let newStyleProp = { ..._screenStyle };
             Object.defineProperty(newStyleProp, name, { value });
-            return newStyleProp;
+            return new ScreenStyle(newStyleProp);
         });
     }
 
     const [sizesAsDropdownOptions, setSizesAsDropdownOptions] = useState<any[]>([]);
+    const [linePaddingsAsDropdownOptions, setLinePaddingsAsDropdownOptions] = useState<any[]>([]);
+    const [lineMarginsAsDropdownOptions, setLineMarginsAsDropdownOptions] = useState<any[]>([]);
+
     const [textAlignsAsDropdownOptions, setTextAlignsAsDropdownOptions] = useState<any[]>([]);
     const [booleanAsDropdownOptions, setBooleanAsDropdownOptions] = useState<booleanOptionsInterface[]>([]);
 
     const publishToScreen = function () {
-        LiveSocket.emit('changeScreenStyle', { screen });
+        LiveSocket.emit('setScreenStyle', { screen });
     }
 
     useEffect(() => {
@@ -91,6 +111,26 @@ const AudienceScreenConfig = function (props: propsInterface) {
                 });
             })
             return _sizesAsDropdownOptions;
+        });
+        setLinePaddingsAsDropdownOptions((): stringOptionsInterface[] => {
+            let _paddingsAsDropdownOptions: stringOptionsInterface[] = [];
+            Object.values(LinePadding).forEach((sizeValue: string) => {
+                _paddingsAsDropdownOptions.push({
+                    label: lang.paddings[(sizeValue as keyof typeof lang.paddings)],
+                    value: sizeValue
+                });
+            })
+            return _paddingsAsDropdownOptions;
+        });
+        setLineMarginsAsDropdownOptions((): stringOptionsInterface[] => {
+            let _marginsAsDropdownOptions: stringOptionsInterface[] = [];
+            Object.values(LineMargin).forEach((sizeValue: string) => {
+                _marginsAsDropdownOptions.push({
+                    label: lang.margins[(sizeValue as keyof typeof lang.margins)],
+                    value: sizeValue
+                });
+            })
+            return _marginsAsDropdownOptions;
         });
         setTextAlignsAsDropdownOptions((): stringOptionsInterface[] => {
             let _textAlignsAsDropdownOptions: stringOptionsInterface[] = [];
@@ -108,7 +148,6 @@ const AudienceScreenConfig = function (props: propsInterface) {
                 { label: 'False', value: false }
             ];
         });
-
     }, []);
 
     useEffect(() => {
@@ -116,7 +155,7 @@ const AudienceScreenConfig = function (props: propsInterface) {
             if (response.data) {
                 setScreen(response.data);
                 setScreenName(response.data.name)
-                setScreenStyle(response.data.style);
+                setScreenStyle(new ScreenStyle(response.data.style));
             }
         }).catch(() => {
             axios.post(apiUrl + '/screens', {
@@ -125,21 +164,21 @@ const AudienceScreenConfig = function (props: propsInterface) {
             }).then((response) => {
                 setScreen(response.data);
                 setScreenName(response.data.name);
-                setScreenStyle(response.data.style);
+                setScreenStyle(new ScreenStyle(response.data.style));
             }).catch(() => { })
         });
     }, [screenId]);
 
     useEffect(() => {
         if (patchStatus) {
-            if (JSON.stringify(Object.fromEntries(Object.entries(patchStatus).sort())) !== JSON.stringify(Object.fromEntries(Object.entries(screenStyle).sort()))) {
+            if (!isEqual(patchStatus, screenStyle)) {
                 axios.patch(apiUrl + '/screens/' + screenId, {
                     name: screenName,
-                    style: screenStyle
+                    style: JSON.parse(JSON.stringify(screenStyle))
                 }).then((response) => {
                     setScreen(response.data);
-                    setPatchStatus(response.data.style);
-                });
+                    setPatchStatus(new ScreenStyle(response.data.style));
+                }).catch(e => console.error(e));
             }
         } else {
             setPatchStatus(screenStyle);
@@ -158,8 +197,34 @@ const AudienceScreenConfig = function (props: propsInterface) {
                 </span>
                 <Dropdown id="font-size" placeholder="Font Size"
                     options={sizesAsDropdownOptions}
+                    optionLabel="label"
+                    optionValue="value"
                     value={screenStyle.fontSize}
                     onChange={e => handleOnValueChange('fontSize', e.target.value)} />
+            </div>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="font-size">Line Padding</label>
+                </span>
+                <Dropdown id="line-padding" placeholder="Line Padding"
+                    options={linePaddingsAsDropdownOptions}
+                    optionLabel="label"
+                    optionValue="value"
+                    value={screenStyle.linePadding}
+                    onChange={e => handleOnValueChange('linePadding', e.target.value)} />
+            </div>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon">
+                    <label htmlFor="font-size">Line Spacing</label>
+                </span>
+                <Dropdown id="line-margin" placeholder="Line Spacing"
+                    options={lineMarginsAsDropdownOptions}
+                    optionLabel="label"
+                    optionValue="value"
+                    value={screenStyle.lineMargin}
+                    onChange={e => handleOnValueChange('lineMargin', e.target.value)} />
             </div>
 
             <div className="field p-inputgroup flex-1">

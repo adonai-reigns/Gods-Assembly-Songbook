@@ -27,7 +27,7 @@ import { createReadStream, existsSync } from 'fs';
 
 import * as config from 'config';
 
-import { CreateWallpaperDto, FileDto } from './dto/create-wallpaper.dto';
+import { CreateWallpaperDto, SlideLineStyleDto, WallpaperFileDto, defaultSlideLineStyle } from './dto/create-wallpaper.dto';
 import { UpdateWallpaperDto } from './dto/update-wallpaper.dto';
 
 import { Wallpaper, MimeType } from './wallpaper.entity';
@@ -132,8 +132,9 @@ export class WallpapersController {
                 filename: file.filename,
                 filepath: file.path,
                 size: file.size,
-                createdAt: new Date()
-            } as FileDto);
+                createdAt: new Date(),
+                slideLineStyle: defaultSlideLineStyle as SlideLineStyleDto
+            } as WallpaperFileDto);
 
         });
 
@@ -163,16 +164,22 @@ export class WallpapersController {
         await this.wallpapersService.deleteFile(wallpaperId, filename);
     }
 
-    @Patch('setFilesSorting/:wallpaperId')
-    async setSorting(@Param('wallpaperId') wallpaperId: number, @Body('files') files: FileDto[]) {
-        let sortedFileIds = files.map((file: FileDto) => file.filename);
+    @Patch('setFiles/:wallpaperId')
+    async setSorting(@Param('wallpaperId') wallpaperId: number, @Body('files') files: WallpaperFileDto[]) {
+        let sortedFileIds = files.map((file: WallpaperFileDto) => file.filename);
         let wallpaper = await this.wallpapersService.findOne(wallpaperId);
-        let wallpaperFiles = wallpaper.files.sort((fileA: FileDto, fileB: FileDto): number => {
+        let wallpaperFiles = wallpaper.files.sort((fileA: WallpaperFileDto, fileB: WallpaperFileDto): number => {
             let indexA = sortedFileIds.indexOf(fileA.filename);
             let indexB = sortedFileIds.indexOf(fileB.filename);
             return (indexA > indexB) ? 1 : -1;
         });
-        wallpaper.files = wallpaperFiles;
+        wallpaper.files = wallpaperFiles.map((_wallpaperFile: WallpaperFileDto) => {
+            let newFile = files.filter((_file: WallpaperFileDto) => _file.filename === _wallpaperFile.filename)[0] ?? undefined;
+            if (newFile) {
+                _wallpaperFile.slideLineStyle = newFile.slideLineStyle;
+            }
+            return _wallpaperFile;
+        });
         return this.wallpapersService.update(wallpaperId, wallpaper);
     }
 
@@ -180,7 +187,7 @@ export class WallpapersController {
     async readFile(@Param('wallpaperId') wallpaperId: number, @Param('filename') filename: string, @Res({ passthrough: true }) response: Response) {
 
         const wallpaper = await this.wallpapersService.findOne(wallpaperId);
-        const file = wallpaper.files.filter((_file: FileDto) => _file.filename === filename)[0] ?? undefined;
+        const file = wallpaper.files.filter((_file: WallpaperFileDto) => _file.filename === filename)[0] ?? undefined;
         const filepath = file ? file.filepath : '';
 
         let resolvedFilepath = resolve(filepath);

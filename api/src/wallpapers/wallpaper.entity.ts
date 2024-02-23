@@ -1,7 +1,7 @@
 import { Optional } from 'sequelize';
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-import { FileDto } from './dto/create-wallpaper.dto';
+import { WallpaperFileDto } from './dto/create-wallpaper.dto';
 
 export enum Role {
     assembly = 'assembly',
@@ -60,7 +60,7 @@ export class Wallpaper extends Model<wallpaperAttributes, wallpaperCreationAttri
     role: string;
 
     @Column(DataType.TEXT)
-    get files(): FileDto[] {
+    get files(): WallpaperFileDto[] {
         const dataValue = this.getDataValue('files');
         if (typeof dataValue === 'string') {
             return JSON.parse(dataValue);
@@ -69,7 +69,7 @@ export class Wallpaper extends Model<wallpaperAttributes, wallpaperCreationAttri
         }
     }
 
-    set files(value: FileDto[]) {
+    set files(value: WallpaperFileDto[]) {
         this.setDataValue('files', JSON.stringify(value ?? []));
     }
 

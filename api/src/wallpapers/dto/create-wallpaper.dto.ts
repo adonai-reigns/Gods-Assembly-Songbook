@@ -2,6 +2,28 @@ import { IsString, IsOptional, IsObject, IsNotEmpty, IsNumber, IsDate } from 'cl
 
 import { WallpaperStyle } from '../wallpaper.entity';
 
+export class SlideLineStyleDto {
+    @IsNotEmpty()
+    @IsString()
+    tagname: string;
+
+    @IsNotEmpty()
+    @IsString()
+    padding: string;
+
+    @IsNotEmpty()
+    @IsString()
+    margin: string;
+
+    @IsNotEmpty()
+    @IsString()
+    color: string;
+
+    @IsNotEmpty()
+    @IsString()
+    backgroundColor: string;
+}
+
 export class FileDto {
 
     @IsNotEmpty()
@@ -30,6 +52,20 @@ export class FileDto {
 
 }
 
+export const defaultSlideLineStyle = {
+    tagname: 'p',
+    padding: '0.5em 1em',
+    margin: '0.5em 0',
+    color: 'FFFFFF',
+    backgroundColor: '00000099'
+} as SlideLineStyleDto;
+
+export class WallpaperFileDto extends FileDto {
+
+    @IsObject()
+    slideLineStyle: SlideLineStyleDto = defaultSlideLineStyle;
+}
+
 export class CreateWallpaperDto {
     @IsOptional()
     @IsNumber()
@@ -44,7 +80,7 @@ export class CreateWallpaperDto {
     role: string;
 
     @IsOptional()
-    files: FileDto[];
+    files: WallpaperFileDto[];
 
     @IsObject()
     @IsOptional()

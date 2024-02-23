@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { getApiUrl, getLiveSocket } from '../stores/server';
+import { isEmpty } from 'lodash';
 import axios from 'axios';
 
 import { PlaylistPlayerSocketEvent } from '../utilities/playlistPlayerSocket';
 
 import Slide, { SlideTypeLabels } from '../models/slide';
-import { ScreenStyle, ScreenStyleComputed } from '../models/screen';
-import { Wallpaper, File, getMimeTypeFormat, MimeType } from '../models/wallpaper';
+import { LineMarginUnits, LinePaddingUnits, PaddingSizesUnits, ScreenStyle, ScreenStyleComputed, TextSizesUnits } from '../models/screen';
+import { Wallpaper, getMimeTypeFormat, MimeType, SlideLineStyle, WallpaperFile } from '../models/wallpaper';
 
 import PlainLayout from '../layouts/PlainLayout';
 
@@ -22,23 +23,6 @@ export const propsDefaults = {
     className: '',
 }
 
-const TextSizesUnits = {
-    extraSmall: '1em',
-    small: '1.2em',
-    normal: '1.8em',
-    big: '2.4em',
-    huge: '3.2em',
-    jumbo: '3.8em'
-}
-
-const PaddingSizesUnits = {
-    extraSmall: '0em',
-    small: '0.8em',
-    normal: '1.2em',
-    big: '2.4em',
-    huge: '3.2em',
-    jumbo: '4.5em'
-}
 
 const Audience = function (props: propsInterface) {
 
@@ -54,7 +38,7 @@ const Audience = function (props: propsInterface) {
     const defaultWallpaper = new Wallpaper();
 
     const [wallpaper, setWallpaper] = useState<Wallpaper>(defaultWallpaper);
-    const [wallpaperFile, setWallpaperFile] = useState<File | undefined>(undefined);
+    const [wallpaperFile, setWallpaperFile] = useState<WallpaperFile | undefined>(undefined);
     const wallpaperCycleInterval = useRef<any>(null);
 
     const [slideContent, setSlideContent] = useState<string>('');
@@ -64,6 +48,8 @@ const Audience = function (props: propsInterface) {
     const computeScreenStyle = (screenStyle: ScreenStyle): ScreenStyleComputed => {
         let newScreenStyleComputed = new ScreenStyleComputed();
         newScreenStyleComputed.audienceSlide.fontSize = TextSizesUnits[screenStyle.fontSize];
+        newScreenStyleComputed.audienceSlide.linePadding = LinePaddingUnits[screenStyle.linePadding];
+        newScreenStyleComputed.audienceSlide.lineMargin = LineMarginUnits[screenStyle.lineMargin];
         newScreenStyleComputed.audienceSlide.padding = PaddingSizesUnits[screenStyle.padding];
         newScreenStyleComputed.audienceSlide.textAlign = screenStyle.textAlign;
         newScreenStyleComputed.slideType.display = ((['true', true].indexOf(screenStyle.showSlideType) > -1) ? 'block' : 'none');
@@ -78,13 +64,13 @@ const Audience = function (props: propsInterface) {
         }).catch(() => { });
     }
 
-    function onChangeScreenStyle(payload: any) {
+    function onSetScreenStyle(payload: any) {
         if (payload.screen.id === screenId) {
             setScreenStyleComputed(computeScreenStyle(payload.screen.style));
         }
     }
 
-    function onChangeAssemblyWallpaper(payload: any) {
+    function onSetAssemblyWallpaper(payload: any) {
         if (payload.wallpaper.id === assemblyWallpaperId) {
             setWallpaper(payload.wallpaper);
         }
@@ -98,17 +84,17 @@ const Audience = function (props: propsInterface) {
     }
 
     const cycleWallpaper = () => {
-        setWallpaperFile((_wallpaperFile): File | undefined => {
+        setWallpaperFile((_wallpaperFile: WallpaperFile | undefined): WallpaperFile | undefined => {
             if (wallpaper.files.length > 0) {
                 let currentFileIndex = -1;
                 if (_wallpaperFile !== undefined) {
-                    currentFileIndex = wallpaper.files.map((file: File) => file.filename).indexOf(_wallpaperFile.filename);
+                    currentFileIndex = wallpaper.files.map((file: WallpaperFile) => file.filename).indexOf(_wallpaperFile.filename);
                 }
                 let nextFileIndex = currentFileIndex + 1;
                 if (nextFileIndex > wallpaper.files.length - 1) {
                     nextFileIndex = 0;
                 }
-                let nextWallpaperFile = { ...wallpaper.files[nextFileIndex] } as File;
+                let nextWallpaperFile = { ...wallpaper.files[nextFileIndex] } as WallpaperFile;
                 return nextWallpaperFile;
             } else {
                 return undefined;
@@ -197,22 +183,44 @@ const Audience = function (props: propsInterface) {
         LiveSocket.on(PlaylistPlayerSocketEvent.setIsUnpaused, (args: Slide) => (setSlideContent(args.content), setSlideType('')));
         LiveSocket.on(PlaylistPlayerSocketEvent.setCurrentSlide, (args: Slide) => (setSlideContent(args.content), setSlideType(args.type)));
 
-        LiveSocket.on('changeScreenStyle', onChangeScreenStyle);
+        LiveSocket.on('setScreenStyle', onSetScreenStyle);
         LiveSocket.on('exitPlaylist', onExitPlaylist);
-        LiveSocket.on('changeAssemblyWallpaper', onChangeAssemblyWallpaper);
+        LiveSocket.on('setAssemblyWallpaper', onSetAssemblyWallpaper);
 
-    }, [])
+    }, []);
+
+    const getSlideLineStyle = () => {
+
+        let slideLineStyle = wallpaperFile?.slideLineStyle ?? new SlideLineStyle();
+
+        return {
+            margin: screenStyleComputed.audienceSlide.lineMargin,
+            padding: screenStyleComputed.audienceSlide.linePadding,
+            backgroundColor: '#' + slideLineStyle.backgroundColor,
+            color: '#' + slideLineStyle.color
+        }
+    }
+
+    const SlideContent = () => {
+        let domParser = new DOMParser().parseFromString(slideContent, 'text/html');
+
+        let lines = [...domParser.querySelectorAll('p')] as [];
+
+        return <>
+            {lines.map((line: HTMLParagraphElement, lineIndex: number) => <p key={lineIndex} style={getSlideLineStyle()} dangerouslySetInnerHTML={{ __html: line.innerHTML }} />)}
+        </>
+    }
 
     return <PlainLayout>
 
-        {wallpaper.files.map((_wallpaperFile: File) => <div key={_wallpaperFile.filename}
+        {wallpaper.files.map((_wallpaperFile: WallpaperFile) => <div key={_wallpaperFile.filename}
             className={`wallpaper ${wallpaper.style.backgroundSize} animate__${wallpaper.style.slideshowAnimationSpeed} ${(_wallpaperFile.filename === wallpaperFile?.filename ? 'animate__animated animate__' + wallpaper.style.slideshowAnimationIn : 'animate__animated animate__' + wallpaper.style.slideshowAnimationOut)}`}
             style={{
                 backgroundImage: (['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(_wallpaperFile.mimetype as MimeType) ?? '') > -1
                     ? `url("${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}")`
                     : '')
-            }}
-        >
+            }}>
+
             {/* image background */}
             {['jpg', 'png', 'gif', 'webp'].indexOf(getMimeTypeFormat(_wallpaperFile.mimetype as MimeType) ?? '') > -1 && <img src={`${apiUrl}/wallpapers/file/${wallpaper.id}/${_wallpaperFile.filename}`} />}
 
@@ -228,10 +236,9 @@ const Audience = function (props: propsInterface) {
 
         <div className="audience-slide" id="audience-slide-container"
             style={screenStyleComputed.audienceSlide}>
-            <div className={`audience-slide-type ${slideType} text-left `}
-                style={screenStyleComputed.slideType}>{SlideTypeLabels[slideType]}</div>
-            <div className="audience-slide-content"
-                dangerouslySetInnerHTML={{ __html: slideContent }} />
+            {!isEmpty(slideType) && <div className={`audience-slide-type ${slideType} text-left `}
+                style={{ ...screenStyleComputed.slideType, ...getSlideLineStyle() }}>{SlideTypeLabels[slideType]}</div>}
+            <div className="audience-slide-content"><SlideContent /></div>
         </div>
     </PlainLayout >
 

@@ -105,3 +105,9 @@ body.audience.has-wallpaper:not(.loading){
     position: relative;
 }
 
+.audience-slide-type {
+    display: inline-block;
+    width: auto !important;
+    max-width: 20%;
+}
+

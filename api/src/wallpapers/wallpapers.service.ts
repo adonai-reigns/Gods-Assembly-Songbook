@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 import { unlinkSync } from 'fs';
 
-import { CreateWallpaperDto, FileDto } from './dto/create-wallpaper.dto';
+import { CreateWallpaperDto, WallpaperFileDto } from './dto/create-wallpaper.dto';
 import { UpdateWallpaperDto } from './dto/update-wallpaper.dto';
 
 import { Wallpaper } from './wallpaper.entity';
@@ -50,7 +50,7 @@ export class WallpapersService {
 
     async deleteFile(wallpaperId: number, filename: string) {
         const wallpaper = await this.findOne(wallpaperId) as Wallpaper;
-        const fileToDelete = wallpaper.files.filter((file: FileDto) => file.filename === filename)[0];
+        const fileToDelete = wallpaper.files.filter((file: WallpaperFileDto) => file.filename === filename)[0];
         if(fileToDelete){
             try{
                 unlinkSync(fileToDelete.filepath);
@@ -58,7 +58,7 @@ export class WallpapersService {
                 // could not delete the file from the filesystem
             }
         }
-        wallpaper.files = wallpaper.files.filter((file: FileDto) => file.filename !== filename);
+        wallpaper.files = wallpaper.files.filter((file: WallpaperFileDto) => file.filename !== filename);
         return wallpaper.save();
     }
 

@@ -10,6 +10,24 @@ export enum Size {
     jumbo = 'jumbo'
 }
 
+export enum LinePadding {
+    extraSmall = 'extraSmall',
+    small = 'small',
+    normal = 'normal',
+    big = 'big',
+    huge = 'huge',
+    jumbo = 'jumbo'
+}
+
+export enum LineMargin {
+    extraSmall = 'extraSmall',
+    small = 'small',
+    normal = 'normal',
+    big = 'big',
+    huge = 'huge',
+    jumbo = 'jumbo'
+}
+
 export enum TextAlign {
     left = 'left',
     center = 'center',
@@ -19,6 +37,8 @@ export enum TextAlign {
 
 export class ScreenStyle {
     fontSize: Size = Size.normal;
+    linePadding: LinePadding = LinePadding.normal;
+    lineMargin: LineMargin = LineMargin.normal;
     padding: Size = Size.normal;
     textAlign: TextAlign = TextAlign.center;
     showSlidetype: boolean = true;

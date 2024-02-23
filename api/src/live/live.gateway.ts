@@ -30,9 +30,9 @@ export class LiveGateway {
         this.server.emit('setIsEnded', payload);
     }
 
-    @SubscribeMessage('changeScreenStyle')
-    handleChangeScreenStyle(client: any, payload: any) {
-        this.server.emit('changeScreenStyle', { screen: payload.screen });
+    @SubscribeMessage('setScreenStyle')
+    handleSetScreenStyle(client: any, payload: any) {
+        this.server.emit('setScreenStyle', { screen: payload.screen });
     }
 
     @SubscribeMessage('requestCurrentState')
@@ -45,9 +45,9 @@ export class LiveGateway {
         this.server.emit('exitPlaylist', payload);
     }
 
-    @SubscribeMessage('changeAssemblyWallpaper')
-    handleChangeAssemblyWallpaper(client: any, payload: any) {
-        this.server.emit('changeAssemblyWallpaper', payload);
+    @SubscribeMessage('setAssemblyWallpaper')
+    handleSetAssemblyWallpaper(client: any, payload: any) {
+        this.server.emit('setAssemblyWallpaper', payload);
     }
 
 }

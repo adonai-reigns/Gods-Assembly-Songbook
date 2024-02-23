@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import { File } from './file';
 
 export enum Role {
     assembly = 'assembly',
@@ -112,14 +113,16 @@ export class WallpaperStyle {
     slideshowAnimationSpeed: string = 'normal';
 }
 
-export class File {
-    id: number = 0;
-    originalname: string = '';
-    mimetype: string = '';
-    filename: string = '';
-    filepath: string = '';
-    size: number = 0;
-    createdAt: Date = new Date();
+export class SlideLineStyle {
+    tagname: string = 'p';
+    padding: string = '1rem';
+    margin: string = '1rem';
+    color: string = 'white';
+    backgroundColor: string = 'rgba(0, 0, 0, 0.4)';
+}
+
+export class WallpaperFile extends File {
+    slideLineStyle: SlideLineStyle = new SlideLineStyle();
 }
 
 export class Wallpaper {
@@ -127,6 +130,6 @@ export class Wallpaper {
     name: string = '';
     format: string = '';
     role: string = '';
-    files: File[] = [];
+    files: WallpaperFile[] = [];
     style: WallpaperStyle = new WallpaperStyle();
 }

@@ -67,6 +67,7 @@ const Settings = function (props: propsInterface) {
 
     const apiUrl = getApiUrl();
 
+    const [screenId] = useState<number>(1);
     const [wallpaperId] = useState<number>(1);
     const [wallpaper, setWallpaper] = useState<Wallpaper>(new Wallpaper());
     const [wallpaperStyle, setWallpaperStyle] = useState<WallpaperStyle>(new WallpaperStyle());
@@ -79,7 +80,7 @@ const Settings = function (props: propsInterface) {
     const [backgroundSizesAsDropdownOptions, setBackgroundSizesAsDropdownOptions] = useState<any[]>([]);
 
     const publishToScreen = function () {
-        LiveSocket.emit('changeAssemblyWallpaper', { wallpaper: { ...wallpaper, style: wallpaperStyle } });
+        LiveSocket.emit('setAssemblyWallpaper', { wallpaper: { ...wallpaper, style: wallpaperStyle } });
     }
 
     const onAdd = () => {
@@ -90,7 +91,7 @@ const Settings = function (props: propsInterface) {
         reloadWallpaper();
     }
 
-    const onSort = () => {
+    const onChange = () => {
         reloadWallpaper();
     }
 
@@ -198,7 +199,7 @@ const Settings = function (props: propsInterface) {
                     onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationSpeed: e.target.value })} />
             </div>
 
-            <WallpaperPicker className="m-3" wallpaperId={wallpaperId} multiple={true} onAdd={onAdd} onDelete={onDelete} onSort={onSort} />
+            <WallpaperPicker className="m-3" wallpaperId={wallpaperId} screenId={screenId} multiple={true} onAdd={onAdd} onDelete={onDelete} onChange={onChange} />
 
             <div className="field m-3 p-inputgroup flex justify-content-center">
                 <Button onClick={publishToScreen}>Publish</Button>
