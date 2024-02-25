@@ -1,15 +1,34 @@
-import { Table, Column, Model, HasMany, ForeignKey, BelongsToMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, BelongsToMany } from 'sequelize-typescript';
 
 import { Slide } from '../slides/slide.entity';
 import { Playlist, PlaylistSong } from 'src/playlists/playlist.entity';
 
+import { IsOptional } from 'class-validator';
+import { Optional } from 'sequelize';
+
+interface songAttributes {
+    id: number;
+    name: string;
+    sorting: number;
+    songTemplateId: number | null;
+    slides: Slide[];
+    playlists: Playlist[];
+}
+
+interface songCreationAttributes extends Optional<songAttributes, 'id' | 'songTemplateId' | 'playlists'> { }
+
 @Table({ tableName: 'song' })
-export class Song extends Model {
+export class Song extends Model<songAttributes, songCreationAttributes> {
+
     @Column
     name: string;
 
     @Column
     sorting: number;
+
+    @IsOptional()
+    @Column
+    songTemplateId: number | null;
 
     @HasMany(() => Slide, { onDelete: 'CASCADE' })
     slides: Slide[];

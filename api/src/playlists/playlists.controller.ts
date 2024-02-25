@@ -6,6 +6,7 @@ import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { Playlist } from './playlist.entity';
 
 import { PlaylistsService } from './playlists.service';
+import { SongDto } from 'src/songs/dto/song.dto';
 
 @Controller('playlists')
 export class PlaylistsController {
@@ -47,6 +48,16 @@ export class PlaylistsController {
     @Post(':id/setSongSorting')
     async setSorting(@Param('id') id: number, @Body('sortedSongIds') updatePlaylistDto: UpdatePlaylistDto): Promise<Playlist> {
         return await this.playlistsService.update(id, updatePlaylistDto);
+    }
+
+    @Post(':id/addSongs')
+    async addSongs(@Param('id') id: number, @Body('songs') songs: SongDto[]): Promise<Playlist> {
+        return await this.playlistsService.addSongsToPlaylist(id, songs);
+    }
+
+    @Delete(':id/deleteSong/:songId')
+    async deleteSong(@Param('id') id: number, @Param('songId') songId: number){
+        return await this.playlistsService.deleteSongFromPlaylist(id, songId);
     }
 
 }

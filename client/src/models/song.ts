@@ -6,6 +6,7 @@ interface ISong {
     id?: number;
     name?: string;
     sorting?: number;
+    songTemplate?: Song | null;
     slides?: Slide[];
 }
 
@@ -14,6 +15,7 @@ export default class Song {
     name: string = '';
     sorting: number = 0;
     slides: Slide[] = [];
+    songTemplate: Song | null = null;
     constructor(args: ISong) {
         Object.keys(this).map((keyname: string) => {
             if (keyname === 'slides') {

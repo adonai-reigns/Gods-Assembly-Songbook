@@ -16,7 +16,7 @@ export class SongsController {
 
     @Get()
     findAll(): Promise<Song[]> {
-        return this.songsService.findAll();
+        return this.songsService.findAll({ where: { songTemplateId: null } });
     }
 
     @Get(':id')

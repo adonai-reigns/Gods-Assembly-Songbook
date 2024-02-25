@@ -1,26 +1,28 @@
 import { useState, useEffect } from "react";
 import { getApiUrl } from "../stores/server";
+import { isEmpty, isEqual } from "lodash";
 import axios from "axios";
 
 import { Dialog } from "primereact/dialog";
 import { Editor } from "primereact/editor";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 
 import { quillHeader } from "./SlideEditor";
 import SongPicker from './SongPicker';
 import DeleteButton from "./DeleteButton";
+import Button, { ButtonSeverity } from "./Button";
 import Tile from "./Tile";
 
 import type { Playlist } from "../models/playlist";
 import type Song from "../models/song";
-import { ButtonSeverity } from "./Button";
 
 export interface propsInterface {
     className?: string;
     playlist: Playlist;
+    onAddSongs: CallableFunction;
+    onDeleteSongs: CallableFunction;
     onContentChange: CallableFunction;
     onSubmit?: CallableFunction;
     onCopy?: CallableFunction;
@@ -48,8 +50,8 @@ const PlaylistEditor = function (props: propsInterface) {
     const [pauseSlide, setPauseSlide] = useState<string>(playlist.pauseSlide);
     const [slideEditor, setSlideEditor] = useState<null | "start" | "end" | "pause">(null);
 
-
     const [showSongPicker, setShowSongPicker] = useState<boolean>(false);
+    const [addedSongIds, setAddedSongIds] = useState<number[]>([]);
 
     const onContentChange = () => {
         props.onContentChange({
@@ -75,7 +77,7 @@ const PlaylistEditor = function (props: propsInterface) {
     }
 
     const removeSong = (song: Song) => {
-        setPlaylistSongs(playlistSongs.filter((_song: Song) => _song.id !== song.id));
+        props.onDeleteSongs([song]);
     }
 
     const setPlaylistSongsSorting = (e: any) => {
@@ -93,14 +95,16 @@ const PlaylistEditor = function (props: propsInterface) {
     }
 
     const submitSongPicker = () => {
+        let addedSongs: Song[] = songs.filter((song: Song) => addedSongIds.indexOf(song.id ?? 0) > -1);
+        if (!isEmpty(addedSongs)) {
+            props.onAddSongs(addedSongs);
+        }
         setShowSongPicker(false);
         onContentChange();
     }
 
-    const setSelectedSongIds = (selectedSongIds: number[]) => {
-        setPlaylistSongs((_playlistSongs) => {
-            return songs.filter((song: Song) => (selectedSongIds.indexOf(parseInt(`${song.id}` ?? '0')) > -1));
-        });
+    const onSongpickerSelectionChange = (selectedSongIds: number[]) => {
+        setAddedSongIds(selectedSongIds);
     }
 
     const songListFooterTemplate = function () {
@@ -109,7 +113,11 @@ const PlaylistEditor = function (props: propsInterface) {
         </div>
     }
 
-    const actionsBodyTemplate = (song: Song) => {
+    const editActionBodyTemplate = (song: Song) => {
+        return <Button title="Edit Song" url={`/songleader/song/${song.id}`}><i className="pi pi-pencil"></i></Button>
+    }
+
+    const deleteActionBodyTemplate = (song: Song) => {
         return <DeleteButton title="Remove Song" ask="Remove this song from the playlist?" onClick={() => removeSong(song)}></DeleteButton>
     }
 
@@ -124,6 +132,12 @@ const PlaylistEditor = function (props: propsInterface) {
     }, []);
 
     useEffect(() => {
+        if (!isEqual(playlistSongs, props.playlist.songs)) {
+            setPlaylistSongs(props.playlist.songs);
+        }
+    });
+
+    useEffect(() => {
         onContentChange();
     }, [playlistSongs, editingPlaylistName, startSlide, pauseSlide, endSlide]);
 
@@ -133,7 +147,7 @@ const PlaylistEditor = function (props: propsInterface) {
             onHide={() => submitSongPicker()}
             header={dialogHeader}
             style={{ width: '50em', height: '30em' }}>
-            <SongPicker onSubmit={submitSongPicker} onSelectionChange={setSelectedSongIds} selectedSongIds={playlist.songs.map((song: Song) => parseInt(`${song.id}`))} />
+            <SongPicker onSubmit={submitSongPicker} onSelectionChange={onSongpickerSelectionChange} />
         </Dialog>
 
         <div>
@@ -210,18 +224,18 @@ const PlaylistEditor = function (props: propsInterface) {
                     <div className="text-sm" dangerouslySetInnerHTML={{ __html: endSlide }} />
                 </Tile>
 
-
                 <DataTable reorderableRows={true} value={playlistSongs} className="w-full"
                     footer={songListFooterTemplate}
                     emptyMessage="This playlist is empty"
                     onRowReorder={setPlaylistSongsSorting}>
                     <Column rowReorder style={{ width: '2em' }} rowReorderIcon={rowReorderIconTemplate} />
                     <Column columnKey="name" field="name" header="Name" />
-                    <Column columnKey="actions" body={actionsBodyTemplate} className="text-right" />
+                    <Column columnKey="editAction" body={editActionBodyTemplate} className="text-right" />
+                    <Column columnKey="deleteAction" body={deleteActionBodyTemplate} className="text-right" />
                 </DataTable>
 
                 <div className="m-3 flex justify-content-center w-full">
-                    <Button className="m-auto" type="button" title="Save Changes" onClick={(e) => {
+                    <Button className="m-auto" title="Save Changes" onClick={(e: any) => {
                         e.preventDefault();
                         submitPlaylist();
                     }}>Save Changes <i className="pi pi-check ml-3"></i></Button>

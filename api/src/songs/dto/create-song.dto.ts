@@ -10,6 +10,10 @@ export class CreateSongDto {
     readonly sorting: number;
 
     @IsOptional()
-    playlists: Playlist[];
+    @IsNumber()
+    songTemplateId: number | null;
+
+    @IsOptional()
+    readonly playlists: Playlist[];
 
 }

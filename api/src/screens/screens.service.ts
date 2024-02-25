@@ -8,14 +8,14 @@ import { Screen } from './screen.entity';
 @Injectable()
 export class ScreensService {
 
-    constructor(@Inject('ScreensRepository') private readonly ScreensRepository: typeof Screen) { }
+    constructor(@Inject('ScreensRepository') private readonly screensRepository: typeof Screen) { }
 
     async findAll(): Promise<Screen[]> {
-        return await this.ScreensRepository.findAll<Screen>();
+        return await this.screensRepository.findAll<Screen>();
     }
 
     async findOne(id: number): Promise<Screen> {
-        const screen = await this.ScreensRepository.findByPk<Screen>(id);
+        const screen = await this.screensRepository.findByPk<Screen>(id);
         if (!screen) {
             throw new HttpException('No screen found', HttpStatus.NOT_FOUND);
         }

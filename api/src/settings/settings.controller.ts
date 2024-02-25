@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Put, Patch, Delete, Param, Body } from '@nestjs/common';
 
 import { CreateSettingDto } from './dto/create-setting.dto';
-import { UpdateSettingDto } from './dto/update-setting.dto';
 
 import { Setting } from './settings.entity';
 
@@ -31,7 +30,6 @@ export class SettingsController {
 
     @Patch()
     async update(@Body('name') name: string, @Body('value') value: any): Promise<Setting> {
-        console.log('I patch /update settings of name '+name+' and value '+value);
         return this.settingsService.updateByName(name, value);
     }
 

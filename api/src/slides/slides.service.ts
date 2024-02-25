@@ -4,18 +4,21 @@ import { CreateSlideDto } from './dto/create-slide.dto';
 import { UpdateSlideDto } from './dto/update-slide.dto';
 
 import { Slide } from './slide.entity';
+import { SlideDto } from './dto/slide.dto';
 
 @Injectable()
 export class SlidesService {
 
-    constructor(@Inject('SlidesRepository') private readonly SlidesRepository: typeof Slide) { }
+    constructor(
+        @Inject('SlidesRepository') private readonly slidesRepository: typeof Slide
+    ) { }
 
     async findAll(): Promise<Slide[]> {
-        return await this.SlidesRepository.findAll<Slide>();
+        return await this.slidesRepository.findAll<Slide>();
     }
 
     async findOne(id: number): Promise<Slide> {
-        const slide = await this.SlidesRepository.findByPk<Slide>(id);
+        const slide = await this.slidesRepository.findByPk<Slide>(id);
         if (!slide) {
             throw new HttpException('No slide found', HttpStatus.NOT_FOUND);
         }
@@ -44,6 +47,19 @@ export class SlidesService {
     async delete(id: number) {
         const slide = await this.findOne(id) as Slide;
         await slide.destroy();
+    }
+
+    public async duplicate(slide: SlideDto, songId: number): Promise<Slide> {
+        let newSlide = new Slide({
+            name: slide.name,
+            content: slide.content,
+        });
+        newSlide.songId = songId;
+        newSlide.type = slide.type;
+        newSlide.sorting = slide.sorting;
+
+        newSlide.id = undefined;
+        return newSlide.save();
     }
 
 }

@@ -1,12 +1,12 @@
 import { Optional } from 'sequelize';
-import { Table, Column, Model, HasMany, DataType, ForeignKey, BelongsToMany } from 'sequelize-typescript';
-import { Col } from 'sequelize/types/utils';
+import { Table, Column, Model, DataType, ForeignKey, BelongsToMany } from 'sequelize-typescript';
 import { Song } from 'src/songs/song.entity';
 
 interface playlistSongAttributes {
     id: number;
     playlistId: number;
     songId: number;
+    sorting: number;
 }
 
 interface playlistSongCreationAttributes extends Optional<playlistSongAttributes, 'id'> { }
@@ -26,7 +26,6 @@ export class PlaylistSong extends Model<playlistSongAttributes, playlistSongCrea
     sorting: number;
 }
 
-
 interface playlistAttributes {
     id: number;
     name: string;
@@ -42,7 +41,7 @@ export class Playlist extends Model<playlistAttributes, playlistCreationAttribut
 
     @Column
     name: string;
-    
+
     @Column(DataType.TEXT)
     startSlide: string;
 
@@ -50,7 +49,7 @@ export class Playlist extends Model<playlistAttributes, playlistCreationAttribut
     endSlide: string;
 
     @Column(DataType.TEXT)
-    pauseSlide: string;    
+    pauseSlide: string;
 
     @BelongsToMany(() => Song, () => PlaylistSong)
     songs: Song[];

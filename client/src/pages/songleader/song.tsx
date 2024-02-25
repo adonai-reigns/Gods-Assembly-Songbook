@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactSortable } from 'react-sortablejs';
 import { getApiUrl } from '../../stores/server';
+import { isEmpty } from 'lodash';
 import axios from 'axios';
 
 import Page404 from '../Page404';
@@ -130,9 +131,12 @@ const SongContent = function (props: propsInterface) {
             });
         } else {
             axios.patch(apiUrl + '/songs/' + songId, {
+                ...song,
                 name: editingSongName
             }).then((response) => {
-                if (response.data.id) {
+                if (!isEmpty(response.data.playlists)) {
+                    navigate('/songleader/plan/' + response.data.playlists[0].id);
+                } else {
                     navigate('/songleader/songs');
                 }
             });
@@ -173,12 +177,7 @@ const SongContent = function (props: propsInterface) {
         if (editingSlideId) {
             const editingSlide = getSlideById(editingSlideId);
             if (editingSlide) {
-                const newSlide = new Slide({});
-                newSlide.songId = editingSlide.songId;
-                newSlide.name = editingSlide.name;
-                newSlide.type = editingSlide.type;
-                newSlide.content = editingSlide.content;
-                newSlide.sorting = slides.length;
+                const newSlide = new Slide(editingSlide);
                 axios.post(apiUrl + '/slides', newSlide).then(async (response) => {
                     if (response.data) {
                         setEditingSlideId(0);
@@ -203,6 +202,7 @@ const SongContent = function (props: propsInterface) {
         let newSlide = new Slide({});
         newSlide.songId = songId;
         newSlide.type = defaultSlideType;
+        newSlide.name = '';
         newSlide.sorting = slides.length;
         axios.post(apiUrl + '/slides', newSlide).then(async (response) => {
             if (response.data) {
@@ -211,9 +211,6 @@ const SongContent = function (props: propsInterface) {
                 const newSlide = getSlideById(newSlideId);
                 if (newSlide) {
                     setEditingSlideId(newSlideId);
-                    setEditingSlideName(newSlide.name);
-                    setEditingSlideType(newSlide.type);
-                    setEditingSlideContent(newSlide.content);
                     setAutogenerateSlideName(true);
                 } else {
                     // error while creating new slide at api

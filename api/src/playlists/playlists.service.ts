@@ -8,17 +8,20 @@ import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { Song } from 'src/songs/song.entity';
 import { Slide } from 'src/slides/slide.entity';
 import { Playlist, PlaylistSong } from './playlist.entity';
+import { SongsService } from 'src/songs/songs.service';
+import { SongDto } from 'src/songs/dto/song.dto';
 
 @Injectable()
 export class PlaylistsService {
 
     constructor(
-        @Inject('PlaylistsRepository') private readonly PlaylistsRepository: typeof Playlist,
-        @Inject('PlaylistsSongsRepository') private readonly PlaylistsSongsRepository: typeof PlaylistSong
+        @Inject('PlaylistsRepository') private readonly playlistsRepository: typeof Playlist,
+        @Inject('PlaylistsSongsRepository') private readonly playlistsSongsRepository: typeof PlaylistSong,
+        private readonly songsService: SongsService
     ) { }
 
     async findAll(): Promise<Playlist[]> {
-        const playlists = await this.PlaylistsRepository.findAll<Playlist>({
+        const playlists = await this.playlistsRepository.findAll<Playlist>({
             include: [{
                 model: Song,
                 as: 'songs',
@@ -39,7 +42,7 @@ export class PlaylistsService {
     }
 
     async findOne(id: number): Promise<Playlist> {
-        const playlist = await this.PlaylistsRepository.findByPk<Playlist>(id, {
+        const playlist = await this.playlistsRepository.findByPk<Playlist>(id, {
             include: [{
                 model: Song,
                 as: 'songs',
@@ -76,7 +79,7 @@ export class PlaylistsService {
         playlist.pauseSlide = updatePlaylistDto.pauseSlide || playlist.pauseSlide;
         playlist.endSlide = updatePlaylistDto.endSlide || playlist.endSlide;
 
-        const playlistSongs = await this.PlaylistsSongsRepository.findAll({
+        const playlistSongs = await this.playlistsSongsRepository.findAll({
             where: {
                 playlistId: { [Op.eq]: id },
                 songId: { [Op.in]: updatePlaylistDto.songs.map((song: Song) => song.id) }
@@ -101,10 +104,23 @@ export class PlaylistsService {
 
     }
 
+    async addSongsToPlaylist(playlistId: number, songs: SongDto[]): Promise<Playlist> {
+        try {
+            let newSongs = [];
+            for (let songTemplate of songs) {
+                newSongs.push(await this.songsService.duplicate(songTemplate));
+            }
+            await this.assignSongsToPlaylist(playlistId, newSongs);
+        } catch (e: any) {
+            console.error('Error in [playlist.service].addSongsToPlaylist()', e, playlistId, songs);
+        }
+        return await this.findOne(playlistId) as Playlist;
+    }
+
     async unassignSongsFromPlaylist(playlistId: number, songs: Song[]): Promise<Playlist> {
         for (let song of songs) {
             try {
-                await this.PlaylistsSongsRepository.destroy({
+                await this.playlistsSongsRepository.destroy({
                     where: {
                         playlistId: parseInt(`${playlistId}`),
                         songId: parseInt(song.id)
@@ -118,13 +134,37 @@ export class PlaylistsService {
     async assignSongsToPlaylist(playlistId: number, songs: Song[]): Promise<Playlist> {
         for (let song of songs) {
             try {
-                await this.PlaylistsSongsRepository.create({
+                let sortingMax = await this.playlistsSongsRepository.findOne({ where: { playlistId }, order: [['sorting', 'DESC']] });
+                await this.playlistsSongsRepository.create({
                     playlistId: parseInt(`${playlistId}`),
-                    songId: parseInt(song.id)
+                    songId: parseInt(`${song.id}`),
+                    sorting: parseInt(`${sortingMax?.sorting ?? 0}`) + 1
                 });
             } catch (e: any) { }
-
         }
+        return await this.findOne(playlistId) as Playlist;
+    }
+
+    async deleteSongFromPlaylist(playlistId: number, songId: number): Promise<Playlist> {
+        try {
+            let playlistSong = await this.playlistsSongsRepository.findOne({ where: { playlistId, songId: songId } });
+            if (playlistSong) {
+                try {
+                    await this.songsService.delete(songId);
+                    await this.playlistsSongsRepository.destroy({ where: { playlistId, songId: songId } });
+                } catch (e) { }
+                try {
+                    await this.playlistsSongsRepository.update({
+                        sorting: Sequelize.literal('sorting - 1')
+                    }, {
+                        where: {
+                            playlistId: parseInt(`${playlistId}`),
+                            sorting: Sequelize.literal('(sorting - ' + playlistSong.sorting + ') > 0')
+                        }
+                    });
+                } catch (e: any) { }
+            }
+        } catch (e: any) { }
         return await this.findOne(playlistId) as Playlist;
     }
 

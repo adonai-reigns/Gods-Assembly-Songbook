@@ -1,4 +1,4 @@
-import { get, set } from 'lodash';
+import { get, has, set } from 'lodash';
 
 export enum SlideType {
     Intro = 'Intro',
@@ -63,7 +63,7 @@ export default class Slide {
     sorting: number = 0;
     duration: number = 0;
     constructor(args: ISlide) {
-        Object.keys(this).map((keyname: string) => set(this, keyname, get(args, keyname)));
+        Object.keys(this).map((keyname: string) => (has(args, keyname) && set(this, keyname, get(args, keyname))));
     }
 }
 

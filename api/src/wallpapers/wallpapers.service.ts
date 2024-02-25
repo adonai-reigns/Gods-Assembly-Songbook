@@ -10,14 +10,14 @@ import { Wallpaper } from './wallpaper.entity';
 @Injectable()
 export class WallpapersService {
 
-    constructor(@Inject('WallpapersRepository') private readonly WallpapersRepository: typeof Wallpaper) { }
+    constructor(@Inject('WallpapersRepository') private readonly wallpapersRepository: typeof Wallpaper) { }
 
     async findAll(): Promise<Wallpaper[]> {
-        return await this.WallpapersRepository.findAll<Wallpaper>();
+        return await this.wallpapersRepository.findAll<Wallpaper>();
     }
 
     async findOne(id: number): Promise<Wallpaper> {
-        const wallpaper = await this.WallpapersRepository.findByPk<Wallpaper>(id);
+        const wallpaper = await this.wallpapersRepository.findByPk<Wallpaper>(id);
         if (!wallpaper) {
             throw new HttpException('No wallpaper found', HttpStatus.NOT_FOUND);
         }

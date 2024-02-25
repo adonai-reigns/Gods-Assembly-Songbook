@@ -5,10 +5,12 @@ import axios from "axios";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Checkbox } from "primereact/checkbox";
-import type Song from "../models/song";
+
 import DeleteButton from "./DeleteButton";
 import Button from "../components/Button";
+
 import { FilterMatchMode } from "primereact/api";
+import type Song from "../models/song";
 
 export interface propsInterface {
     selectedSongIds?: number[];
@@ -25,8 +27,9 @@ export interface propsInterface {
 
 export const propsDefaults = {
     className: '',
+    selectedSongIds: [],
     newSongUrl: '/songleader/song',
-    canDelet: false,
+    canDelete: false,
 }
 
 const SongPicker = function (props: propsInterface) {
@@ -44,7 +47,7 @@ const SongPicker = function (props: propsInterface) {
 
     const onSubmit = () => {
         if (props.onSubmit) {
-            props.onSubmit();
+            props.onSubmit(selectedSongIds);
         }
     }
 

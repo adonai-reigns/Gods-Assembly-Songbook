@@ -1,5 +1,5 @@
 import { Optional } from 'sequelize';
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, Default, AllowNull } from 'sequelize-typescript';
 
 import { Song } from 'src/songs/song.entity';
 
@@ -27,6 +27,9 @@ interface slideCreationAttributes extends Optional<slideAttributes, 'id'> { }
 
 @Table({ tableName: "slide" })
 export class Slide extends Model<slideAttributes, slideCreationAttributes> {
+
+    @Default('')
+    @AllowNull(false)
     @Column
     name: string;
 
@@ -45,4 +48,5 @@ export class Slide extends Model<slideAttributes, slideCreationAttributes> {
 
     @BelongsTo(() => Song)
     song: Song;
+
 }

@@ -11,7 +11,8 @@ import PlaylistEditor from "../../components/PlaylistEditor";
 
 import Button from '../../components/Button';
 
-import type { Playlist } from "../../models/playlist";
+import { Playlist } from "../../models/playlist";
+import Song from "../../models/song";
 
 import GasLayout from "../../layouts/GasLayout";
 import "./sing.scss";
@@ -80,6 +81,26 @@ const Plan = function (props: propsInterface) {
         }
     }
 
+    const onAddSongs = (addedSongs: Song[]) => {
+        if (editingPlaylist) {
+            axios.post(apiUrl + '/playlists/' + editingPlaylist.id + '/addSongs', {
+                songs: addedSongs.map((song: Song) => { return { ...song } })
+            }).then((response) => {
+                setEditingPlaylist(new Playlist(response.data));
+            }).catch(e => console.error(e));
+        }
+    }
+
+    const onDeleteSongs = (deletedSongs: Song[]) => {
+        if (editingPlaylist) {
+            deletedSongs.map((song: Song) => {
+                axios.delete(apiUrl + '/playlists/' + editingPlaylist.id + '/deleteSong/' + song.id).then((response) => {
+                    setEditingPlaylist(new Playlist(response.data));
+                }).catch(e => console.error(e));
+            });
+        }
+    }
+
     const onPlaylistContentChange = (editedPlaylist: Playlist) => {
         if (editingPlaylist) {
             setEditingPlaylistName(editedPlaylist.name);
@@ -141,6 +162,8 @@ const Plan = function (props: propsInterface) {
             {(editingPlaylist !== null) && <>
                 <PlaylistEditor playlist={editingPlaylist}
                     onSubmit={() => submitPlaylist()}
+                    onAddSongs={onAddSongs}
+                    onDeleteSongs={onDeleteSongs}
                     onContentChange={onPlaylistContentChange} />
             </>}
         </Dialog>

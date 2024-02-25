@@ -9,14 +9,14 @@ import { Setting } from './settings.entity';
 @Injectable()
 export class SettingsService {
 
-    constructor(@Inject('SettingsRepository') private readonly SettingsRepository: typeof Setting) { }
+    constructor(@Inject('SettingsRepository') private readonly settingsRepository: typeof Setting) { }
 
     async findAll(): Promise<Setting[]> {
-        return await this.SettingsRepository.findAll<Setting>();
+        return await this.settingsRepository.findAll<Setting>();
     }
 
     async findOne(id: number): Promise<Setting> {
-        const settings = await this.SettingsRepository.findByPk<Setting>(id);
+        const settings = await this.settingsRepository.findByPk<Setting>(id);
         if (!settings) {
             throw new HttpException('No settings found', HttpStatus.NOT_FOUND);
         }
@@ -24,15 +24,12 @@ export class SettingsService {
     }
 
     async findOneBy(search): Promise<Setting> {
-        console.log('findOneBy: ', search);
-        const settings = await this.SettingsRepository.findOne<Setting>(search);
+        const settings = await this.settingsRepository.findOne<Setting>(search);
         if (!settings) {
             throw new HttpException('No settings found', HttpStatus.NOT_FOUND);
         }
         return settings;
     }
-
-
 
     async create(createSettingsDto: CreateSettingDto): Promise<Setting> {
         const settings = new Setting();
@@ -56,7 +53,6 @@ export class SettingsService {
 
     async updateByName(name: string, value: any): Promise<Setting> {
         const settings = await this.findOneBy({where:{ name }});
-        console.log('found setting by name', settings);
         settings.value = value;
         return settings.save();
     }
