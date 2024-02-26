@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getApiUrl, getLiveSocket } from '../../stores/server';
+import { isEqual } from 'lodash';
 import axios from 'axios';
 
 import { Panel } from 'primereact/panel';
@@ -8,7 +9,7 @@ import { Button } from 'primereact/button';
 
 import { LineMargin, LinePadding, Screen, ScreenStyle, Size, TextAlign } from '../../models/screen';
 import AdminLayout from '../../layouts/AdminLayout';
-import { isEqual } from 'lodash';
+import { InputText } from 'primereact/inputtext';
 
 export interface propsInterface {
     className?: string,
@@ -78,6 +79,8 @@ const AudienceScreenConfig = function (props: propsInterface) {
 
     const apiUrl = getApiUrl();
 
+    const [applicationUrl, setApplicationUrl] = useState<string>('');
+
     const [screen, setScreen] = useState<Screen>(new Screen);
     const [screenName, setScreenName] = useState<string>('');
     const [screenStyle, setScreenStyle] = useState<ScreenStyle>(new ScreenStyle({}));
@@ -102,6 +105,20 @@ const AudienceScreenConfig = function (props: propsInterface) {
     }
 
     useEffect(() => {
+        axios.get(apiUrl + '/constants').then((response: any) => {
+            if (response.data) {
+                setApplicationUrl('http://' + response.data.ip);
+            }
+        }).catch(() => {
+            axios.post(apiUrl + '/screens', {
+                name: 'Audience',
+                style: screenStyle
+            }).then((response) => {
+                setScreen(response.data);
+                setScreenName(response.data.name);
+                setScreenStyle(new ScreenStyle(response.data.style));
+            }).catch(() => { })
+        });
         setSizesAsDropdownOptions((): stringOptionsInterface[] => {
             let _sizesAsDropdownOptions: stringOptionsInterface[] = [];
             Object.values(Size).forEach((sizeValue: string) => {
@@ -148,6 +165,7 @@ const AudienceScreenConfig = function (props: propsInterface) {
                 { label: 'False', value: false }
             ];
         });
+
     }, []);
 
     useEffect(() => {
@@ -190,6 +208,12 @@ const AudienceScreenConfig = function (props: propsInterface) {
     return <AdminLayout>
 
         <Panel>
+
+            <div className="field p-inputgroup flex-1">
+                <span className="p-inputgroup-addon"><label htmlFor="application-url">Application URL</label></span>
+                <InputText id="application-url" className="p-inputtext" value={applicationUrl} />
+                <span className="p-inputgroup-addon" title="This is the address of God's Assembly Songbook on your network"><i className="pi pi-info"></i></span>
+            </div>
 
             <div className="field p-inputgroup flex-1">
                 <span className="p-inputgroup-addon">

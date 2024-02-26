@@ -1,13 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
 
+var ip = require('ip');
+
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-    constructor(private readonly appService: AppService) { }
+    constructor() { }
 
-    @Get()
-    getHello(): string {
-        return this.appService.getHello();
+    @Get('/constants')
+    getConstants(): any {
+        return {
+            ip: ip.address()
+        }
     }
 }
