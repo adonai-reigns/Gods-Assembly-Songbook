@@ -24,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -37,6 +38,7 @@
 
 .card {
   padding: 2em;
+
   button {
     color: yellow;
   }
@@ -45,4 +47,3 @@
 .read-the-docs {
   color: #888;
 }
-

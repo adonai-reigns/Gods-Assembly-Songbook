@@ -6,23 +6,24 @@ import axios from 'axios';
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 
-import PlaylistPicker from "../../components/PlaylistPicker";
-import PlaylistEditor from "../../components/PlaylistEditor";
+import { PlaylistPicker } from "../../components/PlaylistPicker";
+import { PlaylistEditor } from "../../components/PlaylistEditor";
 
-import Button from '../../components/Button';
+import { FormGroup } from "../../components/FormGroup";
+import { Button } from '../../components/Button';
 
 import { Playlist } from "../../models/playlist";
-import Song from "../../models/song";
+import { Song } from "../../models/song";
 
 import GasLayout from "../../layouts/GasLayout";
 import "./sing.scss";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     playlistId?: number;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: ''
 }
 
@@ -139,13 +140,10 @@ const Plan = function (props: propsInterface) {
             style={{ width: '50em', height: '30em' }}
             onHide={() => submitPlaylist()}>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slide-name" className="font-normal">Playlist Name</label>
-                </span>
+            <FormGroup label="Playlist Name">
                 <InputText id="slide-name" placeholder="Playlist Name" value={editingPlaylistName}
                     onChange={e => setEditingPlaylistName(e.target.value)} onKeyUp={(e) => { if (e.code === 'Enter') { submitPlaylist(); } }} />
-            </div>
+            </FormGroup>
 
             <div className="m-3 flex justify-content-around">
                 <Button onClick={(e: any) => {

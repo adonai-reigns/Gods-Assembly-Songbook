@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { PlaylistPlayerSocketEvent } from '../utilities/playlistPlayerSocket';
 
-import Slide, { SlideTypeLabels } from '../models/slide';
+import { Slide, SlideTypeLabels } from '../models/slide';
 import { LineMarginUnits, LinePaddingUnits, PaddingSizesUnits, ScreenStyle, ScreenStyleComputed, TextSizesUnits } from '../models/screen';
 import { Wallpaper, getMimeTypeFormat, MimeType, SlideLineStyle, WallpaperFile } from '../models/wallpaper';
 
@@ -14,15 +14,14 @@ import PlainLayout from '../layouts/PlainLayout';
 import "./Audience.scss";
 import 'animate.css';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     children?: any;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
 }
-
 
 const Audience = function (props: propsInterface) {
 

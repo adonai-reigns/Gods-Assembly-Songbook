@@ -14,7 +14,7 @@ export enum PlaylistPlayerSocketEvent {
     exitPlaylist = 'exitPlaylist',
 }
 
-export interface IPlaylistPlayerSocketEventListener {
+interface IPlaylistPlayerSocketEventListener {
     event: PlaylistPlayerSocketEvent,
     callback: CallableFunction
 }
@@ -36,7 +36,7 @@ export class PlaylistPlayerSocket {
 
     initListeners(playlistPlayer: PlaylistPlayer) {
 
-        if(this.playlistPlayers.filter((_playlistPlayer) => _playlistPlayer.id === playlistPlayer.id).length < 1){
+        if (this.playlistPlayers.filter((_playlistPlayer) => _playlistPlayer.id === playlistPlayer.id).length < 1) {
             this.playlistPlayers.push(playlistPlayer);
         }
 

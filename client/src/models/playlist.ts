@@ -1,6 +1,6 @@
 import { get, set } from 'lodash';
 
-import Song from './song';
+import { Song } from './song';
 
 export interface IPlaylist {
     id?: number;

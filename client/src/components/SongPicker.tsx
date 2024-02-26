@@ -6,13 +6,14 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Checkbox } from "primereact/checkbox";
 
-import DeleteButton from "./DeleteButton";
-import Button from "../components/Button";
+import { DeleteButton } from "./DeleteButton";
+import { Button } from "../components/Button";
+import { FormSubmit } from "./FormSubmit";
 
 import { FilterMatchMode } from "primereact/api";
-import type Song from "../models/song";
+import type { Song } from "../models/song";
 
-export interface propsInterface {
+interface propsInterface {
     selectedSongIds?: number[];
     className?: string;
     onSubmit?: CallableFunction;
@@ -25,14 +26,14 @@ export interface propsInterface {
     canDelete?: boolean;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     selectedSongIds: [],
     newSongUrl: '/songleader/song',
     canDelete: false,
 }
 
-const SongPicker = function (props: propsInterface) {
+export const SongPicker = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -166,11 +167,8 @@ const SongPicker = function (props: propsInterface) {
             {props.buttonLabelText && <Column body={buttonBodyTemplate} className="text-right"></Column>}
             {props.canDelete && <Column body={deleteButtonBodyTemplate} className="text-right"></Column>}
         </DataTable>
-        {props.onSubmit && <div className="m-3 flex justify-content-center w-full">
-            <Button className="m-auto" title="Save Changes" onClick={onSubmit}>Add Selected Songs <i className="pi pi-check ml-3"></i></Button>
-        </div>}
+        {props.onSubmit && <FormSubmit icon="pi pi-check" onClick={onSubmit}>Add Selected Songs</FormSubmit>}
     </div>
 
 }
 
-export default SongPicker;

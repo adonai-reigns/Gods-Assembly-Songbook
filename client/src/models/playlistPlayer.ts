@@ -1,15 +1,15 @@
 import { isDate, isEmpty, isNumber, isObject, isUndefined } from "lodash";
 import { addMilliseconds, differenceInMilliseconds } from "date-fns";
 
-import Song from "./song";
-import Slide from "./slide";
+import { Song } from "./song";
+import { Slide } from "./slide";
 
 import { IPlaylist, Playlist } from "./playlist";
 import { PlaylistPlayerSocketEvent } from "../utilities/playlistPlayerSocket";
 
 import { getPlaylistPlayer, setPlaylistPlayer } from "../stores/playlist";
 
-export interface IPlaylistPlayerEventListener {
+interface IPlaylistPlayerEventListener {
     event: PlaylistPlayerSocketEvent,
     callback: CallableFunction
 }
@@ -54,7 +54,7 @@ export class PlaylistPlayer extends Playlist {
         } else {
             let currentSlide;
             if (currentSlide = this.getCurrentSlide()) {
-                this.emitEvent(PlaylistPlayerSocketEvent.setCurrentSlide, new Slide({...currentSlide}));
+                this.emitEvent(PlaylistPlayerSocketEvent.setCurrentSlide, new Slide({ ...currentSlide }));
             }
         }
     }
@@ -269,7 +269,6 @@ export class PlaylistPlayer extends Playlist {
             default:
                 return 'end';
         }
-
     }
 
     public getCurrentSlide = (): SlidePlayer | void => {
@@ -317,7 +316,6 @@ export class PlaylistPlayer extends Playlist {
     }
 
 }
-
 
 export class SongPlayer extends Song {
 
@@ -396,7 +394,6 @@ export class SongPlayer extends Song {
     }
 
 }
-
 
 export class SlidePlayer extends Slide {
 

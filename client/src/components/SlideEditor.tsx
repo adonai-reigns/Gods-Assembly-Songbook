@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 
 import { Editor } from 'primereact/editor';
-import { Button } from "primereact/button";
+import { FormSubmit } from "./FormSubmit";
 
-import type Slide from "../models/slide";
+import type { Slide } from "../models/slide";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     slide: Slide;
     onContentChange?: CallableFunction;
@@ -14,7 +14,7 @@ export interface propsInterface {
     onCopy?: CallableFunction;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: ''
 }
 
@@ -37,8 +37,7 @@ export const quillHeader = () => {
     );
 };
 
-
-const SlideEditor = function (props: propsInterface) {
+export const SlideEditor = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -88,14 +87,9 @@ const SlideEditor = function (props: propsInterface) {
             onTextChange={(e) => setContent(e.htmlValue ?? '')}
             headerTemplate={quillHeader()} />
 
-        <div className="field m-3 p-inputgroup flex justify-content-center">
-            <Button type="button" onClick={doSubmit}>
-                Save Changes <i className="pi pi-check ml-3"></i>
-            </Button>
-        </div>
+        <FormSubmit onClick={doSubmit} />
 
     </div>
 
 }
 
-export default SlideEditor;

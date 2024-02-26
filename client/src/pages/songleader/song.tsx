@@ -8,15 +8,21 @@ import axios from 'axios';
 import Page404 from '../Page404';
 
 import { Panel } from 'primereact/panel';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-
 import { Dropdown } from 'primereact/dropdown';
 import type { SelectItem } from 'primereact/selectitem';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 
-import Song from "../../models/song";
-import Slide, {
+import { Tile } from '../../components/Tile';
+import { FormGroup } from '../../components/FormGroup';
+import { SlideEditor } from '../../components/SlideEditor';
+import { DeleteButton } from '../../components/DeleteButton';
+import { ConfirmButton } from '../../components/ConfirmButton';
+
+import { Song } from "../../models/song";
+import {
+    Slide,
     SlideType,
     SlideTypeLabels,
     SlideTypeShortNames,
@@ -24,22 +30,18 @@ import Slide, {
     defaultSlideType
 } from '../../models/slide';
 
-import Tile from '../../components/Tile';
-import SlideEditor from '../../components/SlideEditor';
-import DeleteButton from '../../components/DeleteButton';
-import ConfirmButton from '../../components/ConfirmButton';
 
 import GasLayout from '../../layouts/GasLayout';
 
 import "./song.scss";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string,
     song?: Song,
     "client:only"?: boolean,
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
 }
 
@@ -290,11 +292,7 @@ const SongContent = function (props: propsInterface) {
 
         return <>
             <h3>Editing Slide</h3>
-            <div className="field p-inputgroup flex-1">
-
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slide-name" className="font-normal">Slide Name</label>
-                </span>
+            <FormGroup icon="pi pi-heart-fill" hideLabel={true} label="Slide Name">
 
                 <InputText id="slide-name" placeholder="Slide Name" value={editingSlideName}
                     onChange={e => handleOnNameChange(e.target.value)} />
@@ -306,7 +304,7 @@ const SongContent = function (props: propsInterface) {
                 <ConfirmButton ask="Copy this slide?" onClick={() => copySlide()}><i className="pi pi-copy"></i></ConfirmButton>
                 <DeleteButton ask="Really delete this slide?" onClick={() => deleteSlide()}></DeleteButton>
 
-            </div>
+            </FormGroup>
         </>
 
     }
@@ -341,16 +339,13 @@ const SongContent = function (props: propsInterface) {
                 }
 
                 <form className="formgrid gridw-auto p-3" onSubmit={(e) => { e.preventDefault(); submitSong() }}>
-                    <div className="field m-3 p-inputgroup flex-1">
-                        <span className="p-inputgroup-addon">
-                            <i className="pi pi-heart-fill"></i>
-                        </span>
+                    <FormGroup icon="pi pi-heart-fill" label="Song Name" hideLabel={true}>
                         <span className="p-float-label">
                             <InputText id="song-name" placeholder="Song Name" value={editingSongName} onChange={e => setEditingSongName(e.target.value)} />
-                            <label htmlFor="song-name" className="">Song Name</label>
                         </span>
-                    </div>
+                    </FormGroup>
                 </form>
+
                 {songId > 0 &&
                     <ReactSortable handle=".drag-handle" swapClass="swapping" list={slides} setList={setSlides} className="m-3 tile-group grid">
                         {slides.map((slide: Slide, index: number) =>
@@ -368,9 +363,12 @@ const SongContent = function (props: propsInterface) {
                         disabled={editingSongName.length < 1}
                         onClick={submitSong}>{songId ? <>Save Changes <i className="pi pi-check ml-3"></i></> : 'Create'}</Button>
                 </div>
+
             </Panel>
         </>
+
         )}
+
     </GasLayout>
 }
 

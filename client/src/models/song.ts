@@ -1,6 +1,6 @@
 import { get, set } from 'lodash';
 
-import Slide from './slide';
+import { Slide } from './slide';
 
 interface ISong {
     id?: number;
@@ -10,7 +10,7 @@ interface ISong {
     slides?: Slide[];
 }
 
-export default class Song {
+export class Song {
     id?: number;
     name: string = '';
     sorting: number = 0;

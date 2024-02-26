@@ -1,15 +1,10 @@
 import { Card } from 'primereact/card';
 import GasLayout from '../layouts/GasLayout';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     children?: any;
-}
-
-export const propsDefaults = {
-    className: '',
-    title: undefined,
 }
 
 const CardTitleTemplate = () => {

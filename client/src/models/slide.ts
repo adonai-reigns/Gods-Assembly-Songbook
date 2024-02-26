@@ -54,7 +54,7 @@ interface ISlide {
     duration?: number;
 }
 
-export default class Slide {
+export class Slide {
     id: number = 0;
     type: SlideType = SlideType.Verse;
     name: string = '';

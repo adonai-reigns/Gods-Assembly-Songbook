@@ -8,23 +8,23 @@ import { ObjectUtils } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
 import { Column, type ColumnSortEvent } from "primereact/column";
 
-import Button from './Button';
-import DeleteButton from "./DeleteButton";
+import { Button } from './Button';
+import { DeleteButton } from "./DeleteButton";
 
 import type { Playlist } from "../models/playlist";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     onEdit?: CallableFunction;
     onPlay?: CallableFunction;
     onAdd?: CallableFunction;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
 }
 
-const PlaylistPicker = function (props: propsInterface) {
+export const PlaylistPicker = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -132,6 +132,4 @@ const PlaylistPicker = function (props: propsInterface) {
     </>
 
 }
-
-export default PlaylistPicker;
 

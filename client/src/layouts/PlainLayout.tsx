@@ -9,7 +9,6 @@ import "../styles/plain.scss";
 import './PlainLayout.scss';
 
 const PlainLayout = (props: any) => {
-
     return (<>
         <Helmet>
             <meta charSet="utf-8" />
@@ -23,10 +22,6 @@ const PlainLayout = (props: any) => {
             {props.children}
         </div>
     </>)
-
 }
 
 export default PlainLayout;
-
-
-

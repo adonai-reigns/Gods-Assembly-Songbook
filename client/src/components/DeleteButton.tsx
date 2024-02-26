@@ -1,7 +1,7 @@
-import ConfirmButton from './ConfirmButton';
+import { ConfirmButton } from './ConfirmButton';
 import { ButtonSeverity } from './Button';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     children?: any;
@@ -11,13 +11,13 @@ export interface propsInterface {
     ask: string
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     title: undefined,
     severity: ButtonSeverity.danger,
 }
 
-const DeleteButton = function (props: propsInterface) {
+export const DeleteButton = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -29,4 +29,3 @@ const DeleteButton = function (props: propsInterface) {
     </ConfirmButton>
 }
 
-export default DeleteButton;

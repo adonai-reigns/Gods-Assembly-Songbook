@@ -1,7 +1,7 @@
 import { Button as PrimereactButton } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     children: any;
@@ -19,25 +19,25 @@ export enum ButtonSeverity {
     help = 'help'
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     title: undefined,
 }
 
-const Button = function (props: propsInterface) {
+export const Button = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
     const navigate = useNavigate();
 
     const onClick = (e: any) => {
-        if(props.onClick){
-            if(props.url){
+        if (props.onClick) {
+            if (props.url) {
                 e.preventDefault();
             }
             props.onClick(e);
-        }else{
-            if(props.url){
+        } else {
+            if (props.url) {
                 e.preventDefault();
                 navigate(props.url);
             }
@@ -60,4 +60,3 @@ const Button = function (props: propsInterface) {
 
 }
 
-export default Button;

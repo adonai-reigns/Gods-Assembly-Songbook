@@ -10,15 +10,17 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 
 import { quillHeader } from "./SlideEditor";
-import SongPicker from './SongPicker';
-import DeleteButton from "./DeleteButton";
-import Button, { ButtonSeverity } from "./Button";
-import Tile from "./Tile";
+import { SongPicker } from './SongPicker';
+import { FormGroup } from "./FormGroup";
+import { DeleteButton } from "./DeleteButton";
+import { Button, ButtonSeverity } from "./Button";
+import { Tile } from "./Tile";
 
 import type { Playlist } from "../models/playlist";
-import type Song from "../models/song";
+import type { Song } from "../models/song";
+import { FormSubmit } from "./FormSubmit";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     playlist: Playlist;
     onAddSongs: CallableFunction;
@@ -28,11 +30,11 @@ export interface propsInterface {
     onCopy?: CallableFunction;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: ''
 }
 
-const PlaylistEditor = function (props: propsInterface) {
+export const PlaylistEditor = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -151,17 +153,14 @@ const PlaylistEditor = function (props: propsInterface) {
         </Dialog>
 
         <div>
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slide-name" className="font-normal">Playlist Name</label>
-                </span>
+            <FormGroup label="Playlist Name">
                 <InputText id="slide-name" placeholder="Playlist Name" value={editingPlaylistName}
                     onChange={e => setEditingPlaylistName(e.target.value)} />
-            </div>
+            </FormGroup>
+
             {(slideEditor === 'start') && <>
                 <h3>Editing: Start Slide</h3>
                 <div className="field p-inputgroup w-full flex">
-
                     <span className="p-inputgroup-addon flex-0">
                         <label htmlFor="slide-name" className="font-normal">Start Slide</label>
                     </span>
@@ -177,6 +176,7 @@ const PlaylistEditor = function (props: propsInterface) {
                     </span>
                 </div>
             </>}
+
             {(slideEditor === 'end') && <>
                 <h3>Editing: End Slide</h3>
                 <div className="field p-inputgroup w-full flex">
@@ -195,6 +195,7 @@ const PlaylistEditor = function (props: propsInterface) {
                     </span>
                 </div>
             </>}
+
             {(slideEditor === 'pause') && <>
                 <h3>Editing: Pause Slide</h3>
                 <div className="field p-inputgroup w-full flex">
@@ -213,6 +214,7 @@ const PlaylistEditor = function (props: propsInterface) {
                     </span>
                 </div>
             </>}
+
             {(slideEditor === null) && <div className="slide-preview-container grid gap-3 p-3">
                 <Tile header="Start Slide" className="col-12 md:col-3 start-slide-preview" onClick={() => setSlideEditor('start')}>
                     <div className="text-base" dangerouslySetInnerHTML={{ __html: startSlide }} />
@@ -234,18 +236,15 @@ const PlaylistEditor = function (props: propsInterface) {
                     <Column columnKey="deleteAction" body={deleteActionBodyTemplate} className="text-right" />
                 </DataTable>
 
-                <div className="m-3 flex justify-content-center w-full">
-                    <Button className="m-auto" title="Save Changes" onClick={(e: any) => {
-                        e.preventDefault();
-                        submitPlaylist();
-                    }}>Save Changes <i className="pi pi-check ml-3"></i></Button>
-                </div>
+                <FormSubmit icon="pi pi-check" onClick={(e: any) => {
+                    e.preventDefault();
+                    submitPlaylist();
+                }}>Save Changes</FormSubmit>
 
             </div>}
 
         </div>
+
     </div>
 
 }
-
-export default PlaylistEditor;

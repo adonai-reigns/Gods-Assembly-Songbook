@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import AdminHeader from "../components/AdminHeader";
+import { AdminHeader } from "../components/AdminHeader";
 
 import "primeicons/primeicons.css";
 import "/node_modules/primeflex/primeflex.css";
@@ -13,7 +13,6 @@ import './AdminLayout.scss';
 const AdminLayout = (props: any) => {
 
     return (<>
-
         <Helmet>
             <meta charSet="utf-8" />
             <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
@@ -22,7 +21,6 @@ const AdminLayout = (props: any) => {
             <meta name="generator" content={`Typed by a Real Person!`} />
             <title>God's Assembly Songbook</title>
         </Helmet>
-
         <div className="m-3 text-left">
             <AdminHeader />
             {props.children}
@@ -33,8 +31,8 @@ const AdminLayout = (props: any) => {
                 </p>
             </div>
         </div>
-
     </>)
 }
 
 export default AdminLayout;
+

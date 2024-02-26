@@ -2,21 +2,21 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../stores/server';
 
-import SongPicker from '../../components/SongPicker';
-import Button from "../../components/Button";
+import { SongPicker } from '../../components/SongPicker';
+import { Button } from "../../components/Button";
 
-import Song from '../../models/song';
+import { Song } from '../../models/song';
 
 import GasLayout from '../../layouts/GasLayout';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     onClick?: CallableFunction;
     "client:only"?: boolean
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     title: undefined
 }

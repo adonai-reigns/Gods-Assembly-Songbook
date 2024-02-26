@@ -1,7 +1,7 @@
 import { ReactElement, MouseEventHandler } from "react";
 import "./Tile.scss";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     index?: number;
@@ -13,7 +13,7 @@ export interface propsInterface {
     headerIconRight?: boolean;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     title: undefined,
     noDragHandle: false
@@ -27,7 +27,7 @@ const Footer = function (props: any) {
     return <div className={`z-2 tile-footer ${(props.headerIconRight ? 'tile-header-icon-right' : 'tile-header-icon-left')}`}>{props.children}</div>
 }
 
-const Tile = function (props: propsInterface) {
+export const Tile = function (props: propsInterface) {
     props = { ...propsDefaults, ...props };
     return <div title={props.title} className={`tile ${props.className} ${!props.noDragHandle && 'draggable'}`} onClick={typeof props.onClick === 'function' ? (props.onClick as MouseEventHandler) : undefined}>
         {props.header && <Header {...props}>{props.header}</Header>}
@@ -38,4 +38,3 @@ const Tile = function (props: propsInterface) {
     </div>
 }
 
-export default Tile;

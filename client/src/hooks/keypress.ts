@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-export interface UseKeypressOptions {
+interface UseKeypressOptions {
     ignoreTypingDelay: number;
     longpressDelay: number;
     suppressKeyDefaults: string[];
@@ -42,18 +42,18 @@ export function useKeyPress(keydownCallback: CallableFunction, keyupCallback: Ca
     }
 
     function downHandler(e: KeyboardEvent) {
-        
+
         // prevent specified keys from triggering default events
         if (suppressKeyDefaults.indexOf(e.code) > -1) {
             e.preventDefault();
         }
-        
+
         // we only process the first keydown event, not the repeats (if they are holding the key down)
         if (!e.repeat) {
 
             // ignore if they are typing in rapid succession
             if (ignoreTypingDelay && [...keysPressed.values()].sort()[0] > (new Date()).getTime() - ignoreTypingDelay) {
-                
+
                 // record the timestamp that they key began to be pressed
                 setKeysPressed(_keysPressed => (_keysPressed.set(e.code, (new Date()).getTime()), _keysPressed));
 

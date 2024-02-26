@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { getApiUrl, getLiveSocket } from '../../stores/server';
+import { isEqual, isNumber } from 'lodash';
 import axios from 'axios';
 
 import { Panel } from 'primereact/panel';
-import { InputNumber } from 'primereact/inputnumber';
+import { Slider } from 'primereact/slider';
 import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
+import { FormGroup } from '../../components/FormGroup';
+import { FormSubmit } from '../../components/FormSubmit';
 
-import WallpaperPicker from '../../components/WallpaperPicker';
+import { WallpaperPicker } from '../../components/WallpaperPicker';
+
+import { config } from '../../stores/settings';
 
 import {
     BackgroundSize,
@@ -20,27 +24,17 @@ import {
 
 import AdminLayout from '../../layouts/AdminLayout';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string,
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
 }
 
-export interface booleanOptionsInterface {
-    label: string,
-    value: boolean
-}
-
-export interface stringOptionsInterface {
+interface stringOptionsInterface {
     label: string,
     value: string
-}
-
-export interface numberOptionsInterface {
-    label: string,
-    value: number
 }
 
 const lang = {
@@ -74,6 +68,7 @@ const Settings = function (props: propsInterface) {
     const [slideshowAnimationInOptions] = useState<any>(slideshowAnimationIns);
     const [slideshowAnimationOutOptions] = useState<any>(slideshowAnimationOuts);
     const [slideshowAnimationSpeedOptions] = useState<any>(slideshowAnimationSpeeds);
+    const [slideshowSpeed, setSlideshowSpeed] = useState<number>(wallpaperStyle.slideshowSpeed ?? 0);
 
     const [patchStatus, setPatchStatus] = useState<WallpaperStyle | undefined>();
 
@@ -121,11 +116,12 @@ const Settings = function (props: propsInterface) {
 
     useEffect(() => {
         setWallpaperStyle(wallpaper.style);
+        setSlideshowSpeed(wallpaperStyle.slideshowSpeed);
     }, [wallpaper]);
 
     useEffect(() => {
         if (wallpaperId > 0 && patchStatus) {
-            if (JSON.stringify(Object.fromEntries(Object.entries(patchStatus).sort())) !== JSON.stringify(Object.fromEntries(Object.entries(wallpaperStyle).sort()))) {
+            if (!isEqual(patchStatus, wallpaperStyle)) {
                 axios.patch(apiUrl + '/wallpapers/' + wallpaperId, {
                     style: wallpaperStyle
                 }).then((response) => {
@@ -144,66 +140,56 @@ const Settings = function (props: propsInterface) {
 
         <Panel>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="background-size">Background Position</label>
-                </span>
+            <FormGroup label="Background Size" infoContent="How do you want the background images will be resized to fit the Audience' screen?">
                 <Dropdown id="background-size" placeholder="Background Size"
                     options={backgroundSizesAsDropdownOptions}
                     value={wallpaperStyle.backgroundSize}
                     onChange={e => setWallpaperStyle({ ...wallpaperStyle, backgroundSize: e.target.value })} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slideshow-speed">Slideshow Speed (seconds)</label>
-                </span>
-                <InputNumber id="slideshow-speed" placeholder="Slideshow Speed"
-                    value={wallpaperStyle.slideshowSpeed}
-                    onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowSpeed: e.value ?? 0 })} />
-            </div>
+            <FormGroup label="Slideshow Speed (seconds)" infoContent="How many seconds to wait between loading each background image?">
+                <div className="w-full flex flex-column justify-content-center p-inputtext border-noround">
+                    <Slider className="" id="longpress-timeout" placeholder="Slideshow Speed (seconds)"
+                        value={slideshowSpeed}
+                        min={config.wallpaper.slideshowSpeed.min}
+                        max={config.wallpaper.slideshowSpeed.max}
+                        step={config.wallpaper.slideshowSpeed.step}
+                        onSlideEnd={e => setWallpaperStyle({ ...wallpaperStyle, slideshowSpeed: isNumber(e.value) ? e.value : e.value[0] })}
+                        onChange={e => setSlideshowSpeed(isNumber(e.value) ? e.value : e.value[0])} />
+                </div>
+                <div className="p-inputgroup-addon">{slideshowSpeed}s</div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slideshow-speed">Slideshow Animation In</label>
-                </span>
+            <FormGroup label="Slideshow Animation In" infoContent="How do you want the background images to start?">
                 <Dropdown id="background-size" placeholder="Slideshow Animation In"
                     options={slideshowAnimationInOptions}
                     optionLabel="title"
                     optionValue="code"
-                    value={wallpaperStyle.slideshowAnimationIn}
+                    value={wallpaperStyle.slideshowAnimationIn ?? 'fadeIn'}
                     onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationIn: e.target.value })} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slideshow-speed">Slideshow Animation Out</label>
-                </span>
+            <FormGroup label="Slideshow Animation Out" infoContent="How do you want the background images to end?">
                 <Dropdown id="background-size" placeholder="Slideshow Animation Out"
                     options={slideshowAnimationOutOptions}
                     optionLabel="title"
                     optionValue="code"
-                    value={wallpaperStyle.slideshowAnimationOut}
+                    value={wallpaperStyle.slideshowAnimationOut ?? 'fadeOut'}
                     onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationOut: e.target.value })} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="slideshow-speed">Slideshow Animation Speed</label>
-                </span>
+            <FormGroup label="Slideshow Animation Speed" infoContent="How fast would you like the transition when the background images change?">
                 <Dropdown id="background-size" placeholder="Slideshow Animation Speed"
                     options={slideshowAnimationSpeedOptions}
                     optionLabel="title"
                     optionValue="code"
-                    value={wallpaperStyle.slideshowAnimationSpeed}
+                    value={wallpaperStyle.slideshowAnimationSpeed ?? 'normal'}
                     onChange={e => setWallpaperStyle({ ...wallpaperStyle, slideshowAnimationSpeed: e.target.value })} />
-            </div>
+            </FormGroup>
 
             <WallpaperPicker className="m-3" wallpaperId={wallpaperId} screenId={screenId} multiple={true} onAdd={onAdd} onDelete={onDelete} onChange={onChange} />
 
-            <div className="field m-3 p-inputgroup flex justify-content-center">
-                <Button onClick={publishToScreen}>Publish</Button>
-            </div>
+            <FormSubmit onClick={publishToScreen}>Publish</FormSubmit>
 
         </Panel>
 
@@ -212,3 +198,4 @@ const Settings = function (props: propsInterface) {
 }
 
 export default Settings;
+''

@@ -40,6 +40,13 @@ export const config = {
             max: 600,
             step: 10
         }
+    },
+    wallpaper: {
+        slideshowSpeed: {
+            min: 0,
+            max: 600,
+            step: 1
+        }
     }
 }
 

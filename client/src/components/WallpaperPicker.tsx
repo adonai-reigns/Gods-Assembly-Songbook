@@ -11,15 +11,15 @@ import { Slider } from "primereact/slider";
 import { FileUpload } from "primereact/fileupload";
 import { Card } from "primereact/card";
 
-import Button from './Button';
-import Tile from "./Tile";
+import { Button } from './Button';
+import { Tile } from "./Tile";
 
 import { LineMarginUnits, LinePaddingUnits, ScreenStyle } from "../models/screen";
 import { WallpaperFile, MimeType, getMimeTypeFormat } from "../models/wallpaper";
 
 import './WallpaperPicker.scss';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     wallpaperId: number;
     screenId: number;
@@ -30,12 +30,12 @@ export interface propsInterface {
     onChange?: CallableFunction;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     multiple: true,
 }
 
-const WallpaperPicker = function (props: propsInterface) {
+export const WallpaperPicker = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -291,5 +291,4 @@ const WallpaperPicker = function (props: propsInterface) {
     </>
 }
 
-export default WallpaperPicker;
 

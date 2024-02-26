@@ -10,7 +10,7 @@ export enum ClickerButton {
     enterButton
 };
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     children?: any;
@@ -26,7 +26,7 @@ export interface propsInterface {
     downButtonKeyCode: string;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     title: undefined,
     noDragHandle: false,
@@ -39,7 +39,7 @@ export const propsDefaults = {
     downButtonKeyCode: 'ArrowDown',
 }
 
-const RemoteClicker = function (props: propsInterface) {
+export const RemoteClicker = function (props: propsInterface) {
     props = { ...propsDefaults, ...props };
 
     const clickerLeftButtonRef = useRef<HTMLDivElement>(null);
@@ -149,4 +149,3 @@ const RemoteClicker = function (props: propsInterface) {
 
 }
 
-export default RemoteClicker;

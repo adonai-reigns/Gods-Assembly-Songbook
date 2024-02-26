@@ -7,14 +7,13 @@ import axios from "axios";
 
 import { Dialog } from "primereact/dialog";
 
-import RemoteClicker, { ClickerButton } from "../../components/RemoteClicker";
-import PlaylistPicker from "../../components/PlaylistPicker";
-import Button, { ButtonSeverity } from '../../components/Button';
-import Tile from "../../components/Tile";
-
+import { RemoteClicker, ClickerButton } from "../../components/RemoteClicker";
+import { PlaylistPicker } from "../../components/PlaylistPicker";
+import { Button, ButtonSeverity } from '../../components/Button';
+import { Tile } from "../../components/Tile";
 
 import { Playlist } from "../../models/playlist";
-import Song from "../../models/song";
+import { Song } from "../../models/song";
 import { SlideTypeClassNames, SlideTypeLabels } from "../../models/slide";
 import { PlaylistPlayer, SongPlayer, SlidePlayer } from "../../models/playlistPlayer";
 import { PlaylistPlayerSocket, PlaylistPlayerSocketEvent } from '../../utilities/playlistPlayerSocket';
@@ -30,33 +29,33 @@ import { getPlaylistPlayer, setPlaylistPlayer } from "../../stores/playlist";
 import "./sing.scss";
 import { useStore } from "@nanostores/react";
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     isLandscape?: boolean;
     isPortrait?: boolean;
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: ''
 }
 
-export interface slideTilePropsInterface {
+interface slideTilePropsInterface {
     key: any;
     className?: string;
     slide: SlidePlayer;
 }
 
-export const slideTilePropsDefaults = {
+const slideTilePropsDefaults = {
     className: ''
 }
 
-export interface songTilePropsInterface {
+interface songTilePropsInterface {
     key: any;
     className?: string;
     song: SongPlayer;
 }
 
-export const songTilePropsDefaults = {
+const songTilePropsDefaults = {
     className: ''
 }
 

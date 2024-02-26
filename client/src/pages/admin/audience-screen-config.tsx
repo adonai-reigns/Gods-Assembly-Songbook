@@ -5,34 +5,31 @@ import axios from 'axios';
 
 import { Panel } from 'primereact/panel';
 import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { FormGroup } from '../../components/FormGroup';
+import { FormSubmit } from '../../components/FormSubmit';
 
 import { LineMargin, LinePadding, Screen, ScreenStyle, Size, TextAlign } from '../../models/screen';
-import AdminLayout from '../../layouts/AdminLayout';
-import { InputText } from 'primereact/inputtext';
 
-export interface propsInterface {
+import AdminLayout from '../../layouts/AdminLayout';
+
+interface propsInterface {
     className?: string,
     "client:only"?: boolean,
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
 }
 
-export interface booleanOptionsInterface {
+interface booleanOptionsInterface {
     label: string,
     value: boolean
 }
 
-export interface stringOptionsInterface {
+interface stringOptionsInterface {
     label: string,
     value: string
-}
-
-export interface numberOptionsInterface {
-    label: string,
-    value: number
 }
 
 const lang = {
@@ -209,86 +206,65 @@ const AudienceScreenConfig = function (props: propsInterface) {
 
         <Panel>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon"><label htmlFor="application-url">Application URL</label></span>
+            <FormGroup label={`Application URL`} infoContent="This is the address of God's Assembly Songbook on your network">
                 <InputText id="application-url" className="p-inputtext" value={applicationUrl} />
-                <span className="p-inputgroup-addon" title="This is the address of God's Assembly Songbook on your network"><i className="pi pi-info"></i></span>
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="font-size">Font Size</label>
-                </span>
+            <FormGroup label={`Font Size`} infoContent="Sets the size of the font on the Audience' screen">
                 <Dropdown id="font-size" placeholder="Font Size"
                     options={sizesAsDropdownOptions}
                     optionLabel="label"
                     optionValue="value"
                     value={screenStyle.fontSize}
                     onChange={e => handleOnValueChange('fontSize', e.target.value)} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="font-size">Line Padding</label>
-                </span>
-                <Dropdown id="line-padding" placeholder="Line Padding"
+            <FormGroup label={`Line Padding`} infoContent="How big do you want the background-colour to be?">
+                <Dropdown id="line-padding" placeholder=""
                     options={linePaddingsAsDropdownOptions}
                     optionLabel="label"
                     optionValue="value"
                     value={screenStyle.linePadding}
                     onChange={e => handleOnValueChange('linePadding', e.target.value)} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="font-size">Line Spacing</label>
-                </span>
+            <FormGroup label={`Line Spacing`} infoContent="How much space do you want between each line of text?">
                 <Dropdown id="line-margin" placeholder="Line Spacing"
                     options={lineMarginsAsDropdownOptions}
                     optionLabel="label"
                     optionValue="value"
                     value={screenStyle.lineMargin}
                     onChange={e => handleOnValueChange('lineMargin', e.target.value)} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="padding">Padding</label>
-                </span>
+            <FormGroup label={`Padding`} infoContent="How much space do you want, at a minimum, between the edges of the screen and the lines of text?">
                 <Dropdown id="padding" placeholder="Padding"
                     options={sizesAsDropdownOptions}
                     value={screenStyle.padding}
                     onChange={e => handleOnValueChange('padding', e.target.value)} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="text-align">Text Align</label>
-                </span>
+            <FormGroup label={`Text Align`} infoContent="Set the horizontal text-alignment for the Audience' screen">
                 <Dropdown id="text-align" placeholder="Text Align"
                     options={textAlignsAsDropdownOptions}
                     value={screenStyle.textAlign}
                     onChange={e => handleOnValueChange('textAlign', e.target.value)} />
-            </div>
+            </FormGroup>
 
-            <div className="field p-inputgroup flex-1">
-                <span className="p-inputgroup-addon">
-                    <label htmlFor="text-align">Show Slide Type</label>
-                </span>
+            <FormGroup label={`Show Slide Type`} infoContent="Do you want to show the slide type to the audience?">
                 <Dropdown id="text-align" placeholder="Show Slide Type"
                     options={booleanAsDropdownOptions}
                     value={screenStyle.showSlideType}
                     optionLabel="label"
                     optionValue="value"
                     onChange={e => handleOnValueChange('showSlideType', e.value)} />
-            </div>
-            <div className="field m-3 p-inputgroup flex justify-content-center">
-                <Button onClick={publishToScreen}>Publish to Screen</Button>
-            </div>
+            </FormGroup>
+
+            <FormSubmit onClick={publishToScreen}>Publish to Screen</FormSubmit>
 
         </Panel>
 
-    </AdminLayout>
+    </AdminLayout >
 
 }
 

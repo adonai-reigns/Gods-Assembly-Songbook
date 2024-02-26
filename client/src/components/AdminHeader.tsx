@@ -2,11 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Menubar } from "primereact/menubar";
 import type { MenuItem } from "primereact/menuitem";
 
-export interface propsInterface {
+interface propsInterface {
     end?: any;
 }
 
-export const defaultProps = {
+const defaultProps = {
     end: null
 }
 
@@ -14,7 +14,7 @@ const Logo = function () {
     return <h1 className="m-3 text-lg"><a href="/" style={{ textDecoration: "none", color: "inherit" }}>God's Assembly Songbook!</a></h1>
 }
 
-const AdminHeader = function (props: propsInterface) {
+export const AdminHeader = function (props: propsInterface) {
 
     props = { ...defaultProps, ...props };
     const navigate = useNavigate();
@@ -40,7 +40,7 @@ const AdminHeader = function (props: propsInterface) {
             icon: 'pi pi-wifi',
             command: () => navigate('/admin/clicker')
         }
-        
+
     ];
 
     return <div className="admin-header">
@@ -49,4 +49,3 @@ const AdminHeader = function (props: propsInterface) {
 
 }
 
-export default AdminHeader;

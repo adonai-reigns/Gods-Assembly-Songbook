@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button as PrimereactButton } from 'primereact/button';
 import { ButtonSeverity } from './Button';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string;
     title?: string;
     children: any;
@@ -12,12 +12,12 @@ export interface propsInterface {
     ask: string
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
     title: undefined,
 }
 
-const ConfirmButton = function (props: propsInterface) {
+export const ConfirmButton = function (props: propsInterface) {
 
     props = { ...propsDefaults, ...props };
 
@@ -52,4 +52,3 @@ const ConfirmButton = function (props: propsInterface) {
 
 }
 
-export default ConfirmButton;

@@ -7,7 +7,7 @@ import { Card } from "primereact/card";
 import "./Attributions.scss";
 import React, { ReactElement } from "react";
 
-export interface AttributionInterface {
+interface AttributionInterface {
     name: string;
     role: string;
     previewUrl: string | ReactElement;

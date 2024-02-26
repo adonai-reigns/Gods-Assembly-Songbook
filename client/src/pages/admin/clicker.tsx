@@ -2,42 +2,24 @@ import { useState, useEffect } from 'react';
 import { getApiUrl } from '../../stores/server';
 import axios from 'axios';
 
-import * as _ from 'lodash';
-const { isEmpty, isUndefined } = _;
-
 import { Panel } from 'primereact/panel';
 import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
 import { Slider } from 'primereact/slider';
 import { Chips } from 'primereact/chips';
+import { FormGroup } from '../../components/FormGroup';
+import { FormSubmit } from '../../components/FormSubmit';
 
 import { Setting } from '../../models/settings';
 
 import AdminLayout from '../../layouts/AdminLayout';
-import { config, getSetting, getSettingValue } from '../../stores/settings';
-import { Tooltip } from 'primereact/tooltip';
+import { config, getSetting } from '../../stores/settings';
 
-export interface propsInterface {
+interface propsInterface {
     className?: string,
 }
 
-export const propsDefaults = {
+const propsDefaults = {
     className: '',
-}
-
-export interface booleanOptionsInterface {
-    label: string,
-    value: boolean
-}
-
-export interface stringOptionsInterface {
-    label: string,
-    value: string
-}
-
-export interface numberOptionsInterface {
-    label: string,
-    value: number
 }
 
 const Clicker = function (props: propsInterface) {
@@ -98,13 +80,9 @@ const Clicker = function (props: propsInterface) {
     }, [clickerSuppressKeyDefaults]);
 
     useEffect(() => {
-
         if (settings && settings.length) {
-
             settings.map((setting: Setting) => {
-
                 switch (setting.name) {
-
                     case 'clickerLongpressTimeout':
                         if (longpressTimeout !== setting.value) {
                             setLongpressTimeout(setting.value);
@@ -146,26 +124,17 @@ const Clicker = function (props: propsInterface) {
                             setClickerSuppressKeyDefaults(setting.value);
                         }
                         break;
-
                 }
-
             });
-
         }
-
     }, [settings]);
 
     return <AdminLayout>
 
-        {!isUndefined(getSettingValue('clickerLongpressTimeout')) && <Tooltip target=".field-info" mouseTrack mouseTrackLeft={10}></Tooltip>}
-
         <Panel>
-            <div className="relative border-1">
+            <div className="relative">
 
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Button Longpress Timeout</label>
-                    </span>
+                <FormGroup label={`Button Longpress Timeout`} infoContent={getSetting('clickerLongpressTimeout')?.description}>
                     <div className="w-full flex flex-column justify-content-center p-inputtext border-noround">
                         <Slider className="" id="longpress-timeout" placeholder="Longpress Timeout"
                             value={longpressTimeout}
@@ -176,20 +145,9 @@ const Clicker = function (props: propsInterface) {
                             onChange={e => setLongpressTimeout((typeof e.value === 'object' ? e.value[0] : e.value))} />
                     </div>
                     <div className="p-inputgroup-addon">{longpressTimeout}ms</div>
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerLongpressTimeout')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerLongpressTimeout')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
-
-                </div>
-
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Ignore Typing Delay</label>
-                    </span>
+                <FormGroup label={`Ignore Typing Delay`} infoContent={getSetting('clickerIgnoreTypingDelay')?.description}>
                     <div className="w-full flex flex-column justify-content-center p-inputtext border-noround">
                         <Slider className="" id="longpress-timeout" placeholder="Ignore Typing Delay"
                             value={ignoreTypingDelay}
@@ -200,108 +158,44 @@ const Clicker = function (props: propsInterface) {
                             onChange={e => setIgnoreTypingDelay((typeof e.value === 'object' ? e.value[0] : e.value))} />
                     </div>
                     <div className="p-inputgroup-addon">{ignoreTypingDelay}ms</div>
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerIgnoreTypingDelay')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerIgnoreTypingDelay')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
-
-                </div>
-
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Clicker Left Button Char Code</label>
-                    </span>
+                <FormGroup label={`Clicker Left Button Char Code`} infoContent={getSetting('clickerLeftButtonCharCode')?.description}>
                     <InputText name="clickerLeftButtonCharCode"
                         onKeyDown={(e) => e.preventDefault()}
                         onKeyUp={(e) => { e.stopPropagation(); e.preventDefault(); setClickerLeftButtonCharCode((e.ctrlKey ? 'CTRL+' : '') + e.code) }}
                         value={clickerLeftButtonCharCode} />
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerLeftButtonCharCode')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerLeftButtonCharCode')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
-
-                </div>
-
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Clicker Right Button Char Code</label>
-                    </span>
+                <FormGroup label={`Clicker Right Button Char Code`} infoContent={getSetting('clickerRightButtonCharCode')?.description}>
                     <InputText name="clickerRightButtonCharCode"
                         onKeyDown={(e) => e.preventDefault()}
                         onKeyUp={(e) => { e.stopPropagation(); e.preventDefault(); setClickerRightButtonCharCode((e.ctrlKey ? 'CTRL+' : '') + e.code) }}
                         value={clickerRightButtonCharCode} />
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerRightButtonCharCode')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerRightButtonCharCode')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
-
-                </div>
-
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Clicker Up Button Char Code</label>
-                    </span>
+                <FormGroup label={`Clicker Up Button Char Code`} infoContent={getSetting('clickerUpButtonCharCode')?.description}>
                     <InputText name="clickerUpButtonCharCode"
                         onKeyDown={(e) => e.preventDefault()}
                         onKeyUp={(e) => { e.stopPropagation(); e.preventDefault(); setClickerUpButtonCharCode((e.ctrlKey ? 'CTRL+' : '') + e.code) }}
                         value={clickerUpButtonCharCode} />
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerUpButtonCharCode')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerUpButtonCharCode')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
-
-                </div>
-
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Clicker Down Button Char Code</label>
-                    </span>
+                <FormGroup label={`Clicker Down Button Char Code`} infoContent={getSetting('clickerDownButtonCharCode')?.description}>
                     <InputText name="clickerDownButtonCharCode"
                         onKeyDown={(e) => e.preventDefault()}
                         onKeyUp={(e) => { e.stopPropagation(); e.preventDefault(); setClickerDownButtonCharCode((e.ctrlKey ? 'CTRL+' : '') + e.code) }}
                         value={clickerDownButtonCharCode} />
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerDownButtonCharCode')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerDownButtonCharCode')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
-
-                </div>
-
-                <div className="field p-inputgroup flex-1">
-                    <span className="p-inputgroup-addon">
-                        <label htmlFor="background-size">Clicker Ignore Key Defaults</label>
-                    </span>
+                <FormGroup label={`Clicker Ignore Key Defaults`} infoContent={getSetting('clickerSuppressKeyDefaults')?.description}>
                     <Chips name="clickerSuppressKeyDefaults"
                         onChange={(e) => setClickerSuppressKeyDefaults(e.value ?? [])}
                         value={clickerSuppressKeyDefaults} />
+                </FormGroup>
 
-                    {!isEmpty(getSetting('clickerSuppressKeyDefaults')?.description) && <div className="p-inputgroup-addon">
-                        <i className="pi pi-info-circle field-info"
-                            data-pr-tooltip={getSetting('clickerSuppressKeyDefaults')?.description}
-                            data-pr-position="left"
-                        ></i>
-                    </div>}
+                <FormSubmit>Publish</FormSubmit>
 
-                </div>
-
-                <div className="field m-3 p-inputgroup flex justify-content-center">
-                    <Button onClick={() => { }}>Publish</Button>
-                </div>
             </div>
         </Panel>
 
