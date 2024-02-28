@@ -35,6 +35,9 @@ export enum MimeType {
 export class WallpaperStyle {
     backgroundSize: BackgroundSize = BackgroundSize.center;
     slideshowSpeed: number = 5;
+    slideshowAnimationSpeed: string = "slow";
+    slideshowAnimationIn: string = "fadeIn";
+    slideshowAnimationOut: string = "fadeOut";
 }
 
 interface wallpaperAttributes {
@@ -49,7 +52,7 @@ interface wallpaperCreationAttributes extends Optional<wallpaperAttributes, 'id'
 
 @Table({ tableName: "wallpaper" })
 export class Wallpaper extends Model<wallpaperAttributes, wallpaperCreationAttributes> {
-    
+
     @Column({ primaryKey: true })
     id: number;
 
