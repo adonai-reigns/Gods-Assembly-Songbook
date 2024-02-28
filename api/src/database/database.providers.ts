@@ -7,6 +7,7 @@ import { Screen } from 'src/screens/screen.entity';
 import { Playlist, PlaylistSong } from 'src/playlists/playlist.entity';
 import { Wallpaper, SystemWallpapers } from 'src/wallpapers/wallpaper.entity';
 import { Setting, defaultSettings, settingsAttributes } from 'src/settings/settings.entity';
+import { SongCopyright } from 'src/songs/songCopyright.entity';
 
 export const SequelizeConfig = {
     database: 'GodsAssemblySongbook',
@@ -21,8 +22,11 @@ export const databaseProviders = [
         provide: 'SEQUELIZE',
         useFactory: async () => {
             const sequelize = new Sequelize(SequelizeConfig);
-            sequelize.addModels([Song, Slide, Screen, Playlist, PlaylistSong, Wallpaper, Setting]);
+            sequelize.addModels([Song, SongCopyright, Slide, Screen, Playlist, PlaylistSong, Wallpaper, Setting]);
             await sequelize.sync({ force: false, alter: false });
+
+            // @todo: enables forced database re-creation (only use for development!)
+            // await sequelize.sync({ force: true, alter: true });
 
             // make sure default wallpaper is created
             const defaultWallpaperCount = await Wallpaper.count({

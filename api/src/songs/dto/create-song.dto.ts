@@ -1,5 +1,6 @@
 import { Length, IsString, IsNumber, IsOptional } from 'class-validator';
 import { Playlist } from 'src/playlists/playlist.entity';
+import { SongCopyright } from '../songCopyright.entity';
 
 export class CreateSongDto {
     @IsString()
@@ -15,5 +16,8 @@ export class CreateSongDto {
 
     @IsOptional()
     readonly playlists: Playlist[];
+
+    @IsOptional()
+    readonly copyright: SongCopyright;
 
 }

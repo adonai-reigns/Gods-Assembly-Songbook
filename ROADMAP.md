@@ -4,7 +4,8 @@ Standardise song metadata for import/export and backups
 
 - title
 - copyright (author/publisher/year/url)
-- category/tags
+
+> ✓ _Completed on 20240228_
 
 # import/export
 
@@ -54,4 +55,7 @@ Ability to import/export wallpaper and settings
 - A new screen similar to audience view but for instrumentalists, that shows the chords 
 - Update Import/export scripts to include chord changes relative to lyrics
 
+# tags / categories for songs
+
+- Ability to tag songs so as to organise and filter large song collections 
 

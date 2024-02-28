@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactSortable } from 'react-sortablejs';
 import { getApiUrl } from '../../stores/server';
-import { isEmpty } from 'lodash';
+import { get, isEmpty, set } from 'lodash';
 import axios from 'axios';
 
 import Page404 from '../Page404';
@@ -20,7 +20,7 @@ import { SlideEditor } from '../../components/SlideEditor';
 import { DeleteButton } from '../../components/DeleteButton';
 import { ConfirmButton } from '../../components/ConfirmButton';
 
-import { Song } from "../../models/song";
+import { Song, SongCopyright } from "../../models/song";
 import {
     Slide,
     SlideType,
@@ -64,6 +64,8 @@ const SongContent = function (props: propsInterface) {
 
     const [slides, setSlides] = useState<Slide[]>([]);
 
+    const [showCopyrightFields, setShowCopyrightFields] = useState<boolean>(true);
+    const [editingCopyright, setEditingCopyright] = useState<SongCopyright>(new SongCopyright());
     const [isEditingSlide, setIsEditingSlide] = useState<boolean>(false);
     const [editingSlideId, setEditingSlideId] = useState<number>(0);
     const [editingSlideName, setEditingSlideName] = useState<string>('');
@@ -84,6 +86,7 @@ const SongContent = function (props: propsInterface) {
         setAutogenerateSlideName(true);
         setEditingSlideType(defaultSlideType);
         setSongId(parseInt(params.id ?? '0'));
+        setShowCopyrightFields(params.id ? false : true);
 
         setSlideTypesAsDropdownOptions((_slideTypesAsDropdownOptions: SelectItem[]): SelectItem[] => {
             _slideTypesAsDropdownOptions = [];
@@ -124,6 +127,7 @@ const SongContent = function (props: propsInterface) {
         if (songId === 0) {
             axios.post(apiUrl + '/songs', {
                 name: editingSongName,
+                copyright: editingCopyright,
                 sorting: 0
             }).then((response) => {
                 if (response.data.id) {
@@ -134,7 +138,8 @@ const SongContent = function (props: propsInterface) {
         } else {
             axios.patch(apiUrl + '/songs/' + songId, {
                 ...song,
-                name: editingSongName
+                name: editingSongName,
+                copyright: editingCopyright,
             }).then((response) => {
                 if (!isEmpty(response.data.playlists)) {
                     navigate('/songleader/plan/' + response.data.playlists[0].id);
@@ -197,7 +202,18 @@ const SongContent = function (props: propsInterface) {
         setSong(song);
         setSongId(song.id ?? 0);
         setEditingSongName(song.name);
+        console.log('setSongCacheFromApiData, song.copyright', song.copyright);
+        setEditingCopyright(song.copyright ?? new SongCopyright());
         setSlides(song.slides);
+    }
+
+    const patchEditingCopyright = (field: string, value: string) => {
+        setEditingCopyright((_editingCopyright) => {
+            let newEditingCopyright = new SongCopyright();
+            Object.keys(_editingCopyright).map((field: string) => set(newEditingCopyright, field, get(_editingCopyright, field)));
+            set(newEditingCopyright, field, value);
+            return newEditingCopyright as SongCopyright;
+        });
     }
 
     const addSlide = () => {
@@ -339,11 +355,36 @@ const SongContent = function (props: propsInterface) {
                 }
 
                 <form className="formgrid gridw-auto p-3" onSubmit={(e) => { e.preventDefault(); submitSong() }}>
-                    <FormGroup icon="pi pi-heart-fill" label="Song Name" hideLabel={true}>
-                        <span className="p-float-label">
-                            <InputText id="song-name" placeholder="Song Name" value={editingSongName} onChange={e => setEditingSongName(e.target.value)} />
-                        </span>
+                    <FormGroup icon="pi pi-heart-fill" label="Song Name" hideLabel={true}
+                        action={{ icon: `pi pi-arrow-${showCopyrightFields ? 'up' : 'down'}`, title: 'Edit Copyright Details', onClick: () => { setShowCopyrightFields((isShown) => !isShown) } }}>
+                        <InputText id="song-name" placeholder="Song Name" value={editingSongName} onChange={e => setEditingSongName(e.target.value)} />
                     </FormGroup>
+                    {!showCopyrightFields && songId && <>
+                        <p className="song-copyright-summary">
+                            {!isEmpty(editingCopyright.year) && <span className="year">&copy;{editingCopyright.year}</span>}
+                            {!isEmpty(editingCopyright.publisher) && <span className="publisher">{editingCopyright.publisher}</span>}
+                            {!isEmpty(editingCopyright.author) && <span className="author">({editingCopyright.author})</span>}
+                            {!isEmpty(editingCopyright.description) && <span className="description">{editingCopyright.description}</span>}
+                            {!isEmpty(editingCopyright.url) && <span className="url"><a href={editingCopyright.url}>{editingCopyright.url}</a></span>}
+                        </p>
+                    </>}
+                    {showCopyrightFields && <>
+                        <FormGroup label="Author">
+                            <InputText placeholder="Author" value={editingCopyright.author} onChange={e => patchEditingCopyright('author', e.target.value)} />
+                        </FormGroup>
+                        <FormGroup label="Publisher">
+                            <InputText placeholder="Publisher" value={editingCopyright.publisher} onChange={e => patchEditingCopyright('publisher', e.target.value)} />
+                        </FormGroup>
+                        <FormGroup label="Year">
+                            <InputText placeholder="Year" value={editingCopyright.year} onChange={e => patchEditingCopyright('year', e.target.value)} />
+                        </FormGroup>
+                        <FormGroup label="URL">
+                            <InputText placeholder="Author" value={editingCopyright.url} onChange={e => patchEditingCopyright('url', e.target.value)} />
+                        </FormGroup>
+                        <FormGroup label="Description">
+                            <InputText placeholder="Enter a Custom Description if required..." value={editingCopyright.description} onChange={e => patchEditingCopyright('description', e.target.value)} />
+                        </FormGroup>
+                    </>}
                 </form>
 
                 {songId > 0 &&

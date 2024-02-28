@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { get, set, isEmpty } from 'lodash';
 
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
@@ -10,6 +11,7 @@ import { SongDto } from './dto/song.dto';
 import { SlideDto } from 'src/slides/dto/slide.dto';
 import { SlidesService } from 'src/slides/slides.service';
 import { Playlist } from 'src/playlists/playlist.entity';
+import { SongCopyright } from './songCopyright.entity';
 
 @Injectable()
 export class SongsService {
@@ -21,7 +23,7 @@ export class SongsService {
 
     async findAll(options: any): Promise<Song[]> {
         const songs = await this.songsRepository.findAll<Song>({
-            include: [Slide],
+            include: [Slide, SongCopyright],
             where: options.where ?? undefined,
             order: [[{ model: Slide, as: 'slides' }, 'sorting', 'ASC']]
         });
@@ -30,7 +32,7 @@ export class SongsService {
 
     async findOne(id: number): Promise<Song> {
         const song = await this.songsRepository.findByPk<Song>(id, {
-            include: [Slide, Playlist],
+            include: [Slide, Playlist, SongCopyright],
             order: [[{ model: Slide, as: 'slides' }, 'sorting', 'ASC']]
         });
         if (!song) {
@@ -48,6 +50,12 @@ export class SongsService {
         song.name = createSongDto.name;
         song.sorting = createSongDto.sorting;
         song.songTemplateId = songTemplate?.id ?? null;
+        song.copyright = new SongCopyright();
+        for (let field of Object.keys(createSongDto.copyright)) {
+            set(song.copyright, field, get(createSongDto.copyright, field));
+        }
+        await song.copyright.save();
+        song.songCopyrightId = song.copyright.id;
         return song.save();
     }
 
@@ -55,6 +63,15 @@ export class SongsService {
         const song = await this.findOne(id) as Song;
         song.name = updateSongDto.name || song.name;
         song.sorting = updateSongDto.sorting || song.sorting;
+        if (!isEmpty(updateSongDto.copyright)) {
+            for (let field of Object.keys(updateSongDto.copyright)) {
+                if ((Object.keys(song.copyright.dataValues).indexOf(field) > -1)) {
+                    set(song.copyright, field, get(updateSongDto.copyright, field));
+                }
+            }
+            song.copyright.save();
+        }
+        song.copyright = updateSongDto.copyright || song.copyright;
         return song.save();
     }
 
@@ -67,8 +84,10 @@ export class SongsService {
         let newSong = new Song({
             name: song.name,
             songTemplateId: song.id,
+            copyright: song.copyright,
             slides: []
         });
+        newSong.songCopyrightId = song.copyright.id;
         let newSongId = (await newSong.save()).id;
         newSong.slides = [];
         for (let slide of song.slides) {

@@ -29,3 +29,13 @@
 }
 
 // end: solve legacy browser display bug  
+
+.song-copyright-summary {
+    margin: 0;
+    padding: 0 2em;
+    white-space: initial;
+
+    span {
+        margin-right: 0.5em;
+    }
+}

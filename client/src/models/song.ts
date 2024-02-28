@@ -10,12 +10,21 @@ interface ISong {
     slides?: Slide[];
 }
 
+export class SongCopyright {
+    description?: string = '';
+    author?: string = '';
+    publisher?: string = '';
+    year?: string = '';
+    url?: string = '';
+}
+
 export class Song {
     id?: number;
     name: string = '';
     sorting: number = 0;
     slides: Slide[] = [];
     songTemplate: Song | null = null;
+    copyright: SongCopyright = new SongCopyright();
     constructor(args: ISong) {
         Object.keys(this).map((keyname: string) => {
             if (keyname === 'slides') {

@@ -1,6 +1,7 @@
 import { Slide } from 'src/slides/slide.entity';
 import { Song } from '../song.entity';
 import { Playlist } from 'src/playlists/playlist.entity';
+import { SongCopyright } from '../songCopyright.entity';
 
 export class SongDto {
     readonly id: number;
@@ -8,6 +9,7 @@ export class SongDto {
     readonly sorting: number;
     readonly songTemplateId: number | null;
     readonly playlists: Playlist[];
+    readonly copyright: SongCopyright;
     readonly slides: Slide[];
     readonly createdAt: Date;
     readonly updatedAt: Date;
@@ -19,6 +21,7 @@ export class SongDto {
         this.songTemplateId = null;
         this.slides = song.slides;
         this.playlists = song.playlists;
+        this.copyright = song.copyright;
         this.createdAt = song.createdAt;
         this.updatedAt = song.updatedAt;
     }
