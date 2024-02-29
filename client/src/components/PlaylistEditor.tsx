@@ -149,7 +149,7 @@ export const PlaylistEditor = function (props: propsInterface) {
             onHide={() => submitSongPicker()}
             header={dialogHeader}
             style={{ width: '50em', height: '30em' }}>
-            <SongPicker onSubmit={submitSongPicker} onSelectionChange={onSongpickerSelectionChange} />
+            <SongPicker onSubmit={submitSongPicker} onSelectionChange={onSongpickerSelectionChange} selectedSongIds={addedSongIds} />
         </Dialog>
 
         <div>

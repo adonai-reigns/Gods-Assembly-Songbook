@@ -19,5 +19,13 @@
             "maxFileSizeMB": 80,
             "maxParallelUploadCount": 50
         }
+    },
+    "exports": {
+        "songs": {
+            "filename": "Gods-Assembly-Songbook_ExportedSongs_{date}.{ext}"
+        },
+        "playlists": {
+            "filename": "Gods-Assembly-Songbook_ExportedPlaylists_{date}.{ext}"
+        }
     }
 }

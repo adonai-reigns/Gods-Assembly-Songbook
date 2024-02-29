@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getApiUrl } from "../../stores/server";
 import axios from 'axios';
+
+import { downloadBlob } from "../../utilities/downloadBlob";
 
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -11,6 +13,7 @@ import { PlaylistEditor } from "../../components/PlaylistEditor";
 
 import { FormGroup } from "../../components/FormGroup";
 import { Button } from '../../components/Button';
+import { Dropdown } from "primereact/dropdown";
 
 import { Playlist } from "../../models/playlist";
 import { Song } from "../../models/song";
@@ -45,6 +48,7 @@ const Plan = function (props: propsInterface) {
     const [showNewPlaylistForm, setShowNewPlaylistForm] = useState<boolean>(false);
 
     const [playlistsKey, setPlaylistsKey] = useState<number>(0);
+    const [selectedPlaylistIds, setSelectedPlaylistIds] = useState<number[]>([]);
 
     const reloadPlaylists = () => {
         setPlaylistsKey((_playlistsKey: number) => {
@@ -120,6 +124,57 @@ const Plan = function (props: propsInterface) {
         return null;
     }
 
+    const exportSelectedPlaylistIds = (format: 'text' | 'json' = 'json') => {
+        let filename = 'downloadedFile';
+        fetch(apiUrl + '/playlists/export', {
+            method: 'POST',
+            body: JSON.stringify({ playlistIds: selectedPlaylistIds, format }),
+            headers: {
+                'Content-Type': 'application/json',
+                responseType: 'blob',
+                withCredentials: 'true'
+            },
+        }).then(function (resp) {
+            let contentDisposition = resp.headers.get('content-disposition') ?? undefined;
+            filename = (contentDisposition?.match(/filename="(.+)"/) ?? [])[1] ?? filename;
+            return resp.blob();
+        }).then(function (blob) {
+            return downloadBlob(blob, filename);
+        });
+    }
+
+    const withSelected = (): ReactNode => {
+        return <>
+            {selectedPlaylistIds.length > 0 && <>
+                <Dropdown options={[
+                    {
+                        "value": 'exportJson',
+                        "label": 'Export JSON'
+                    },
+                    {
+                        "value": 'exportText',
+                        "label": 'Export Plain Text'
+                    }
+                ]}
+                    optionLabel="label"
+                    optionValue="value"
+                    onChange={(e: any) => {
+                        switch (e.value) {
+                            case 'exportJson':
+                                exportSelectedPlaylistIds('json');
+                                e.target.value = undefined;
+                                break;
+                            case 'exportText':
+                                exportSelectedPlaylistIds('text');
+                                e.target.value = undefined;
+                                break;
+                        }
+                    }}
+                />
+            </>}
+        </>
+    }
+
     useEffect(() => {
         if (showNewPlaylistForm) {
             setEditingPlaylist(null);
@@ -166,7 +221,13 @@ const Plan = function (props: propsInterface) {
             </>}
         </Dialog>
 
-        <PlaylistPicker key={playlistsKey} onAdd={() => setShowNewPlaylistForm(true)} onEdit={(playlist: Playlist) => setEditingPlaylist(playlist)} onPlay={(playlist: Playlist) => navigate('/songleader/sing/' + playlist.id)} />
+        <PlaylistPicker key={playlistsKey}
+            selectedPlaylistIds={selectedPlaylistIds} withSelected={withSelected()}
+            onSelectionChange={(_selectedPlaylistIds: number[]) => setSelectedPlaylistIds(_selectedPlaylistIds)}
+            onAdd={() => setShowNewPlaylistForm(true)}
+            onEdit={(playlist: Playlist) => setEditingPlaylist(playlist)}
+            onPlay={(playlist: Playlist) => navigate('/songleader/sing/' + playlist.id)}
+        />
 
     </GasLayout>
 

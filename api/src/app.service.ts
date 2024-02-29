@@ -15,3 +15,11 @@ export const getAbsoluteUploadPath = function (pathPrefix: string | string[]): s
     }
     return resolve(join(config.get('fileUploads.directory'), pathPrefix + ''));
 }
+
+export const stripTags = (text: string): string => {
+    return text.replace(/<[^>]*>?/gm, '');
+}
+
+export const toFilename = (text: string) => {
+    return text.replace(/\s/gi, '_').replace(/[^a-zA-Z0-9,_()\.\-]/gi, '-');
+}

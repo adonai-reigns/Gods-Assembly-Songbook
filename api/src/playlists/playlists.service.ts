@@ -10,6 +10,7 @@ import { Slide } from 'src/slides/slide.entity';
 import { Playlist, PlaylistSong } from './playlist.entity';
 import { SongsService } from 'src/songs/songs.service';
 import { SongDto } from 'src/songs/dto/song.dto';
+import { SongCopyright } from 'src/songs/songCopyright.entity';
 
 @Injectable()
 export class PlaylistsService {
@@ -20,7 +21,7 @@ export class PlaylistsService {
         private readonly songsService: SongsService
     ) { }
 
-    async findAll(): Promise<Playlist[]> {
+    async findAll(options: any = {}): Promise<Playlist[]> {
         const playlists = await this.playlistsRepository.findAll<Playlist>({
             include: [{
                 model: Song,
@@ -29,9 +30,11 @@ export class PlaylistsService {
                     {
                         model: Slide,
                         as: 'slides'
-                    }
+                    },
+                    SongCopyright
                 ],
             }],
+            where: options?.where ?? undefined,
             order: [
                 ['updatedAt', 'DESC'],
                 [Sequelize.literal('`songs->playlistSong`.`sorting`'), 'ASC'],
@@ -50,7 +53,8 @@ export class PlaylistsService {
                     {
                         model: Slide,
                         as: 'slides'
-                    }
+                    },
+                    SongCopyright
                 ],
             }],
             order: [
@@ -62,6 +66,10 @@ export class PlaylistsService {
             throw new HttpException('No playlist found', HttpStatus.NOT_FOUND);
         }
         return playlist;
+    }
+
+    async findAllByPk(ids: number[] = []): Promise<Playlist[]> {
+        return this.findAll({ where: { [Playlist.primaryKeyAttribute]: { [Op.in]: ids } } });
     }
 
     async create(createPlaylistDto: CreatePlaylistDto): Promise<Playlist> {

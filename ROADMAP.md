@@ -1,3 +1,4 @@
+
 # song metadata
 
 Standardise song metadata for import/export and backups
@@ -16,17 +17,21 @@ Ability to export songs:
 - export format option:
     - json
     - text
+- zip compression for exports of multiple files
+
+> ✓ _Completed on 20240229_
 
 Ability to import songs:
 
-- multiple-file uploader for json or text files
+- uploader for zipped archive of json or text files
 - format validation of file structure with useful fail notices 
+- validation: implement document api version for forwards-compatibility
 
 Ability to import/export wallpaper and settings
 - format: json
 - validation: implement document api version for forwards-compatibility
-
 - zip compression for exports of multiple files
+
 
 # upload/playback backing music
 

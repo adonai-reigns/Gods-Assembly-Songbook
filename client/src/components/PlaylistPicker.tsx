@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { getApiUrl } from "../stores/server";
 import axios from "axios";
 
@@ -7,6 +7,7 @@ import { ObjectUtils } from "primereact/utils";
 
 import { DataTable } from "primereact/datatable";
 import { Column, type ColumnSortEvent } from "primereact/column";
+import { Checkbox } from "primereact/checkbox";
 
 import { Button } from './Button';
 import { DeleteButton } from "./DeleteButton";
@@ -18,6 +19,9 @@ interface propsInterface {
     onEdit?: CallableFunction;
     onPlay?: CallableFunction;
     onAdd?: CallableFunction;
+    selectedPlaylistIds?: number[];
+    withSelected?: ReactNode;
+    onSelectionChange?: CallableFunction;
 }
 
 const propsDefaults = {
@@ -31,6 +35,7 @@ export const PlaylistPicker = function (props: propsInterface) {
     const apiUrl = getApiUrl();
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [selectedPlaylistIds, setSelectedPlaylistIds] = useState<number[]>(props.selectedPlaylistIds ?? []);
 
     const [filters] = useState({
         name: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -65,10 +70,6 @@ export const PlaylistPicker = function (props: propsInterface) {
         }
     }
 
-    useEffect(() => {
-        reloadPlaylists();
-    }, []);
-
     const deletePlaylist = (playlist: Playlist) => {
         axios.delete(apiUrl + '/playlists/' + playlist.id).then(() => {
             reloadPlaylists();
@@ -78,6 +79,24 @@ export const PlaylistPicker = function (props: propsInterface) {
     const datatableFooter = () => {
         return <div className="text-right">
             <Button onClick={onAdd}><i className="pi pi-plus mr-2"></i>New Playlist</Button>
+        </div>
+    }
+
+    const actionsBodyTemplate = (playlist: Playlist) => {
+        const [isPlaylistSelected, setIsPlaylistSelected] = useState<boolean>((selectedPlaylistIds && selectedPlaylistIds?.indexOf(parseInt(`${playlist.id}` ?? '0')) > -1) ?? false);
+        useEffect(() => {
+            if (isPlaylistSelected) {
+                setSelectedPlaylistIds((_selectedPlaylistIds) => {
+                    return (_selectedPlaylistIds && [..._selectedPlaylistIds.filter((playlistId: number) => playlistId !== playlist.id), parseInt(`${playlist.id}`)]) ?? undefined;
+                });
+            } else {
+                setSelectedPlaylistIds((_selectedPlaylistIds) => {
+                    return (_selectedPlaylistIds && [..._selectedPlaylistIds.filter((playlistId: number) => playlistId !== playlist.id)]) ?? undefined;
+                });
+            }
+        }, [isPlaylistSelected]);
+        return <div>
+            <Checkbox onChange={(e) => setIsPlaylistSelected(e.checked ?? false)} checked={isPlaylistSelected} />
         </div>
     }
 
@@ -118,10 +137,19 @@ export const PlaylistPicker = function (props: propsInterface) {
         });
     }
 
+    useEffect(() => {
+        props.onSelectionChange && props.onSelectionChange(selectedPlaylistIds);
+    }, [selectedPlaylistIds]);
+
+    useEffect(() => {
+        reloadPlaylists();
+    }, []);
+
     return <>
         <DataTable footer={datatableFooter} value={playlists} className="playlists"
             emptyMessage={<p>No playlists have been created yet.</p>}
             filters={filters} globalFilterFields={['name']}>
+            {selectedPlaylistIds && <Column body={actionsBodyTemplate} header={props.withSelected ?? ''}></Column>}
             <Column field="name" header="Name" sortable filter filterPlaceholder="Search by Name" />
             <Column body={createdAtBodyTemplate} header="Created At" sortable sortField="createdAt" sortFunction={sortByDateFunction} />
             <Column body={updatedAtBodyTemplate} header="Updated At" sortable sortField="updatedAt" sortFunction={sortByDateFunction} />

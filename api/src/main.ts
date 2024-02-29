@@ -7,7 +7,8 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.enableCors({
         origin: true,
-        optionsSuccessStatus: 200
+        optionsSuccessStatus: 200,
+        exposedHeaders: ['Content-Disposition']
     });
     app.setGlobalPrefix('api');
     app.useGlobalPipes(new ValidationPipe());

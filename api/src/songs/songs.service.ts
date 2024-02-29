@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { get, set, isEmpty } from 'lodash';
+import { Op } from 'sequelize';
 
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
@@ -23,9 +24,9 @@ export class SongsService {
 
     async findAll(options: any): Promise<Song[]> {
         const songs = await this.songsRepository.findAll<Song>({
-            include: [Slide, SongCopyright],
+            include: [Slide, Playlist, SongCopyright],
             where: options.where ?? undefined,
-            order: [[{ model: Slide, as: 'slides' }, 'sorting', 'ASC']]
+            order: [[{ model: Slide, as: 'slides' }, 'sorting', 'ASC'], ['sorting', 'ASC']]
         });
         return songs;
     }
@@ -39,6 +40,10 @@ export class SongsService {
             throw new HttpException('No song found', HttpStatus.NOT_FOUND);
         }
         return song;
+    }
+
+    async findAllByPk(ids: number[]): Promise<Song[]> {
+        return this.findAll({ where: { [Song.primaryKeyAttribute]: { [Op.in]: ids } } });
     }
 
     async create(createSongDto: CreateSongDto): Promise<Song> {

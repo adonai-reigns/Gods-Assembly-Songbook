@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { getApiUrl } from "../stores/server";
 import axios from "axios";
 
@@ -15,6 +15,7 @@ import type { Song } from "../models/song";
 
 interface propsInterface {
     selectedSongIds?: number[];
+    withSelected?: ReactNode;
     className?: string;
     onSubmit?: CallableFunction;
     onSelectionChange?: CallableFunction;
@@ -28,7 +29,6 @@ interface propsInterface {
 
 const propsDefaults = {
     className: '',
-    selectedSongIds: [],
     newSongUrl: '/songleader/song',
     canDelete: false,
 }
@@ -162,7 +162,7 @@ export const SongPicker = function (props: propsInterface) {
     return <div>
         <DataTable value={songs} className={props.className} filters={songNameFilter} globalFilterFields={['name']}
             footer={footerBodyTemplate}>
-            {selectedSongIds && <Column body={actionsBodyTemplate}></Column>}
+            {selectedSongIds && <Column body={actionsBodyTemplate} header={props.withSelected ?? ''}></Column>}
             <Column body={songNameBodyTemplate} field="name" sortable filter filterPlaceholder="Search by Name"></Column>
             {props.buttonLabelText && <Column body={buttonBodyTemplate} className="text-right"></Column>}
             {props.canDelete && <Column body={deleteButtonBodyTemplate} className="text-right"></Column>}
