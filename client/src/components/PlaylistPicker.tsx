@@ -5,10 +5,12 @@ import axios from "axios";
 import { FilterMatchMode } from "primereact/api";
 import { ObjectUtils } from "primereact/utils";
 
+import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column, type ColumnSortEvent } from "primereact/column";
 import { Checkbox } from "primereact/checkbox";
 
+import { ImportForm } from "./ImportForm";
 import { Button } from './Button';
 import { DeleteButton } from "./DeleteButton";
 
@@ -36,6 +38,7 @@ export const PlaylistPicker = function (props: propsInterface) {
 
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [selectedPlaylistIds, setSelectedPlaylistIds] = useState<number[]>(props.selectedPlaylistIds ?? []);
+    const [showImportForm, setShowImportForm] = useState<boolean>(false);
 
     const [filters] = useState({
         name: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -79,6 +82,12 @@ export const PlaylistPicker = function (props: propsInterface) {
     const datatableFooter = () => {
         return <div className="text-right">
             <Button onClick={onAdd}><i className="pi pi-plus mr-2"></i>New Playlist</Button>
+            <div className="flex justify-content-end">
+                <div className="flex flex-column text-right">
+                    <span className="m-3">- or -</span>
+                    <a href={`#import`} onClick={() => setShowImportForm(true)}>Import Playlists &raquo;</a>
+                </div>
+            </div>
         </div>
     }
 
@@ -146,6 +155,11 @@ export const PlaylistPicker = function (props: propsInterface) {
     }, []);
 
     return <>
+        <Dialog draggable={false} closable={true} visible={showImportForm}
+            style={{ width: '50em', height: '30em' }}
+            onHide={() => setShowImportForm(false)}>
+            <ImportForm />
+        </Dialog>
         <DataTable footer={datatableFooter} value={playlists} className="playlists"
             emptyMessage={<p>No playlists have been created yet.</p>}
             filters={filters} globalFilterFields={['name']}>

@@ -21,6 +21,9 @@ interface slideAttributes {
     type: SlideType;
     name: string;
     content: string;
+    sorting: number;
+    songId: number;
+    song: Song;
 }
 
 interface slideCreationAttributes extends Optional<slideAttributes, 'id'> { }

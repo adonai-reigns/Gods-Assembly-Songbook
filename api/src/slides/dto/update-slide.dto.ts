@@ -16,6 +16,6 @@ export class UpdateSlideDto {
 
     @IsOptional()
     @IsNumber()
-    readonly sorting: number;
+    readonly sorting?: number;
 
 }

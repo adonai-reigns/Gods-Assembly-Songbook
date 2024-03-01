@@ -8,6 +8,7 @@ import { UpdatePlaylistDto } from './dto/update-playlist.dto';
 import { Song } from 'src/songs/song.entity';
 import { Slide } from 'src/slides/slide.entity';
 import { Playlist, PlaylistSong } from './playlist.entity';
+
 import { SongsService } from 'src/songs/songs.service';
 import { SongDto } from 'src/songs/dto/song.dto';
 import { SongCopyright } from 'src/songs/songCopyright.entity';
@@ -73,9 +74,21 @@ export class PlaylistsService {
     }
 
     async create(createPlaylistDto: CreatePlaylistDto): Promise<Playlist> {
-        const playlist = new Playlist();
+        let playlist = new Playlist();
         playlist.name = createPlaylistDto.name;
-        playlist.songs = createPlaylistDto.songs;
+        playlist.startSlide = createPlaylistDto.startSlide;
+        playlist.pauseSlide = createPlaylistDto.pauseSlide;
+        playlist.endSlide = createPlaylistDto.endSlide;
+        playlist.createdAt = createPlaylistDto.createdAt;
+        playlist = await playlist.save();
+        let songs = [];
+        if (createPlaylistDto.songs) {
+            for (let song of createPlaylistDto.songs ?? []) {
+                let newSong = await this.songsService.create({ ...song });
+                songs.push(await newSong.save());
+            }
+        }
+        this.addSongsToPlaylist(playlist.id, songs as SongDto[]);
         return playlist.save();
     }
 
@@ -90,26 +103,21 @@ export class PlaylistsService {
         const playlistSongs = await this.playlistsSongsRepository.findAll({
             where: {
                 playlistId: { [Op.eq]: id },
-                songId: { [Op.in]: updatePlaylistDto.songs.map((song: Song) => song.id) }
+                songId: { [Op.in]: updatePlaylistDto.songs.map((song: SongDto) => song.id) }
             }
         });
 
         if (typeof updatePlaylistDto.songs === typeof []) {
-
-            let deletedSongs = playlist.songs.filter((song: Song) => updatePlaylistDto.songs.map((_song: Song) => _song.id).indexOf(song.id) < 0);
+            let deletedSongs = playlist.songs.filter((song: Song) => updatePlaylistDto.songs.map((_song: SongDto) => _song.id).indexOf(song.id) < 0);
             if (deletedSongs.length) {
                 await this.unassignSongsFromPlaylist(id, deletedSongs);
             }
-
-            let newSongs = updatePlaylistDto.songs.filter((song: Song) => playlist.songs.map((_song: Song) => _song.id).indexOf(song.id) < 0);
+            let newSongs = updatePlaylistDto.songs.filter((song: SongDto) => playlist.songs.map((_song: Song) => _song.id).indexOf(song.id) < 0);
             if (newSongs.length) {
-                await this.assignSongsToPlaylist(id, newSongs);
+                await this.assignSongsToPlaylist(id, newSongs as Song[]);
             }
-
         }
-
         return playlist.save();
-
     }
 
     async addSongsToPlaylist(playlistId: number, songs: SongDto[]): Promise<Playlist> {
@@ -140,6 +148,7 @@ export class PlaylistsService {
     }
 
     async assignSongsToPlaylist(playlistId: number, songs: Song[]): Promise<Playlist> {
+        
         for (let song of songs) {
             try {
                 let sortingMax = await this.playlistsSongsRepository.findOne({ where: { playlistId }, order: [['sorting', 'DESC']] });

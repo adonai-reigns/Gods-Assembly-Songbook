@@ -6,6 +6,7 @@ import { Playlist, PlaylistSong } from 'src/playlists/playlist.entity';
 import { IsOptional } from 'class-validator';
 import { Optional } from 'sequelize';
 import { SongCopyright } from './songCopyright.entity';
+import { CreateSongCopyrightDto } from './dto/create-song.dto';
 
 interface songAttributes {
     id: number;
@@ -14,7 +15,7 @@ interface songAttributes {
     songTemplateId: number | null;
     slides: Slide[];
     playlists: Playlist[];
-    copyright: SongCopyright;
+    copyright: CreateSongCopyrightDto;
 }
 
 interface songCreationAttributes extends Optional<songAttributes, 'id' | 'songTemplateId' | 'playlists'> { }
@@ -33,10 +34,10 @@ export class Song extends Model<songAttributes, songCreationAttributes> {
     songTemplateId: number | null;
 
     @HasMany(() => Slide, { onDelete: 'CASCADE' })
-    slides: Slide[];
+    slides: Slide[] = [];
 
     @BelongsToMany(() => Playlist, () => PlaylistSong)
-    playlists: Playlist[];
+    playlists: Playlist[] = [];
 
     @ForeignKey(() => SongCopyright)
     @Column

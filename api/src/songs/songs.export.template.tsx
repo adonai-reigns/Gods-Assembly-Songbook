@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import { parse as parseHtml, HTMLElement } from 'node-html-parser';
 
 import { ExportSlidesDto, ExportSongDto } from "./dto/export-song.dto";
+import { SongCopyrightLabels } from "./songCopyright.entity";
 
 export const SlideTypeLabels: { [key: string]: string } = {
     Intro: 'Intro',
@@ -19,14 +20,14 @@ export const SlideTypeLabels: { [key: string]: string } = {
 export const ExportSongTemplate = (song: ExportSongDto): ReactElement => {
     return <>
         {!isEmpty(song.name) && <>Name: {song.name.trim()}<br /></>}
-        {!isEmpty(song.copyright.year) && <>Year: {song.copyright.year.trim()}<br /></>}
-        {!isEmpty(song.copyright.author) && <>Author: {song.copyright.author.trim()}<br /></>}
-        {!isEmpty(song.copyright.publisher) && <>Publisher: {song.copyright.publisher.trim()}<br /></>}
-        {!isEmpty(song.copyright.description) && <>Description: {song.copyright.description.trim()}<br /></>}
-        {!isEmpty(song.copyright.url) && <>URL: {song.copyright.url.trim()}<br /></>}
+        {!isEmpty(song.copyright.year) && <>{SongCopyrightLabels.year}: {song.copyright.year.trim()}<br /></>}
+        {!isEmpty(song.copyright.author) && <>{SongCopyrightLabels.author}: {song.copyright.author.trim()}<br /></>}
+        {!isEmpty(song.copyright.publisher) && <>{SongCopyrightLabels.publisher}: {song.copyright.publisher.trim()}<br /></>}
+        {!isEmpty(song.copyright.description) && <>{SongCopyrightLabels.description}: {song.copyright.description.trim()}<br /></>}
+        {!isEmpty(song.copyright.url) && <>{SongCopyrightLabels.url}: {song.copyright.url.trim()}<br /></>}
         <br />
         {song.slides.map((slide: ExportSlidesDto, slideIndex: number) => <div key={slideIndex}>
-            {SlideTypeLabels[slide.type]}<br />
+            {SlideTypeLabels[slide.type]}:<br />
             {parseHtml(slide.content).getElementsByTagName('p').map((p: HTMLElement) => p.textContent.trim() + "\n").join('')}
             <br />
         </div>)}

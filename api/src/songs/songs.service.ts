@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { get, set, isEmpty } from 'lodash';
 import { Op } from 'sequelize';
 
-import { CreateSongDto } from './dto/create-song.dto';
+import { CreateSongCopyrightDto, CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
 
 import { Song } from './song.entity';
@@ -13,6 +13,7 @@ import { SlideDto } from 'src/slides/dto/slide.dto';
 import { SlidesService } from 'src/slides/slides.service';
 import { Playlist } from 'src/playlists/playlist.entity';
 import { SongCopyright } from './songCopyright.entity';
+import { CreateSlideDto } from 'src/slides/dto/create-slide.dto';
 
 @Injectable()
 export class SongsService {
@@ -55,12 +56,16 @@ export class SongsService {
         song.name = createSongDto.name;
         song.sorting = createSongDto.sorting;
         song.songTemplateId = songTemplate?.id ?? null;
-        song.copyright = new SongCopyright();
+        song.copyright = new SongCopyright(createSongDto.copyright);
         for (let field of Object.keys(createSongDto.copyright)) {
             set(song.copyright, field, get(createSongDto.copyright, field));
         }
         await song.copyright.save();
         song.songCopyrightId = song.copyright.id;
+        await song.save();
+        for (let slide of createSongDto.slides ?? []) {
+            this.slidesService.create({ ...slide, songId: song.id } as CreateSlideDto).then((newSlide: Slide) => song.slides.push(newSlide));
+        }
         return song.save();
     }
 

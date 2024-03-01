@@ -1,8 +1,9 @@
-import { LoggerService } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import { appendFileSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 import { format as dateFormat } from 'date-fns';
 
+@Injectable()
 export class GasLogger implements LoggerService {
     debugFilename = resolve('.database/logs/debug.log');
     errorFilename = resolve('.database/logs/error.log');
@@ -23,7 +24,7 @@ export class GasLogger implements LoggerService {
      */
     fatal(message: any, ...optionalParams: any[]) {
         console.log('FATAL from Nest App', message);
-        appendFileSync(this.errorFilename, "--------\n" + dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + " FATAL: " + message + "\n--------\n");
+        appendFileSync(this.errorFilename, dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + " FATAL: " + message + "\n--------\n");
     }
 
     /**
@@ -31,7 +32,7 @@ export class GasLogger implements LoggerService {
      */
     error(message: any, ...optionalParams: any[]) {
         console.log('ERROR from Nest App', message);
-        appendFileSync(this.errorFilename, "--------\n" + dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + " ERROR: " + message + "\n--------\n");
+        appendFileSync(this.errorFilename, dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + " ERROR: " + message + "\n--------\n");
     }
 
     /**
@@ -39,7 +40,7 @@ export class GasLogger implements LoggerService {
      */
     warn(message: any, ...optionalParams: any[]) {
         console.log('WARNING from Nest App', message);
-        appendFileSync(this.errorFilename, "--------\n" + dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + " WARN: " + message + "\n--------\n");
+        appendFileSync(this.errorFilename, dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + " WARN: " + message + "\n--------\n");
     }
 
     /**
@@ -55,6 +56,6 @@ export class GasLogger implements LoggerService {
      */
     verbose?(message: any, ...optionalParams: any[]) {
         console.log('verbose:   ' + message);
-        appendFileSync(this.debugFilename, dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + "  " + message + "\n--------\n");
+        appendFileSync(this.debugFilename, dateFormat(new Date(), 'yyyyMMdd HH:mm:ss') + "  " + message );
     }
 }

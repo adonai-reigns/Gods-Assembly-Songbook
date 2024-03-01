@@ -76,7 +76,6 @@ export class WallpapersController {
         fileFilter(req, file, callback) {
             let isValid = true;
             if ([...Object.values(MimeType).map((v: string) => v)].indexOf(file.mimetype) < 0) {
-                console.log('file upload is of invalid mime type: ' + file.mimetype);
                 isValid = false;
             }
             callback(null, isValid);

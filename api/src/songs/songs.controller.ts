@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Delete, Param, Body, Res, StreamableFile } from '@nestjs/common';
+import { Controller, Res, StreamableFile, Param, Body, Get, Post, Put, Patch, Delete } from '@nestjs/common';
 import { Response } from 'express';
 import { isEmpty, union, uniq, uniqueId } from 'lodash';
 import { format as dateFormat } from 'date-fns';
@@ -11,6 +11,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 const AdmZip = require('adm-zip');
 import { IZipEntry } from 'adm-zip';
 
+import { ExportApiVersion, ExportMetadataDto, MetadataDescription } from 'src/playlists/dto/export-playlist.dto';
+import { SongDto } from './dto/song.dto';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
 import { ExportSongDto } from './dto/export-song.dto';
@@ -43,7 +45,7 @@ export class SongsController {
 
     @Post()
     async create(@Body() createSongDto: CreateSongDto): Promise<Song> {
-        return this.songsService.create(createSongDto);
+        return this.songsService.create(new CreateSongDto(createSongDto));
     }
 
     @Patch(':id')
@@ -53,7 +55,7 @@ export class SongsController {
 
     @Put(':id')
     async replace(@Param('id') id: number, @Body() song: CreateSongDto): Promise<Song> {
-        return this.songsService.update(id, song);
+        return this.songsService.update(id, song as UpdateSongDto);
     }
 
     @Delete(':id')
@@ -67,19 +69,19 @@ export class SongsController {
         let filename = config.get("exports.songs.filename");
         filename = filename.replace("{id}", exportId);
         filename = filename.replace("{date}", dateFormat(new Date(), 'yyyy-M-d'));
-        let songs = (await this.songsService.findAllByPk(songIds)).map((song: Song) => new ExportSongDto(song));
+        let songs = (await this.songsService.findAllByPk(songIds)).map((song: Song) => new ExportSongDto(song as SongDto));
         let zip = new AdmZip();
+        let metaData = new ExportMetadataDto();
+        metaData.description = MetadataDescription.songs;
+        metaData.apiVersion = ExportApiVersion.v1;
         switch (format) {
             case 'json':
                 zip.addFile('songs.json', JSON.stringify(songs, null, 2));
-                response.set({
-                    'Content-Disposition': 'inline; filename="' + filename.replace("{ext}", 'zip') + '"',
-                    'Cache-Control': 'no-cache',
-                    'Mime-Type': 'application/zip'
-                });
-                return new StreamableFile(zip.toBuffer());
+                metaData.format = 'json';
+                metaData.songFilenames = ['songs.json'];
+                break;
             case 'text':
-                filename = filename.replace("{ext}", 'zip');
+                metaData.format = 'text';
                 let songFilenames: string[] = songs.map((song: ExportSongDto) => toFilename(song.name));
                 let duplicateFilenames: string[] = union(songFilenames, uniq(songFilenames));
                 for (let song of songs) {
@@ -99,13 +101,16 @@ export class SongsController {
                         songFilename = uniqueId(songFilename);
                     }
                     zip.addFile('songs/' + songFilename + '.txt', Buffer.from(decodeHtml(parseHtml(renderToStaticMarkup(ExportSongTemplate(song))).innerText.trim()), "utf8"));
+                    metaData.songFilenames.push('songs/' + songFilename+'.txt');
                 }
-                response.set({
-                    'Content-Disposition': 'inline; filename="' + filename.replace("{ext}", 'zip') + '"',
-                    'Cache-Control': 'no-cache',
-                    'Mime-Type': 'application/zip'
-                });
-                return new StreamableFile(zip.toBuffer());
+                break;
         }
+        zip.addFile('.metadata.json', JSON.stringify(metaData, null, 2));
+        response.set({
+            'Content-Disposition': 'inline; filename="' + filename.replace("{ext}", 'zip') + '"',
+            'Cache-Control': 'no-cache',
+            'Mime-Type': 'application/zip'
+        });
+        return new StreamableFile(zip.toBuffer());
     }
 }

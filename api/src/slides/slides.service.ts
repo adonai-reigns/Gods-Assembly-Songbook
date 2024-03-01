@@ -32,6 +32,7 @@ export class SlidesService {
         slide.type = createSlideDto.type;
         slide.content = createSlideDto.content;
         slide.sorting = createSlideDto.sorting;
+        slide.songId = createSlideDto.songId;
         return slide.save();
     }
 

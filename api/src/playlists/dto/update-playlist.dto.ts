@@ -1,5 +1,5 @@
 import { IsString, IsOptional } from 'class-validator';
-import { Song } from 'src/songs/song.entity';
+import { SongDto } from 'src/songs/dto/song.dto';
 
 export class UpdatePlaylistDto {
     @IsOptional()
@@ -19,6 +19,6 @@ export class UpdatePlaylistDto {
     readonly pauseSlide: string;
 
     @IsOptional()
-    readonly songs: Song[];
+    readonly songs: SongDto[];
 
 }

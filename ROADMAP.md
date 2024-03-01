@@ -24,8 +24,9 @@ Ability to export songs:
 Ability to import songs:
 
 - uploader for zipped archive of json or text files
-- format validation of file structure with useful fail notices 
 - validation: implement document api version for forwards-compatibility
+
+> ✓ _Completed on 20240301_
 
 Ability to import/export wallpaper and settings
 - format: json

@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { format as dateFormat } from 'date-fns';
+import { dateToDbDateString } from "src/app.service";
 
 import { parse as parseHtml, HTMLElement } from 'node-html-parser';
 
@@ -19,8 +19,8 @@ export const SlideTypeLabels: { [key: string]: string } = {
 export const ExportPlaylistTemplate = (playlist: ExportPlaylistDto): ReactElement => {
     return <>
         Name: {playlist.name.trim()}<br />
-        Created At: {dateFormat(new Date(playlist.createdAt), 'yyyyMMdd HH:mm:ss')}<br />
-        Updated At: {dateFormat(new Date(playlist.updatedAt), 'yyyyMMdd HH:mm:ss')}<br />
+        Created At: {dateToDbDateString(playlist.createdAt)}<br />
+        Updated At: {dateToDbDateString(playlist.updatedAt)}<br />
         <br />
         Start Slide:<br />
         {parseHtml(playlist.startSlide).getElementsByTagName('p').map((p: HTMLElement) => p.textContent.trim() + "\n").join('')}

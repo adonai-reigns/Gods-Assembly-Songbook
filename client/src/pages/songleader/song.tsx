@@ -30,7 +30,6 @@ import {
     defaultSlideType
 } from '../../models/slide';
 
-
 import GasLayout from '../../layouts/GasLayout';
 
 import "./song.scss";
@@ -202,7 +201,6 @@ const SongContent = function (props: propsInterface) {
         setSong(song);
         setSongId(song.id ?? 0);
         setEditingSongName(song.name);
-        console.log('setSongCacheFromApiData, song.copyright', song.copyright);
         setEditingCopyright(song.copyright ?? new SongCopyright());
         setSlides(song.slides);
     }

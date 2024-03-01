@@ -2,10 +2,12 @@ import { useState, useEffect, ReactNode } from "react";
 import { getApiUrl } from "../stores/server";
 import axios from "axios";
 
+import { Dialog } from "primereact/dialog";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Checkbox } from "primereact/checkbox";
 
+import { ImportForm } from "./ImportForm";
 import { DeleteButton } from "./DeleteButton";
 import { Button } from "../components/Button";
 import { FormSubmit } from "./FormSubmit";
@@ -41,6 +43,7 @@ export const SongPicker = function (props: propsInterface) {
 
     const [songs, setSongs] = useState<Song[]>([]);
     const [selectedSongIds, setSelectedSongIds] = useState<number[] | undefined>(props.selectedSongIds);
+    const [showImportForm, setShowImportForm] = useState<boolean>(false);
 
     const [songNameFilter] = useState({
         name: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -134,11 +137,18 @@ export const SongPicker = function (props: propsInterface) {
     }
 
     const footerBodyTemplate = () => {
-        return <div className="flex justify-content-end">
-            <p className="m-3">Can't find the song you need?</p>
-            <Button url={props.newSongUrl}>Create a new Song</Button>
-        </div>
-
+        return <>
+            <div className="flex justify-content-end">
+                <p className="m-3">Can't find the song you need?</p>
+                <Button url={props.newSongUrl}>Create a new Song</Button>
+            </div>
+            <div className="flex justify-content-end">
+                <div className="flex flex-column text-right">
+                    <span className="m-3">- or -</span>
+                    <a href={`#import`} onClick={() => setShowImportForm(true)}>Import Songs &raquo;</a>
+                </div>
+            </div>
+        </>
     }
 
     const deleteButtonBodyTemplate = (song: Song) => {
@@ -160,6 +170,11 @@ export const SongPicker = function (props: propsInterface) {
     }, [selectedSongIds]);
 
     return <div>
+        <Dialog draggable={false} closable={true} visible={showImportForm}
+            style={{ width: '50em', height: '30em' }}
+            onHide={() => setShowImportForm(false)}>
+                <ImportForm />
+        </Dialog>
         <DataTable value={songs} className={props.className} filters={songNameFilter} globalFilterFields={['name']}
             footer={footerBodyTemplate}>
             {selectedSongIds && <Column body={actionsBodyTemplate} header={props.withSelected ?? ''}></Column>}
